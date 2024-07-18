@@ -21,6 +21,14 @@ from msi_visual.saliency_opt import SaliencyOptimization
 from msi_visual.metrics import MSIVisualizationMetrics
 from msi_visual.app_utils.extraction_info import display_paths_to_extraction_paths, \
     get_files_from_folder
+import contextlib
+import cv2
+
+def save_gif(images, path):
+    # https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html#gif
+    pil_images = [Image.fromarray(img) for img in images]
+    pil_images[0].save(fp=path, format='GIF', append_images=pil_images[1 : ],
+            save_all=True, duration=200, loop=0)
 
 def save_data(path=None):
     folder = "saliency_optimization"
@@ -34,6 +42,9 @@ def save_data(path=None):
         Image.fromarray(st.session_state.saliency_opt[path]).save(Path(folder) /
                                 f"{image_name}_so.png")
 
+        save_gif(st.session_state.epoch_images[path], Path(folder) /
+                                f"{image_name}_so_gif.gif")
+
 # Either this or add_indentation() MUST be called on each page in your
 # app to add indendation in the sidebar
 add_page_title()
@@ -43,6 +54,7 @@ show_pages_from_config()
 if 'saliency_opt' not in st.session_state:
     st.session_state.saliency_opt = {}
     st.session_state.metrics = {}
+    st.session_state.epoch_images = {}
 
 
 regions = []
@@ -90,14 +102,33 @@ if st.button("Run"):
                 with st.spinner(text=f"Initializing ranking dataset.."):
                     opt = SaliencyOptimization(img, number_of_reference_points, regularization)
                 placeholder = st.empty()
+                epoch_images = []
                 for epoch in range(epochs):
                     with st.spinner(text=f"Epoch {epoch}.."):
                         result = opt.compute_epoch()
-                        #placeholder.empty()
-                        placeholder.image(result)
+                        epoch_images.append(result)
+
+                        result_for_gif = result.copy()
+                        font = cv2.FONT_HERSHEY_SIMPLEX
+                        bottomLeftCornerOfText = (5, 20)
+                        fontScale = 0.5
+                        fontColor = (255, 255, 255)
+                        thickness = 1
+                        lineType = 1
+                        result_for_gif = cv2.putText(result_for_gif, f"Epoch: {epoch}",
+                                            bottomLeftCornerOfText,
+                                            font,
+                                            fontScale,
+                                            fontColor,
+                                            thickness,
+                                            lineType)
+
+                        placeholder.image(result_for_gif)
                 metrics = MSIVisualizationMetrics(img, result, num_samples=3000).get_metrics()
 
                 st.session_state.metrics[key] = metrics
                 st.session_state.saliency_opt[key] = result
+                st.session_state.epoch_images[key] = epoch_images
 
-        save_data(path=path+settings_str)
+            save_data(path=path+settings_str)
+            
