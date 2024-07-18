@@ -4,6 +4,7 @@ import os
 import json
 import sys
 import numpy as np
+import cv2
 import time
 import joblib
 from collections import defaultdict
@@ -20,6 +21,7 @@ from msi_visual.outliers import get_outlier_image
 from msi_visual.metrics import MSIVisualizationMetrics
 from msi_visual.app_utils.extraction_info import display_paths_to_extraction_paths, \
     get_files_from_folder
+from msi_visual import visualizations
 
 def save_data(path=None):
     folder = "percentile_ratio_images"
@@ -58,6 +60,49 @@ if 'pr_metrics' not in st.session_state:
 if 'max_intensity_metrics' not in st.session_state:
     st.session_state.max_intensity_metrics = {}
 
+if 'normalized' not in st.session_state:
+    st.session_state.nomalized = {}
+
+def load_image(path):
+    if path + input_normalization in st.session_state.nomalized:
+        img = st.session_state.nomalized[path + input_normalization]
+    else:
+        img = np.load(path)
+        
+        if input_normalization == 'tic':
+            img = total_ion_count(img)
+        else:
+            img = spatial_total_ion_count(img)
+
+        st.session_state.nomalized[path + input_normalization] = img
+
+    return img
+
+def create_ion_image(img, mz_orig):
+    mz_index = np.abs(np.float32(st.session_state.extraction_mzs) - \
+                      float(mz_orig)).argmin()
+    mz = st.session_state.extraction_mzs[mz_index]
+    if mz_orig != mz:
+        st.text(f'Showing ION image for closest mz {mz}')
+    mz_img = visualizations.create_ion_image(img, mz_index) * 1
+
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    bottomLeftCornerOfText = (5, 20)
+    fontScale = 0.5
+    fontColor = (255, 255, 255)
+    thickness = 1
+    lineType = 1
+    mz_img = cv2.putText(mz_img, f"{mz:.3f}",
+                         bottomLeftCornerOfText,
+                         font,
+                         fontScale,
+                         fontColor,
+                         thickness,
+                         lineType)
+
+    return mz_img
+
+
 regions = []
 with st.sidebar:
     extraction_root_folder = st.text_input("Extraction Root Folder")
@@ -71,6 +116,23 @@ with st.sidebar:
             paths=get_files_from_folder(extraction_folder)
             regions = st.multiselect('Regions to include', paths, paths)
 
+            extraction_args = eval(
+                open(
+                    Path(extraction_folder) /
+                    "args.txt").read())
+            st.session_state.bins = extraction_args.bins
+            st.session_state.extraction_start_mz = extraction_args.start_mz
+            st.session_state.extraction_end_mz = extraction_args.end_mz
+            try:
+                st.session_state.extraction_mzs = extraction_args.mzs
+            except Exception as e:
+                st.session_state.extraction_mzs = list(
+                    np.arange(
+                        st.session_state.extraction_start_mz,
+                        st.session_state.extraction_end_mz + 1,
+                        1.0 / st.session_state.bins))
+                st.session_state.extraction_mzs = [
+                    float(f"{mz:.3f}") for mz in st.session_state.extraction_mzs]
 
 cols = st.columns(6)
 st.text("Will be computed as Percentile(a)/Percentile(b), Percentile(c)/Percentile(d), Percentile(e)/Percentile(f)")
@@ -113,12 +175,7 @@ if st.button("Run"):
             with st.spinner(text=f"Generating High Saliency Visualizations for {path}.."):
                 st.text(path)
                 t0 = time.time()
-                img = np.load(path)
-                
-                if input_normalization == 'tic':
-                    img = total_ion_count(img)
-                else:
-                    img = spatial_total_ion_count(img)
+                img = load_image(path)
 
                 t1 = time.time()
                 pr = percentile_ratio_rgb(img, percentiles=percentiles, equalize=equalize, normalization=None)
@@ -142,8 +199,12 @@ if st.button("Run"):
                 st.session_state.max_intensity_metrics[key] = max_intensity_metrics
                 st.session_state.pr[key] = pr
                 st.session_state.max_intensity[key] = max_intensity
-        
-        
-
 
         save_data(path=path+settings_str)
+
+mz = st.text_input('Create ION image for m/z:')
+if mz:
+    for path in regions:
+        img = load_image(path)
+        st.image(create_ion_image(img, mz))
+        

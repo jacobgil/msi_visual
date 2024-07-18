@@ -43,15 +43,12 @@ def get_outlier_image(img):
 
 
 
-    #coreset, _, coreset_indices = core_sets(reshaped, 100)
-    coreset_indices = np.random.choice(np.arange(len(reshaped)), size=200, replace=False)
 
+    coreset_indices = np.random.choice(np.arange(len(reshaped)), size=200, replace=False)
     coreset_indices = [i for i in coreset_indices if reshaped[i, :].max(axis=-1) > 0]
     coreset = reshaped[coreset_indices]
 
-
     chebyshev = pairwise_distances(reshaped, coreset, metric='chebyshev')
-    
     for i, coreset_index in enumerate(coreset_indices):
         chebyshev[coreset_index, i] = 10000
 
