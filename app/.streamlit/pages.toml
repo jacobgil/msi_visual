@@ -1,4 +1,8 @@
 [[pages]]
+path = "show_ion_images.py"
+name = "Show ION images"
+
+[[pages]]
 path = "explore.py"
 name = "Dataset Exploration"
 

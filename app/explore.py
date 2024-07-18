@@ -200,11 +200,4 @@ if st.button("Run"):
                 st.session_state.pr[key] = pr
                 st.session_state.max_intensity[key] = max_intensity
 
-        save_data(path=path+settings_str)
-
-mz = st.text_input('Create ION image for m/z:')
-if mz:
-    for path in regions:
-        img = load_image(path)
-        st.image(create_ion_image(img, mz))
-        
+        save_data(path=path+settings_str)        

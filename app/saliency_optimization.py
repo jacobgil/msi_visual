@@ -106,7 +106,6 @@ if st.button("Run"):
                 for epoch in range(epochs):
                     with st.spinner(text=f"Epoch {epoch}.."):
                         result = opt.compute_epoch()
-                        epoch_images.append(result)
 
                         result_for_gif = result.copy()
                         font = cv2.FONT_HERSHEY_SIMPLEX
@@ -122,6 +121,7 @@ if st.button("Run"):
                                             fontColor,
                                             thickness,
                                             lineType)
+                        epoch_images.append(result_for_gif)
 
                         placeholder.image(result_for_gif)
                 metrics = MSIVisualizationMetrics(img, result, num_samples=3000).get_metrics()
