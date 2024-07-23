@@ -125,8 +125,8 @@ if st.button("Run"):
 
                         placeholder.image(result_for_gif)
                 metrics = MSIVisualizationMetrics(img, result, num_samples=3000).get_metrics()
-
-                st.session_state.metrics[key] = metrics
+                st.write(metrics)
+                st.session_state.metrics = metrics
                 st.session_state.saliency_opt[key] = result
                 st.session_state.epoch_images[key] = epoch_images
 

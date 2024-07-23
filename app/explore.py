@@ -4,6 +4,7 @@ import os
 import json
 import sys
 import numpy as np
+import random
 import cv2
 import time
 import joblib
@@ -18,6 +19,8 @@ import msi_visual.percentile_ratio
 importlib.reload(msi_visual.percentile_ratio)
 from msi_visual.percentile_ratio import percentile_ratio_rgb, top3
 from msi_visual.outliers import get_outlier_image
+import msi_visual.metrics
+importlib.reload(msi_visual.metrics)
 from msi_visual.metrics import MSIVisualizationMetrics
 from msi_visual.app_utils.extraction_info import display_paths_to_extraction_paths, \
     get_files_from_folder
@@ -61,20 +64,22 @@ if 'max_intensity_metrics' not in st.session_state:
     st.session_state.max_intensity_metrics = {}
 
 if 'normalized' not in st.session_state:
-    st.session_state.nomalized = {}
+    st.session_state.normalized = {}
 
 def load_image(path):
-    if path + input_normalization in st.session_state.nomalized:
-        img = st.session_state.nomalized[path + input_normalization]
+    if path + input_normalization in st.session_state.normalized:
+        img = st.session_state.normalized[path + input_normalization]
     else:
         img = np.load(path)
         
         if input_normalization == 'tic':
+            print("using tic")
             img = total_ion_count(img)
         else:
+            print("using spatial tic")
             img = spatial_total_ion_count(img)
 
-        st.session_state.nomalized[path + input_normalization] = img
+        st.session_state.normalized[path + input_normalization] = img
 
     return img
 
@@ -176,15 +181,17 @@ if st.button("Run"):
                 st.text(path)
                 t0 = time.time()
                 img = load_image(path)
-
                 t1 = time.time()
                 pr = percentile_ratio_rgb(img, percentiles=percentiles, equalize=equalize, normalization=None)
                 t2 = time.time()
                 st.image(pr)
                 max_intensity = top3(img, normalization=None, equalize=equalize)
                 st.image(max_intensity)
-                pr_metrics = MSIVisualizationMetrics(img, pr, num_samples=3000).get_metrics()
+                random.seed(0)
                 max_intensity_metrics = MSIVisualizationMetrics(img, max_intensity, num_samples=3000).get_metrics()
+                random.seed(0)
+                pr_metrics = MSIVisualizationMetrics(img, pr, num_samples=3000).get_metrics()
+                
                 t3 = time.time()
                 st.write("Percentile ratio metrics")
                 st.write(pr_metrics)
@@ -200,4 +207,4 @@ if st.button("Run"):
                 st.session_state.pr[key] = pr
                 st.session_state.max_intensity[key] = max_intensity
 
-        save_data(path=path+settings_str)        
+        save_data(path=path+settings_str)

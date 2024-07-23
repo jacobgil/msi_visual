@@ -42,7 +42,7 @@ def percentile_ratio_rgb(img,
         sorted_normalized = norm_funtion(img)
     else:
         sorted_normalized = img
-    sorted_normalized.sort(axis=-1)
+    sorted_normalized = np.sort(img, axis=-1)
     N = sorted_normalized.shape[-1]
 
 

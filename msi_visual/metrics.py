@@ -54,7 +54,6 @@ class RandomPairSampler:
             point_a = random.choice(indices)
             point_b = random.choice(indices)
             pairs.append((point_a, point_b))
-        
         return pairs
     
     def get_input_distances(self, img):
@@ -63,7 +62,7 @@ class RandomPairSampler:
         for distance in distances:
             data[distance] = []
 
-        for point_a, point_b in self.pairs:
+        for index, (point_a, point_b) in enumerate(self.pairs):
             a, b = img[point_a[0], point_a[1]], img[point_b[0], point_b[1]]
             data["L-2"].append(np.linalg.norm(a-b, 2))
             data['Cosine'].append(1 - cosine_similarity(np.array([a]), np.array([b]))[0, 0])
@@ -89,16 +88,16 @@ class RandomPairSampler:
 
 
 class MSIVisualizationMetrics:
-    def __init__(self, img, visualization, num_samples=3000):
+    def __init__(self, normalized, visualization, num_samples=3000):
         
-        sampler = RandomPairSampler(img, num_samples)
+        sampler = RandomPairSampler(normalized, num_samples)
 
-        self.data = self.generate_input_output_samples(total_ion_count(img),
+        self.data = self.generate_input_output_samples(normalized,
                                                        cv2.cvtColor(visualization, cv2.COLOR_RGB2LAB),
                                                        sampler)
 
-    def generate_input_output_samples(self, img, visualization, sampler):
-        data = sampler.get_input_distances(img)
+    def generate_input_output_samples(self, normalized, visualization, sampler):
+        data = sampler.get_input_distances(normalized)
         data["Output"] = sampler.get_output_distance(visualization)
         return data
     
@@ -138,7 +137,6 @@ class MSIVisualizationMetrics:
             ax.set_title(title)
         
         
-        print(metrics)
         for name, value in metrics.items():
             plt.plot([], [], ' ', label=f"{name} {value:.3f}")
         plt.legend()
@@ -177,14 +175,10 @@ class MSIVisualizationMetrics:
 
 
 if __name__ == "__main__":
-    random.seed(0)
     img = np.load(sys.argv[1])
     visualization = np.array(Image.open(sys.argv[2]))
-    normalized = img
-    #normalized = spatial_total_ion_count(img)
-
+    normalized = total_ion_count(img)
+    random.seed(0)
     metrics = MSIVisualizationMetrics(normalized, visualization)
-
-    fig = metrics.get_correlation_scatter_plot(title=sys.argv[4])
-    plt.savefig(sys.argv[3])
+    print(metrics.get_metrics())
     plt.show()
