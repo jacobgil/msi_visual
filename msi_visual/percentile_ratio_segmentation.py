@@ -8,27 +8,29 @@ from msi_visual.normalization import spatial_total_ion_count, total_ion_count, m
 from msi_visual.visualizations import visualizations_from_explanations
 from msi_visual.percentile_ratio import percentile_ratio_rgb
 
-class PercentileRatioSegmentation:
-    def __init__(self, normalization='tic', equalize=False):
-        self.normalization = normalization
-        self.equalize = equalize
-        
-    def factorize(self, img):
-        return np.float32(percentile_ratio_rgb(img, normalization=self.normalization, equalize=self.equalize)) / 255
 
-    def visualize_factorization(self,
-                                img,
-                                contributions,
-                                method='spatial_norm'):
+class PercentileRatioSegmentation:
+    def __init__(self, equalize=False):
+        self.equalize = equalize
+
+    def predict(self, img):
+        return np.float32(
+            percentile_ratio_rgb(
+                img, equalize=self.equalize)) / 255
+
+    def segment_visualization(self,
+                              img,
+                              contributions,
+                              method='spatial_norm'):
 
         number_of_bins_for_comparison = 5
         bins = np.linspace(0, 1, number_of_bins_for_comparison)
-        
+
         digitized_a = np.digitize(contributions[:, :, 0], bins)
         digitized_b = np.digitize(contributions[:, :, 1], bins)
         digitized_c = np.digitize(contributions[:, :, 2], bins)
 
-        digitized = digitized_a * number_of_bins_for_comparison * number_of_bins_for_comparison + digitized_b * number_of_bins_for_comparison + digitized_c
-
+        digitized = digitized_a * number_of_bins_for_comparison * \
+            number_of_bins_for_comparison + digitized_b * number_of_bins_for_comparison + digitized_c
 
         return digitized, np.uint8(255 * contributions)

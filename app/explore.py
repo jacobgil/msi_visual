@@ -18,6 +18,8 @@ from msi_visual.normalization import total_ion_count, spatial_total_ion_count
 import msi_visual.percentile_ratio
 importlib.reload(msi_visual.percentile_ratio)
 from msi_visual.percentile_ratio import percentile_ratio_rgb, top3
+import msi_visual.outliers
+importlib.reload(msi_visual.outliers)
 from msi_visual.outliers import get_outlier_image
 import msi_visual.metrics
 importlib.reload(msi_visual.metrics)
@@ -41,6 +43,10 @@ def save_data(path=None):
         image_name = path.replace("/", "_").replace("\\", "_").replace(".", "_").replace(":", "_")
         Image.fromarray(st.session_state.max_intensity[path]).save(Path(folder) /
                                 f"{image_name}_top3.png")
+
+        Image.fromarray(st.session_state.outliers[path]).save(Path(folder) /
+                                f"{image_name}_outliers.png")
+
 
 # Either this or add_indentation() MUST be called on each page in your
 # app to add indendation in the sidebar
@@ -182,10 +188,10 @@ if st.button("Run"):
                 t0 = time.time()
                 img = load_image(path)
                 t1 = time.time()
-                pr = percentile_ratio_rgb(img, percentiles=percentiles, equalize=equalize, normalization=None)
+                pr = percentile_ratio_rgb(img, percentiles=percentiles, equalize=equalize)
                 t2 = time.time()
                 st.image(pr)
-                max_intensity = top3(img, normalization=None, equalize=equalize)
+                max_intensity = top3(img, equalize=equalize)
                 st.image(max_intensity)
                 random.seed(0)
                 max_intensity_metrics = MSIVisualizationMetrics(img, max_intensity, num_samples=3000).get_metrics()
@@ -205,6 +211,7 @@ if st.button("Run"):
                 st.session_state.pr_metrics[key] = pr_metrics
                 st.session_state.max_intensity_metrics[key] = max_intensity_metrics
                 st.session_state.pr[key] = pr
+                st.session_state.outliers[key] = outlier
                 st.session_state.max_intensity[key] = max_intensity
 
         save_data(path=path+settings_str)

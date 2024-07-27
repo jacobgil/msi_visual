@@ -6,7 +6,7 @@ from msi_visual.percentile_ratio_segmentation import PercentileRatioSegmentation
 from msi_visual.metrics import MSIVisualizationMetrics
 from msi_visual.auto_colorization import AutoColorizeRandom, AutoColorizeArea
 from msi_visual.avgmz import AvgMZVisualization
-from msi_visual.rare_nmf_segmentation import SegmentationRareVisualization
+from msi_visual.rare_nmf_segmentation import SegmentationPercentileRatio
 from msi_visual.avgmz_nmf_segmentation import SegmentationAvgMZVisualization
 from msi_visual.umap_nmf_segmentation import SegmentationUMAPVisualization
 from msi_visual import parametric_umap
@@ -169,11 +169,7 @@ def get_model():
             st.session_state.region_importance = {}
 
     if combination_method == "PercentileRatio":
-        model = PercentileRatioSegmentation('tic', equalize)
-        # if st.session_state['model'][combination_method] is None:
-        #     model = PercentileRatioSegmentation('tic')
-        # else:
-        #     model = st.session_state['model'][combination_method]
+        model = PercentileRatioSegmentation(equalize)
 
     if combination_method == "Seg+UMAP":
         if umap_model_folder:
@@ -188,7 +184,7 @@ def get_model():
 
     elif combination_method == "Seg+Rare":
         if st.session_state['model'][combination_method] is None:
-            model = SegmentationRareVisualization(model)
+            model = SegmentationPercentileRatio(model)
         else:
             model = st.session_state['model'][combination_method]
 
@@ -561,7 +557,7 @@ try:
                 with col2:
                     importbutton = st.button("Import Settings 📂")
 
-                if exportbutton:
+                if exportbutton: 
                     dialog = wx.FileDialog(
                         None, "Settings file", style=wx.DD_DEFAULT_STYLE)
                     if dialog.ShowModal() == wx.ID_OK:
@@ -685,10 +681,10 @@ try:
 
                 t0 = time.time()
                 if "+" in combination_method:
-                    results["segmentation"], results["heatmap"] = model.factorize(
+                    results["segmentation"], results["heatmap"] = model.predict(
                         img)
                 else:
-                    results["segmentation"] = model.factorize(img)
+                    results["segmentation"] = model.predict(img)
 
                 print("Factorization took", time.time() - t0)
 
@@ -722,13 +718,13 @@ try:
                         "Dim. Reduction UMAP",
                         "Dim. Reduction NMF",
                             "PercentileRatio"]:
-                        sub_segmentation_mask, visualization = model.visualize_factorization(
+                        sub_segmentation_mask, visualization = model.segment_visualization(
                             img, segmentation_mask, method=output_normalization)
                         segmentation_mask_argmax = None
                         segmentation_mask_for_comparisons = sub_segmentation_mask
 
                     if "+" in combination_method:
-                        segmentation_mask, sub_segmentation_mask, visualization = model.visualize_factorization(img,
+                        segmentation_mask, sub_segmentation_mask, visualization = model.segment_visualization(img,
                                                                                                                 segmentation_mask,
                                                                                                                 data["heatmap"],
                                                                                                                 roi_mask,
@@ -740,7 +736,7 @@ try:
                         segmentation_mask_for_comparisons = sub_segmentation_mask
 
                     elif combination_method == "Segmentation":
-                        segmentation_mask, visualization = model.visualize_factorization(
+                        segmentation_mask, visualization = model.segment_visualization(
                             img, segmentation_mask, region_colorscheme, method=output_normalization, region_factors=st.session_state.region_importance)
 
                         visualization[roi_mask == 0] = 0
@@ -751,7 +747,7 @@ try:
                         segmentation_mask_for_comparisons = segmentation_mask_argmax
 
                     elif combination_method == "SpectrumHeatmap":
-                        segmentation_mask, visualization = model.visualize_factorization(
+                        segmentation_mask, visualization = model.segment_visualization(
                             img, segmentation_mask, roi_mask, region_colorscheme, method=output_normalization, region_factors=st.session_state.region_importance)
 
                         visualization[roi_mask == 0] = 0

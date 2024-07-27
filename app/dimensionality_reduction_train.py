@@ -10,7 +10,7 @@ from pathlib import Path
 from argparse import Namespace
 from PIL import Image
 from st_pages import show_pages_from_config, add_page_title
-
+from msi_visual.normalization import spatial_total_ion_count, total_ion_count, median_ion
 from msi_visual import nmf_3d
 from msi_visual import parametric_umap
 from msi_visual.app_utils.extraction_info import display_paths_to_extraction_paths, \
@@ -105,16 +105,18 @@ if output_path:
             end_bin = None
 
         if method == '1D Parametric UMAP':
-            model = parametric_umap.UMAPVirtualStain(n_components=1, start_bin=start_bin, end_bin=end_bin, normalization=normalization)
+            model = parametric_umap.UMAPVirtualStain(n_components=1, start_bin=start_bin, end_bin=end_bin)
         elif method == '3D Parametric UMAP':
-            model = parametric_umap.UMAPVirtualStain(n_components=3, start_bin=start_bin, end_bin=end_bin, normalization=normalization)
+            model = parametric_umap.UMAPVirtualStain(n_components=3, start_bin=start_bin, end_bin=end_bin)
         elif method == 'NMF 3D':
-            model = nmf_3d.NMF3D(start_bin=start_bin, end_bin=end_bin, normalization=normalization)
+            model = nmf_3d.NMF3D(start_bin=start_bin, end_bin=end_bin)
+
+        norm_funtion = {'tic': total_ion_count, 'median': median_ion, 'spatial_tic': spatial_total_ion_count}[normalization]
 
         if sub_sample:
-            images = [np.load(p)[::int(sub_sample), ::int(sub_sample), :] for p in regions]
+            images = [norm_funtion(np.load(p)[::int(sub_sample), ::int(sub_sample), :]) for p in regions]
         else:
-            images = [np.load(p) for p in regions]
+            images = [norm_funtion(np.load(p)) for p in regions]
         
         with st.spinner(text=f"Training {method}.."):
             train_progress = 0.0

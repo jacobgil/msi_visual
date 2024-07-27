@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import umap
 from PIL import Image
 
+
 def get_umap(results, colors_for_components):
     fig = plt.figure()
     all_embeddings = []
@@ -33,10 +34,12 @@ def get_umap(results, colors_for_components):
     ).fit_transform(normalized)
     count = len(all_labels)
     for index, marker in enumerate(set(all_markers)):
-        indices = [i for i in range(len(all_markers)) if all_markers[i] == marker]
+        indices = [
+            i for i in range(
+                len(all_markers)) if all_markers[i] == marker]
         sc = plt.scatter(*umap_embeddings[indices, :].T,
                          s=30,
-                         c=[all_colors[i] for i in indices], 
+                         c=[all_colors[i] for i in indices],
                          marker=marker,
                          alpha=1.0,
                          label=f"Mouse model {chr(ord('A')+index)}")
@@ -47,11 +50,11 @@ def get_umap(results, colors_for_components):
     for handle in leg.legendHandles:
         handle.set_color('black')
 
-        
-    plt.title(f"UMAP m/z vectors for different animals and their segmented components")
+    plt.title(
+        f"UMAP m/z vectors for different animals and their segmented components")
     plt.xlabel("First UMAP embedding dimension")
     plt.ylabel("Second UMAP embedding dimension")
-    #plt.axis('off')
+    # plt.axis('off')
     fig.canvas.draw()
     data = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
     plt.close(fig=fig)

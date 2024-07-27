@@ -4,58 +4,65 @@ from matplotlib import pyplot as plt
 from collections import defaultdict
 from scipy.stats import entropy
 
-def brain_nmf_semantic_segmentation(img_path_for_segmentation: str, H_path: str = "h_cosegmentation.npy", NUM_COMPONENTS:int = 5) -> np.ndarray:
-    colors_for_components = get_colors(NUM_COMPONENTS)
-    img_for_segmentation = np.load(img_path_for_segmentation)[:, :, 600 : ]
-    H = np.load(H_path)
-    img_for_segmentation = img_for_segmentation / (1e-6 + np.median(img_for_segmentation, axis=-1)[:, :, None])
-    vector = img_for_segmentation.reshape((-1, img_for_segmentation.shape[-1]))
 
-    w_new, h_new, n_iter = non_negative_factorization(vector, H=H, W=None, n_components=NUM_COMPONENTS, update_H=False, random_state=0)
-    explanations = w_new.transpose().reshape(NUM_COMPONENTS, img_for_segmentation.shape[0], img_for_segmentation.shape[1])
-    explanations[4, :] = 0
-    spatial_sum_visualization, global_percentile_visualization, normalized_sum, normalized_percentile = visualizations_from_explanations(img_for_segmentation, explanations, colors_for_components)
-    return normalized_sum.argmax(axis=0)
+def segment_visualization(img,
+                          visualization):
 
-def brain_nmf_semantic_segmentation_highres(img_path_for_segmentation: str, H_path: str = "h_cosegmentation_tims.npy", NUM_COMPONENTS:int = 20) -> np.ndarray:
-    colors_for_components = get_colors(NUM_COMPONENTS)
-    img_for_segmentation = np.load(img_path_for_segmentation)[:, :, : ]
-    H = np.load(H_path)
-    img_for_segmentation = img_for_segmentation / (1e-6 + np.sum(img_for_segmentation, axis=-1)[:, :, None])
-    vector = img_for_segmentation.reshape((-1, img_for_segmentation.shape[-1]))
+    number_of_bins_for_comparison = 5
+    bins = np.linspace(0, 1, number_of_bins_for_comparison)
 
-    w_new, h_new, n_iter = non_negative_factorization(vector, H=H, W=None, n_components=NUM_COMPONENTS, update_H=False, random_state=0)
-    explanations = w_new.transpose().reshape(NUM_COMPONENTS, img_for_segmentation.shape[0], img_for_segmentation.shape[1])
-    spatial_sum_visualization, global_percentile_visualization, normalized_sum, normalized_percentile = visualizations_from_explanations(img_for_segmentation, explanations, colors_for_components)
-    return normalized_sum.argmax(axis=0)
+    digitized_a = np.digitize(visualization[:, :, 0], bins)
+    digitized_b = np.digitize(visualization[:, :, 1], bins)
+    digitized_c = np.digitize(visualization[:, :, 2], bins)
 
-import numpy as np
+    digitized = digitized_a * number_of_bins_for_comparison * \
+        number_of_bins_for_comparison + digitized_b * number_of_bins_for_comparison + digitized_c
 
-def normalize_image_grayscale(grayscale, low_percentile: int = 0.1, high_percentile: int = 99.9):
+    return digitized, np.uint8(255 * visualization)
+
+
+def normalize(visualiation, low=0.001, high=99.999):
+    result = visualiation.copy()
+    for i in range(result.shape[-1]):
+        result[:, :, i] = result[:, :, i] - np.percentile(result[:, :, i], low)
+        result[:, :, i][result[:, :, i] < 0] = 0
+        result[:, :, i] = result[:, :, i] / \
+            np.percentile(result[:, :, i], high)
+        result[:, :, i][result[:, :, i] > 1] = 1
+    return result
+
+
+def normalize_image_grayscale(
+        grayscale,
+        low_percentile: int = 0.1,
+        high_percentile: int = 99.9):
     a = grayscale.copy()
     low = np.percentile(a[:], low_percentile)
-    a = (a - low) 
+    a = (a - low)
     a[a < 0] = 0
     high = np.percentile(a[:], high_percentile)
-    a = a / (1e-7+high)
+    a = a / (1e-7 + high)
     a[a < 0] = 0
-    a [ a > 1 ] = 1
+    a[a > 1] = 1
     return a
 
 
 def image_histogram_equalization(image, mask, number_bins=256):
-    # from http://www.janeriksolem.net/histogram-equalization-with-python-and.html
+    # from
+    # http://www.janeriksolem.net/histogram-equalization-with-python-and.html
 
     # get image histogram
-    image_histogram, bins = np.histogram(image[mask > 0].flatten(), number_bins, density=True)
-    
-    cdf = image_histogram.cumsum() # cumulative distribution function
-    cdf = (number_bins-1) * cdf / cdf[-1] # normalize
+    image_histogram, bins = np.histogram(
+        image[mask > 0].flatten(), number_bins, density=True)
+
+    cdf = image_histogram.cumsum()  # cumulative distribution function
+    cdf = (number_bins - 1) * cdf / cdf[-1]  # normalize
 
     # use linear interpolation of cdf to find new pixel values
     image_equalized = np.interp(image.flatten(), bins[:-1], cdf)
 
     return image_equalized.reshape(image.shape)
+
 
 def get_certainty(segmentation):
     normalized = segmentation / (1e-6 + segmentation.sum(axis=0))
@@ -63,7 +70,9 @@ def get_certainty(segmentation):
     e = 1 - e
     return e
 
+
 def set_region_importance(segmentation_mask, factors):
     for label, factor in factors.items():
-        segmentation_mask[label, :, :] = segmentation_mask[label, :, :] * factor 
+        segmentation_mask[label, :,
+                          :] = segmentation_mask[label, :, :] * factor
     return segmentation_mask

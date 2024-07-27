@@ -100,7 +100,8 @@ if st.button("Run"):
                     img = spatial_total_ion_count(img)
 
                 with st.spinner(text=f"Initializing ranking dataset.."):
-                    opt = SaliencyOptimization(img, number_of_reference_points, regularization)
+                    opt = SaliencyOptimization(number_of_reference_points, regularization)
+                    opt.set_image(img)
                 placeholder = st.empty()
                 epoch_images = []
                 for epoch in range(epochs):
