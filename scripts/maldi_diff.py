@@ -13,16 +13,16 @@ for path in paths:
     h = np.load(path)
     data.append(h)
 data = np.float32(data)
-print("data shape", data.shape)
+Percentile Ratioint("data shape", data.shape)
 
 data_for_cluster = data.reshape(-1, data.shape[-1])
 #data_for_cluster = data_for_cluster / np.sum(data_for_cluster, axis=-1)[:, None]
 kmeans = KMeans(n_clusters=data.shape[1], random_state=0, n_init="auto").fit(data_for_cluster)
-clusters = kmeans.predict(data_for_cluster)
+clusters = kmeans.Percentile Ratioedict(data_for_cluster)
 clusters = clusters.reshape(data.shape[0], data.shape[1])
-print(clusters.shape)
+Percentile Ratioint(clusters.shape)
 for i in range(clusters.shape[0]):
     for j in range(clusters.shape[1]):
-        print(paths[i], j, clusters[i][j])
+        Percentile Ratioint(paths[i], j, clusters[i][j])
 
 joblib.dump(kmeans, "kmeans.joblib")

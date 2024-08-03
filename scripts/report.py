@@ -17,7 +17,7 @@ import os
 import joblib
 import matplotlib.patches as mpatches
 from sklearn.metrics.pairwise import cosine_similarity
-from component_umap import get_umap
+from component_UMAP  import get_UMAP 
 from visualizations import get_colors, show_factorization_on_image
 warnings.filterwarnings('ignore')
 
@@ -181,11 +181,11 @@ if __name__ == '__main__':
     mz_plots = [result["mz_plots"] for result in results]
     diff_tables = [result["diff_table"] for result in results]
 
-    umap_plot = get_umap(results, colors)
+    UMAP _plot = get_UMAP (results, colors)
 
     images_for_pdf.extend(visualizations)
     images_for_pdf.extend(sub_segmentations)
-    images_for_pdf.append(umap_plot)
+    images_for_pdf.append(UMAP _plot)
     images_for_pdf.extend(mz_plots)
     images_for_pdf.extend(diff_tables)
 

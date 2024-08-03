@@ -1,4 +1,4 @@
-from umap.parametric_umap import ParametricUMAP
+from UMAP .parametric_UMAP  import ParametricUMAP 
 from msi_visual.utils import normalize, segment_visualization
 import tensorflow as tf
 import numpy as np
@@ -8,31 +8,31 @@ from pathlib import Path
 import joblib
 
 
-class UMAPVirtualStain:
+class UMAP VirtualStain:
     def __init__(self, n_components=1, start_bin=0, end_bin=None):
         self.n_components = n_components
-        self.umap = MSIParametricUMAP(
+        self.UMAP  = MSIParametricUMAP (
             n_components=n_components,
             start_bin=start_bin,
             end_bin=end_bin)
 
     def fit(self, images, keras_fit_kwargs):
-        self.encoder = self.umap.fit(images, keras_fit_kwargs)
+        self.encoder = self.UMAP .fit(images, keras_fit_kwargs)
 
     def save(self, output_folder):
         os.makedirs(output_folder, exist_ok=True)
-        self.encoder.save(Path(output_folder) / "umap.keras")
+        self.encoder.save(Path(output_folder) / "UMAP .keras")
         print("saved encoder")
-        joblib.dump(self.umap, Path(output_folder) / "msi_umap.joblib")
+        joblib.dump(self.UMAP , Path(output_folder) / "msi_UMAP .joblib")
 
     def load(self, output_folder):
         self.encoder = tf.keras.models.load_model(
-            Path(output_folder) / "umap.keras")
+            Path(output_folder) / "UMAP .keras")
 
-        self.umap = joblib.load(Path(output_folder) / "msi_umap.joblib")
+        self.UMAP  = joblib.load(Path(output_folder) / "msi_UMAP .joblib")
 
     def predict(self, img):
-        result = normalize(self.umap.predict(img, self.encoder))
+        result = normalize(self.UMAP .predict(img, self.encoder))
         result = np.uint8(255 * result)
         result = np.float32(result) / 255
         return result
@@ -45,7 +45,7 @@ class UMAPVirtualStain:
         return segment_visualization(img, visualization)
 
 
-class MSIParametricUMAP:
+class MSIParametricUMAP :
     def __init__(
             self,
             n_components=1,
@@ -84,7 +84,7 @@ class MSIParametricUMAP:
             tf.keras.layers.Dense(units=self.n_components)
         ])
 
-        umap_model = ParametricUMAP(encoder=encoder,
+        UMAP _model = ParametricUMAP (encoder=encoder,
                                     verbose=True,
                                     n_components=self.n_components,
                                     n_neighbors=self.n_neighbors,
@@ -94,5 +94,5 @@ class MSIParametricUMAP:
                                     run_eagerly=True,
                                     keras_fit_kwargs=keras_fit_kwargs)
 
-        umap_model.fit(vector)
+        UMAP _model.fit(vector)
         return encoder

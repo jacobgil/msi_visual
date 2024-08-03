@@ -6,6 +6,8 @@ import tqdm
 import torchsort
 import cv2
 
+from msi_visual.percentile_ratio import top3
+
 
 def core_sets(data, Np):
     """Reduces (NxD) data matrix from N to Np data points.
@@ -47,11 +49,12 @@ def core_sets(data, Np):
 
 class SaliencyOptimization:
     def __init__(self, number_of_points=500, regularization_strength=0.005,
-                 sampling="coreset", num_epochs=200):
+                 sampling="coreset", num_epochs=200, init="random"):
         self.num_epochs = num_epochs
         self.regularization_strength = regularization_strength
         self.sampling = sampling
         self.number_of_points = number_of_points
+        self.init = init
 
     def set_image(self, img):
         self.img = img
@@ -59,14 +62,26 @@ class SaliencyOptimization:
             self.img.shape[0] * self.img.shape[1], -1)
         self.img_mask = self.img.max(axis=-1) > 0
         self.resample(number_of_points=self.number_of_points)
-        self.visualization = torch.rand(
-            size=(self.reshaped.shape[0], 3)) * 10 - 5
+
+        if self.init=="random":
+            self.visualization = torch.rand(
+                size=(self.reshaped.shape[0], 3)) * 10 - 5
+            
+            # self.visualization = torch.randn(
+            #     size=(self.reshaped.shape[0], 3))
+
+        elif self.init == "top3":
+            self.visualization = torch.from_numpy(np.float32(top3(img))/255)
+            self.visualization = self.visualization.reshape(-1, 3)
+        else:
+            raise Exception(f"{self.init} not supported as initialization")
+
 
         if torch.cuda.is_available():
             self.visualization = self.visualization.cuda()
         self.visualization.requires_grad = True
         self.optim = torch.optim.Adam([self.visualization], lr=1.0)
-        delta = 0.2 * len(self.indices)
+        delta = 0.0 * len(self.indices)
 
         self.loss_saliency = torch.nn.MarginRankingLoss(
             margin=-delta, reduction='none')
@@ -135,6 +150,7 @@ class SaliencyOptimization:
             x[:, :, i][x[:, :, i] > 1] = 1
 
         x = np.uint8(255 * x)
+
         x = cv2.cvtColor(x, cv2.COLOR_LAB2RGB)
         x[self.img_mask == 0] = 0
         return x

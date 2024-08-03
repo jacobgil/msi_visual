@@ -74,7 +74,7 @@ class SegmentationPercentileRatio:
         segmentation, _ = self.segmentation_model.segment_visualization(
             img, segmentation, method=method, region_factors=region_factors)
         segmentation_argmax = segmentation.argmax(axis=0)
-        sub_segmentation, region_umaps = self.get_subsegmentation(
+        sub_segmentation, region_UMAP s = self.get_subsegmentation(
             img, roi_mask, segmentation, visualization, number_of_bins_for_comparison)
         regions = np.unique(segmentation_argmax)
         # Create the colorful image
@@ -85,10 +85,10 @@ class SegmentationPercentileRatio:
             if roi_mask is not None:
                 region_mask[roi_mask == 0] = 0
 
-            region_umap = region_umaps.copy()
-            region_umap = np.uint8(region_umap * 255)
+            region_UMAP  = region_UMAP s.copy()
+            region_UMAP  = np.uint8(region_UMAP  * 255)
             region_visualization = cv2.applyColorMap(
-                region_umap, cmapy.cmap(color_scheme_per_region[region]))
+                region_UMAP , cmapy.cmap(color_scheme_per_region[region]))
             region_visualization = region_visualization[:, :, ::-1]
             region_visualization[region_mask == 0] = 0
             visualizations.append(region_visualization)

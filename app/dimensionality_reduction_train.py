@@ -12,7 +12,7 @@ from PIL import Image
 from st_pages import show_pages_from_config, add_page_title
 from msi_visual.normalization import spatial_total_ion_count, total_ion_count, median_ion
 from msi_visual import nmf_3d
-from msi_visual import parametric_umap
+from msi_visual import parametric_UMAP 
 from msi_visual.app_utils.extraction_info import display_paths_to_extraction_paths, \
     get_files_from_folder
 from keras.callbacks import Callback
@@ -86,7 +86,7 @@ with st.sidebar:
         sub_sample = st.number_input('Subsample pixels', value=None, step=1)
 
 
-    method = st.selectbox('Dimensionality Reduction Method', ['1D Parametric UMAP', '3D Parametric UMAP', 'NMF 3D'])
+    method = st.selectbox('Dimensionality Reduction Method', ['1D Parametric UMAP ', '3D Parametric UMAP ', 'NMF 3D'])
     normalization = st.radio('Normalization', ['tic', 'spatial_tic'], index=0, key="norm", horizontal=1, captions=["total ion count", "spatial"])
 
 save_to_cache()
@@ -104,10 +104,10 @@ if output_path:
         else:
             end_bin = None
 
-        if method == '1D Parametric UMAP':
-            model = parametric_umap.UMAPVirtualStain(n_components=1, start_bin=start_bin, end_bin=end_bin)
-        elif method == '3D Parametric UMAP':
-            model = parametric_umap.UMAPVirtualStain(n_components=3, start_bin=start_bin, end_bin=end_bin)
+        if method == '1D Parametric UMAP ':
+            model = parametric_UMAP .UMAP VirtualStain(n_components=1, start_bin=start_bin, end_bin=end_bin)
+        elif method == '3D Parametric UMAP ':
+            model = parametric_UMAP .UMAP VirtualStain(n_components=3, start_bin=start_bin, end_bin=end_bin)
         elif method == 'NMF 3D':
             model = nmf_3d.NMF3D(start_bin=start_bin, end_bin=end_bin)
 
@@ -125,7 +125,7 @@ if output_path:
 
             keras_fit_kwargs = {"callbacks": [MyCallback()]}
 
-            if 'UMAP' in method:
+            if 'UMAP ' in method:
                 model.fit(images, keras_fit_kwargs=keras_fit_kwargs)
             else:
                 model.fit(images)

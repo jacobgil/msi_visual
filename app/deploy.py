@@ -8,8 +8,8 @@ from msi_visual.auto_colorization import AutoColorizeRandom, AutoColorizeArea
 from msi_visual.avgmz import AvgMZVisualization
 from msi_visual.rare_nmf_segmentation import SegmentationPercentileRatio
 from msi_visual.avgmz_nmf_segmentation import SegmentationAvgMZVisualization
-from msi_visual.umap_nmf_segmentation import SegmentationUMAPVisualization
-from msi_visual import parametric_umap
+from msi_visual.UMAP _nmf_segmentation import SegmentationUMAP Visualization
+from msi_visual import parametric_UMAP 
 from msi_visual.utils import get_certainty, set_region_importance
 from msi_visual.app_utils.extraction_info import display_paths_to_extraction_paths, \
     get_files_from_folder
@@ -74,7 +74,7 @@ def get_settings():
             'Slide ROI to include': regions,
             'Model folder': nmf_model_folder,
             'confidence_thresholds': st.session_state.confidence_thresholds,
-            'UMAP Model folder (optional)': umap_model_folder,
+            'UMAP  Model folder (optional)': UMAP _model_folder,
             'combination_method': combination_method,
             'Segmentation model': nmf_model_name,
             'Image to show': image_to_show,
@@ -91,7 +91,7 @@ def get_settings_hash():
 
 
 def model_hash():
-    settings = {'umap_model_folder': st.session_state.umap_model_folder,
+    settings = {'UMAP _model_folder': st.session_state.UMAP _model_folder,
                 'nmf_model_folder': st.session_state.nmf_model_folder}
     return make_hash_sha256(settings)
 
@@ -171,12 +171,12 @@ def get_model():
     if combination_method == "PercentileRatio":
         model = PercentileRatioSegmentation(equalize)
 
-    if combination_method == "Seg+UMAP":
-        if umap_model_folder:
+    if combination_method == "Seg+UMAP ":
+        if UMAP _model_folder:
             if st.session_state['model'][combination_method] is None:
-                umap = parametric_umap.UMAPVirtualStain()
-                umap.load(umap_model_folder)
-                model = SegmentationUMAPVisualization(umap, model)
+                UMAP  = parametric_UMAP .UMAP VirtualStain()
+                UMAP .load(UMAP _model_folder)
+                model = SegmentationUMAP Visualization(UMAP , model)
             else:
                 model = st.session_state['model'][combination_method]
         else:
@@ -199,20 +199,20 @@ def get_model():
         else:
             model = st.session_state['model'][combination_method]
 
-    elif combination_method == "Dim. Reduction UMAP" and umap_model_folder:
-        if ('umap_model_folder' in st.session_state and st.session_state['umap_model_folder'] != umap_model_folder) \
+    elif combination_method == "Dim. Reduction UMAP " and UMAP _model_folder:
+        if ('UMAP _model_folder' in st.session_state and st.session_state['UMAP _model_folder'] != UMAP _model_folder) \
                 or (st.session_state['model'][combination_method] is None) \
-                or ('umap_model_folder' not in st.session_state):
-            model = parametric_umap.UMAPVirtualStain()
-            model.load(umap_model_folder)
-            st.session_state['umap_model_folder'] = umap_model_folder
+                or ('UMAP _model_folder' not in st.session_state):
+            model = parametric_UMAP .UMAP VirtualStain()
+            model.load(UMAP _model_folder)
+            st.session_state['UMAP _model_folder'] = UMAP _model_folder
         else:
             print(f"loading {combination_method}")
             model = st.session_state['model'][combination_method]
 
     if model is not None:
         st.session_state['model'][combination_method] = model
-    print(model, nmf_model_name, umap_model_folder)
+    print(model, nmf_model_name, UMAP _model_folder)
     return model
 
 
@@ -338,8 +338,8 @@ else:
 app = wx.App()
 wx.DisableAsserts()
 
-if 'umap_model_folder' not in st.session_state:
-    st.session_state.umap_model_folder = None
+if 'UMAP _model_folder' not in st.session_state:
+    st.session_state.UMAP _model_folder = None
 if 'nmf_model_folder' not in st.session_state:
     st.session_state.nmf_model_folder = None
 
@@ -359,10 +359,10 @@ if 'comparison_results' not in st.session_state:
 if 'model' not in st.session_state:
     st.session_state.model = {"PercentileRatio": None,
                               "Dim. Reduction NMF": None,
-                              "Dim. Reduction UMAP": None,
+                              "Dim. Reduction UMAP ": None,
                               'Seg+Rare': None,
                               'Seg+SpectrumHeatmap': None,
-                              'Seg+UMAP': None,
+                              'Seg+UMAP ': None,
                               "Segmentation": None,
                               "SpectrumHeatmap": None}
 
@@ -396,7 +396,7 @@ if 'coordinates' not in st.session_state or st.session_state.coordinates is None
     st.session_state.coordinates = defaultdict(list)
 
 try:
-    umap_model_folder, nmf_model_path, nmf_model_name = None, None, None
+    UMAP _model_folder, nmf_model_path, nmf_model_name = None, None, None
     region_colorscheme = None
     with st.sidebar:
         st.title('Data Source')
@@ -463,22 +463,22 @@ try:
 
         combination_method = st.radio('Visualization Method',
                                       ["PercentileRatio",
-                                       "Dim. Reduction UMAP",
+                                       "Dim. Reduction UMAP ",
                                        "Dim. Reduction NMF",
                                        "Segmentation",
-                                       "Seg+UMAP",
+                                       "Seg+UMAP ",
                                        "Seg+SpectrumHeatmap",
                                        "Seg+Rare",
                                        "SpectrumHeatmap"],
                                       index=0)
 
-        if "UMAP" in combination_method:
-            umap_model_folder = st.text_input(
-                'UMAP Model folder (optional)',
-                value=cached_state['UMAP Model folder (optional)'])
+        if "UMAP " in combination_method:
+            UMAP _model_folder = st.text_input(
+                'UMAP  Model folder (optional)',
+                value=cached_state['UMAP  Model folder (optional)'])
         else:
-            umap_model_folder = None
-        st.session_state.umap_model_folder = umap_model_folder
+            UMAP _model_folder = None
+        st.session_state.UMAP _model_folder = UMAP _model_folder
 
         if combination_method == "PercentileRatio":
             equalize = st.checkbox("Equalize")
@@ -517,7 +517,7 @@ try:
         st.title('Region Settings')
         if combination_method not in [
             "SpectrumHeatmap",
-            "Dim. Reduction UMAP",
+            "Dim. Reduction UMAP ",
             "Dim. Reduction NMF",
                 "PercentileRatio"]:
             region_selectbox = 0
@@ -715,7 +715,7 @@ try:
                                 roi_mask[certainty_image > high] = 0
 
                     if combination_method in [
-                        "Dim. Reduction UMAP",
+                        "Dim. Reduction UMAP ",
                         "Dim. Reduction NMF",
                             "PercentileRatio"]:
                         sub_segmentation_mask, visualization = model.segment_visualization(
@@ -756,7 +756,7 @@ try:
 
                     certainty_image = None
                     if combination_method != "SpectrumHeatmap" and combination_method not in [
-                            "Dim. Reduction UMAP", "Dim. Reduction NMF", "PercentileRatio"]:
+                            "Dim. Reduction UMAP ", "Dim. Reduction NMF", "PercentileRatio"]:
                         certainty_image = get_certainty(segmentation_mask)
                         certainty_image[img.max(axis=-1) == 0] = 0
                         certainty_image = np.uint8(certainty_image * 255)
@@ -803,7 +803,7 @@ try:
                     if combination_method not in [
                         "SpectrumHeatmap",
                         "Dim. Reduction NMF",
-                        "Dim. Reduction UMAP",
+                        "Dim. Reduction UMAP ",
                             "PercentileRatio"]:
                         region_visualization = st.session_state.results[path]["visualization"].copy(
                         )

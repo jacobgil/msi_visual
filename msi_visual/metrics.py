@@ -106,7 +106,7 @@ class RandomPairSampler:
 
 
 class MSIVisualizationMetrics:
-    def __init__(self, normalized, visualization, num_samples=3000):
+    def __init__(self, normalized, visualization, num_samples=30000):
 
         sampler = RandomPairSampler(normalized, num_samples)
 
@@ -212,4 +212,5 @@ if __name__ == "__main__":
     random.seed(0)
     metrics = MSIVisualizationMetrics(normalized, visualization)
     print(metrics.get_metrics())
+    metrics.get_correlation_scatter_plot()
     plt.show()

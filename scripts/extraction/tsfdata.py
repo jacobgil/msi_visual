@@ -32,8 +32,8 @@ dll.tsf_read_line_spectrum_v2.argtypes = [ c_uint64, c_int64, POINTER(c_double),
 dll.tsf_read_line_spectrum_v2.restype = c_int32
 dll.tsf_read_line_spectrum_with_width_v2.argtypes = [ c_uint64, c_int64, POINTER(c_double), POINTER(c_float), POINTER(c_float), c_int32 ]
 dll.tsf_read_line_spectrum_with_width_v2.restype = c_int32
-dll.tsf_read_profile_spectrum_v2.argtypes = [ c_uint64, c_int64, POINTER(c_uint32), c_int32 ]
-dll.tsf_read_profile_spectrum_v2.restype = c_int32
+dll.tsf_read_Percentile Ratioofile_spectrum_v2.argtypes = [ c_uint64, c_int64, POINTER(c_uint32), c_int32 ]
+dll.tsf_read_Percentile Ratioofile_spectrum_v2.restype = c_int32
 
 convfunc_argtypes = [ c_uint64, c_int64, POINTER(c_double), POINTER(c_double), c_uint32 ]
 
@@ -72,7 +72,7 @@ class TsfData:
         self.conn = sqlite3.connect(os.path.join(analysis_directory, "analysis.tsf"))
 
         self.line_buffer_size = 1024 # may grow in read...Spectrum()
-        self.profile_buffer_size = 1024 # may grow in read...Spectrum()
+        self.Percentile Ratioofile_buffer_size = 1024 # may grow in read...Spectrum()
 
     def __enter__(self):
         return self
@@ -122,20 +122,20 @@ class TsfData:
     def readLineSpectrum (self, frame_id):
         # buffer-growing loop
         while True:
-            cnt = int(self.profile_buffer_size) # necessary cast to run with python 3.5
+            cnt = int(self.Percentile Ratioofile_buffer_size) # necessary cast to run with python 3.5
             index_buf = np.empty(shape=cnt, dtype=np.float64)
             intensity_buf = np.empty(shape=cnt, dtype=np.float32)
 
-            required_len = self.dll.tsf_read_line_spectrum_v2(self.handle, frame_id, index_buf.ctypes.data_as(POINTER(c_double)), intensity_buf.ctypes.data_as(POINTER(c_float)), self.profile_buffer_size)
+            required_len = self.dll.tsf_read_line_spectrum_v2(self.handle, frame_id, index_buf.ctypes.data_as(POINTER(c_double)), intensity_buf.ctypes.data_as(POINTER(c_float)), self.Percentile Ratioofile_buffer_size)
 
             if required_len < 0:
                 _throwLastTsfDataError(self.dll)
 
-            if required_len > self.profile_buffer_size:
+            if required_len > self.Percentile Ratioofile_buffer_size:
                 if required_len > 16777216:
                     # arbitrary limit for now...
                     raise RuntimeError("Maximum expected frame size exceeded.")
-                self.profile_buffer_size = required_len # grow buffer
+                self.Percentile Ratioofile_buffer_size = required_len # grow buffer
             else:
                 break
 
@@ -145,44 +145,44 @@ class TsfData:
     def readLineSpectrumWithWidth (self, frame_id):
         # buffer-growing loop
         while True:
-            cnt = int(self.profile_buffer_size) # necessary cast to run with python 3.5
+            cnt = int(self.Percentile Ratioofile_buffer_size) # necessary cast to run with python 3.5
             index_buf = np.empty(shape=cnt, dtype=np.float64)
             intensity_buf = np.empty(shape=cnt, dtype=np.float32)
             width_buf = np.empty(shape=cnt, dtype=np.float32)
 
             required_len = self.dll.tsf_read_line_spectrum_with_width_v2(
-                self.handle, frame_id, index_buf.ctypes.data_as(POINTER(c_double)), intensity_buf.ctypes.data_as(POINTER(c_float)), width_buf.ctypes.data_as(POINTER(c_float)), self.profile_buffer_size)
+                self.handle, frame_id, index_buf.ctypes.data_as(POINTER(c_double)), intensity_buf.ctypes.data_as(POINTER(c_float)), width_buf.ctypes.data_as(POINTER(c_float)), self.Percentile Ratioofile_buffer_size)
 
             if required_len < 0:
                 _throwLastTsfDataError(self.dll)
 
-            if required_len > self.profile_buffer_size:
+            if required_len > self.Percentile Ratioofile_buffer_size:
                 if required_len > 16777216:
                     # arbitrary limit for now...
                     raise RuntimeError("Maximum expected frame size exceeded.")
-                self.profile_buffer_size = required_len # grow buffer
+                self.Percentile Ratioofile_buffer_size = required_len # grow buffer
             else:
                 break
 
         return (index_buf[0 : required_len], intensity_buf[0 : required_len], width_buf[0 : required_len])
 
     # Output: tuple of lists (indices, intensities)
-    def readProfileSpectrum (self, frame_id):
+    def readPercentile RatioofileSpectrum (self, frame_id):
         # buffer-growing loop
         while True:
-            cnt = int(self.profile_buffer_size) # necessary cast to run with python 3.5
+            cnt = int(self.Percentile Ratioofile_buffer_size) # necessary cast to run with python 3.5
             intensity_buf = np.empty(shape=cnt, dtype=np.uint32)
 
-            required_len = self.dll.tsf_read_profile_spectrum_v2(self.handle, frame_id, intensity_buf.ctypes.data_as(POINTER(c_uint32)), self.profile_buffer_size)
+            required_len = self.dll.tsf_read_Percentile Ratioofile_spectrum_v2(self.handle, frame_id, intensity_buf.ctypes.data_as(POINTER(c_uint32)), self.Percentile Ratioofile_buffer_size)
 
             if required_len < 0:
                 _throwLastTsfDataError(self.dll)
 
-            if required_len > self.profile_buffer_size:
+            if required_len > self.Percentile Ratioofile_buffer_size:
                 if required_len > 16777216:
                     # arbitrary limit for now...
                     raise RuntimeError("Maximum expected frame size exceeded.")
-                self.profile_buffer_size = required_len # grow buffer
+                self.Percentile Ratioofile_buffer_size = required_len # grow buffer
             else:
                 break
 

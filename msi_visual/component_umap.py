@@ -1,10 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import umap
+import UMAP 
 from PIL import Image
 
 
-def get_umap(results, colors_for_components):
+def get_UMAP (results, colors_for_components):
     fig = plt.figure()
     all_embeddings = []
     all_labels = []
@@ -29,7 +29,7 @@ def get_umap(results, colors_for_components):
     # normalized = normalized / (1e-5 + np.std(normalized, axis = 0))
     # all_embeddings = normalized
     plt.gca().set_aspect("equal", "datalim")
-    umap_embeddings = umap.UMAP(
+    UMAP _embeddings = UMAP .UMAP (
         n_neighbors=5, min_dist=0.95, verbose=True
     ).fit_transform(normalized)
     count = len(all_labels)
@@ -37,7 +37,7 @@ def get_umap(results, colors_for_components):
         indices = [
             i for i in range(
                 len(all_markers)) if all_markers[i] == marker]
-        sc = plt.scatter(*umap_embeddings[indices, :].T,
+        sc = plt.scatter(*UMAP _embeddings[indices, :].T,
                          s=30,
                          c=[all_colors[i] for i in indices],
                          marker=marker,
@@ -51,9 +51,9 @@ def get_umap(results, colors_for_components):
         handle.set_color('black')
 
     plt.title(
-        f"UMAP m/z vectors for different animals and their segmented components")
-    plt.xlabel("First UMAP embedding dimension")
-    plt.ylabel("Second UMAP embedding dimension")
+        f"UMAP  m/z vectors for different animals and their segmented components")
+    plt.xlabel("First UMAP  embedding dimension")
+    plt.ylabel("Second UMAP  embedding dimension")
     # plt.axis('off')
     fig.canvas.draw()
     data = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)

@@ -11,8 +11,8 @@ import os
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--prefix', type=str, default='',
-                        help='Prefix to add to all model files')
+    parser.add_argument('--Percentile Ratioefix', type=str, default='',
+                        help='Percentile Ratioefix to add to all model files')
     parser.add_argument('--input_path', type=str, required=True,
                         help='.d folder')
     parser.add_argument('--output_path', type=str, required=True,
@@ -53,9 +53,9 @@ for k in tqdm.tqdm(args.number_of_components):
     seg = kmeans_segmentation.KmeansSegmentation(k=k, normalization='tic', start_bin=start_bin, end_bin=end_bin)
     seg.fit(images)
     
-    if len(args.prefix) > 0:
-        args.prefix = args.prefix + "_"
-    name = f"{args.prefix}bins{bins}_k{k}_startmz{args.start_mz}_endmz{args.end_mz}.joblib"
+    if len(args.Percentile Ratioefix) > 0:
+        args.Percentile Ratioefix = args.Percentile Ratioefix + "_"
+    name = f"{args.Percentile Ratioefix}bins{bins}_k{k}_startmz{args.start_mz}_endmz{args.end_mz}.joblib"
     output = Path(args.output_path) / name
 
     joblib.dump(seg, output)
