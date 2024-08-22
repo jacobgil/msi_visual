@@ -8,8 +8,8 @@ from msi_visual.auto_colorization import AutoColorizeRandom, AutoColorizeArea
 from msi_visual.avgmz import AvgMZVisualization
 from msi_visual.rare_nmf_segmentation import SegmentationPercentileRatio
 from msi_visual.avgmz_nmf_segmentation import SegmentationAvgMZVisualization
-from msi_visual.UMAP _nmf_segmentation import SegmentationUMAP Visualization
-from msi_visual import parametric_UMAP 
+from msi_visual.umap_nmf_segmentation import SegmentationUMAPVisualization
+from msi_visual import parametric_umap 
 from msi_visual.utils import get_certainty, set_region_importance
 from msi_visual.app_utils.extraction_info import display_paths_to_extraction_paths, \
     get_files_from_folder
@@ -74,7 +74,7 @@ def get_settings():
             'Slide ROI to include': regions,
             'Model folder': nmf_model_folder,
             'confidence_thresholds': st.session_state.confidence_thresholds,
-            'UMAP  Model folder (optional)': UMAP _model_folder,
+            'UMAP  Model folder (optional)': UMAP_model_folder,
             'combination_method': combination_method,
             'Segmentation model': nmf_model_name,
             'Image to show': image_to_show,
@@ -91,7 +91,7 @@ def get_settings_hash():
 
 
 def model_hash():
-    settings = {'UMAP _model_folder': st.session_state.UMAP _model_folder,
+    settings = {'UMAP_model_folder': st.session_state.UMAP_model_folder,
                 'nmf_model_folder': st.session_state.nmf_model_folder}
     return make_hash_sha256(settings)
 
@@ -172,11 +172,11 @@ def get_model():
         model = PercentileRatioSegmentation(equalize)
 
     if combination_method == "Seg+UMAP ":
-        if UMAP _model_folder:
+        if UMAP_model_folder:
             if st.session_state['model'][combination_method] is None:
-                UMAP  = parametric_UMAP .UMAP VirtualStain()
-                UMAP .load(UMAP _model_folder)
-                model = SegmentationUMAP Visualization(UMAP , model)
+                UMAP  = parametric_umap.UMAPVirtualStain()
+                UMAP.load(UMAP_model_folder)
+                model = SegmentationUMAPVisualization(UMAP, model)
             else:
                 model = st.session_state['model'][combination_method]
         else:
@@ -199,20 +199,20 @@ def get_model():
         else:
             model = st.session_state['model'][combination_method]
 
-    elif combination_method == "Dim. Reduction UMAP " and UMAP _model_folder:
-        if ('UMAP _model_folder' in st.session_state and st.session_state['UMAP _model_folder'] != UMAP _model_folder) \
+    elif combination_method == "Dim. Reduction UMAP " and UMAP_model_folder:
+        if ('UMAP_model_folder' in st.session_state and st.session_state['UMAP_model_folder'] != UMAP_model_folder) \
                 or (st.session_state['model'][combination_method] is None) \
-                or ('UMAP _model_folder' not in st.session_state):
-            model = parametric_UMAP .UMAP VirtualStain()
-            model.load(UMAP _model_folder)
-            st.session_state['UMAP _model_folder'] = UMAP _model_folder
+                or ('UMAP_model_folder' not in st.session_state):
+            model = parametric_umap.UMAPVirtualStain()
+            model.load(UMAP_model_folder)
+            st.session_state['UMAP_model_folder'] = UMAP_model_folder
         else:
             print(f"loading {combination_method}")
             model = st.session_state['model'][combination_method]
 
     if model is not None:
         st.session_state['model'][combination_method] = model
-    print(model, nmf_model_name, UMAP _model_folder)
+    print(model, nmf_model_name, UMAP_model_folder)
     return model
 
 
@@ -253,9 +253,6 @@ def auto_colorization():
                 json.load(open("auto_color_schemes.json")))
             k = st.session_state['segmentation_model'].k
             st.session_state.color_schemes = colorization.colorize(
-                result["mz_image"],
-                result["segmentation_mask_argmax"],
-                result["heatmap"],
                 low_var_ratio,
                 k)
         if st.button('Area based colorization'):
@@ -338,8 +335,8 @@ else:
 app = wx.App()
 wx.DisableAsserts()
 
-if 'UMAP _model_folder' not in st.session_state:
-    st.session_state.UMAP _model_folder = None
+if 'UMAP_model_folder' not in st.session_state:
+    st.session_state.UMAP_model_folder = None
 if 'nmf_model_folder' not in st.session_state:
     st.session_state.nmf_model_folder = None
 
@@ -396,7 +393,7 @@ if 'coordinates' not in st.session_state or st.session_state.coordinates is None
     st.session_state.coordinates = defaultdict(list)
 
 try:
-    UMAP _model_folder, nmf_model_path, nmf_model_name = None, None, None
+    UMAP_model_folder, nmf_model_path, nmf_model_name = None, None, None
     region_colorscheme = None
     with st.sidebar:
         st.title('Data Source')
@@ -473,12 +470,12 @@ try:
                                       index=0)
 
         if "UMAP " in combination_method:
-            UMAP _model_folder = st.text_input(
+            UMAP_model_folder = st.text_input(
                 'UMAP  Model folder (optional)',
                 value=cached_state['UMAP  Model folder (optional)'])
         else:
-            UMAP _model_folder = None
-        st.session_state.UMAP _model_folder = UMAP _model_folder
+            UMAP_model_folder = None
+        st.session_state.UMAP_model_folder = UMAP_model_folder
 
         if combination_method == "PercentileRatio":
             equalize = st.checkbox("Equalize")

@@ -16,26 +16,33 @@ def smoothness_saliency_metrics(cosine, maxabs, outputs):
     max_rank = np.maximum(
         cosine.argsort().argsort(),
         maxabs.argsort().argsort())
+
     cosine_rank = cosine.argsort().argsort()
     result_rank = outputs.argsort().argsort()
+
     result = {}
 
     corr_cosine = scipy.stats.pearsonr(cosine, outputs).statistic
     corr_maxabs = scipy.stats.pearsonr(maxabs, outputs).statistic
 
     N = len(outputs)
+    gamma = 2
     saliency_30 = (((result_rank - max_rank + N * 0.3) > 0)
-                   * max_rank**2).sum() / sum(max_rank**2)
+                   * max_rank**gamma).sum() / sum(max_rank**gamma)
     saliency_20 = (((result_rank - max_rank + N * 0.2) > 0)
-                   * max_rank**2).sum() / sum(max_rank**2)
+                   * max_rank**gamma).sum() / sum(max_rank**gamma)
     saliency_10 = (((result_rank - max_rank + N * 0.1) > 0)
-                   * max_rank**2).sum() / sum(max_rank**2)
+                   * max_rank**gamma).sum() / sum(max_rank**gamma)
     smoothness_30 = (((cosine_rank - result_rank - N * 0.3) < 0)
-                     * (N - cosine_rank)**2).sum() / sum((N - cosine_rank)**2)
+                     * (N - cosine_rank)**gamma).sum() / sum((N - cosine_rank)**gamma)
     smoothness_20 = (((cosine_rank - result_rank - N * 0.2) < 0)
-                     * (N - cosine_rank)**2).sum() / sum((N - cosine_rank)**2)
+                     * (N - cosine_rank)**gamma).sum() / sum((N - cosine_rank)**gamma)
     smoothness_10 = (((cosine_rank - result_rank - N * 0.1) < 0)
-                     * (N - cosine_rank)**2).sum() / sum((N - cosine_rank)**2)
+                     * (N - cosine_rank)**gamma).sum() / sum((N - cosine_rank)**gamma)
+
+    
+    saliency_20 = (((result_rank - max_rank + N * 0.2) > 0)
+                   * max_rank**gamma).sum() / sum(max_rank**gamma)
 
     result["Saliency Δ=20%"] = saliency_20
     result["Smoothness Δ=20%"] = smoothness_20
@@ -46,23 +53,33 @@ def smoothness_saliency_metrics(cosine, maxabs, outputs):
     result["Correlation Cosine"] = corr_cosine
     result["Correlation L-∞"] = corr_maxabs
 
+    result["Avg. Saliency"] = (saliency_10 + saliency_20 + saliency_30) / 3
+    result["Avg. Smoothness"] = (smoothness_10 + smoothness_20 + smoothness_30) / 3
+
+
     return result
 
 
 class RandomPairSampler:
-    def __init__(self, img, num_samples):
-        self.pairs = self.generate_pairs(img, num_samples)
+    def __init__(self, img, num_samples, mask):
+        self.pairs = self.generate_pairs(img, num_samples, mask)
 
-    def generate_pairs(self, img, num_samples):
+    def generate_pairs(self, img, num_samples, mask):
         nrow, ncol = img.shape[0], img.shape[1]
         points = np.mgrid[:nrow, :ncol].reshape(2, -1).T
-        indices = list(points)
-        indices = [(a, b) for a, b in indices if img[a, b, :].max() > 0]
-        pairs = []
-        for _ in range(min(len(indices), num_samples)):
-            point_a = random.choice(indices)
-            point_b = random.choice(indices)
+        points = list(points)
+        img_mask = np.uint8(img.max(axis=-1) > 0) * 255
+        if mask is not None:
+            img_mask[mask == 0] = 0
+
+        points = [(a, b) for a, b in points if img_mask[a, b] > 0]
+
+        pairs = []        
+        for _ in range(min(len(points), num_samples)):
+            point_a = random.choice(points)
+            point_b = random.choice(points)
             pairs.append((point_a, point_b))
+      
         return pairs
 
     def get_input_distances(self, img):
@@ -99,20 +116,19 @@ class RandomPairSampler:
             b = np.float32(b)
 
             d = np.linalg.norm(a - b, 2)
-            # d = (int(d) // 10) * 10
 
             result.append(d)
         return np.float32(result)
 
 
 class MSIVisualizationMetrics:
-    def __init__(self, normalized, visualization, num_samples=30000):
+    def __init__(self, normalized, visualization, mask=None, num_samples=30000):
 
-        sampler = RandomPairSampler(normalized, num_samples)
+        self.sampler = RandomPairSampler(normalized, num_samples, mask)
 
         self.data = self.generate_input_output_samples(
             normalized, cv2.cvtColor(
-                visualization, cv2.COLOR_RGB2LAB), sampler)
+                visualization, cv2.COLOR_RGB2LAB), self.sampler)
 
     def generate_input_output_samples(
             self, normalized, visualization, sampler):
@@ -124,6 +140,8 @@ class MSIVisualizationMetrics:
         cosine = self.data["Cosine"]
         maxabs = self.data["L-∞"]
         outputs = self.data["Output"]
+    
+
         metrics = smoothness_saliency_metrics(cosine, maxabs, outputs)
         return metrics
 

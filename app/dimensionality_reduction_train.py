@@ -12,7 +12,7 @@ from PIL import Image
 from st_pages import show_pages_from_config, add_page_title
 from msi_visual.normalization import spatial_total_ion_count, total_ion_count, median_ion
 from msi_visual import nmf_3d
-from msi_visual import parametric_UMAP 
+from msi_visual import parametric_umap
 from msi_visual.app_utils.extraction_info import display_paths_to_extraction_paths, \
     get_files_from_folder
 from keras.callbacks import Callback
@@ -105,9 +105,9 @@ if output_path:
             end_bin = None
 
         if method == '1D Parametric UMAP ':
-            model = parametric_UMAP .UMAP VirtualStain(n_components=1, start_bin=start_bin, end_bin=end_bin)
+            model = parametric_umap.UMAPVirtualStain(n_components=1, start_bin=start_bin, end_bin=end_bin)
         elif method == '3D Parametric UMAP ':
-            model = parametric_UMAP .UMAP VirtualStain(n_components=3, start_bin=start_bin, end_bin=end_bin)
+            model = parametric_umap.UMAPVirtualStain(n_components=3, start_bin=start_bin, end_bin=end_bin)
         elif method == 'NMF 3D':
             model = nmf_3d.NMF3D(start_bin=start_bin, end_bin=end_bin)
 

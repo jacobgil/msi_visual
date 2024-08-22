@@ -7,9 +7,27 @@ import torchsort
 import cv2
 
 from msi_visual.percentile_ratio import top3
+from sklearn.cluster import KMeans, kmeans_plusplus
 
 
-def core_sets(data, Np):
+class SaliencyOptimization:
+    def __init__(
+            self,
+            number_of_points=500,
+            regularization_strength=0.005,
+            sampling="coreset",
+            num_epochs=200,
+            init="random",
+            similarity_reg=0):
+        self.num_epochs = num_epochs
+        self.regularization_strength = regularization_strength
+        self.sampling = sampling
+        self.number_of_points = number_of_points
+        self.init = init
+        self.similarity_reg = similarity_reg
+
+
+def get_reference_points(self, data, Np):
     """Reduces (NxD) data matrix from N to Np data points.
 
     Args:
@@ -21,40 +39,29 @@ def core_sets(data, Np):
     """
     N = data.shape[0]
     D = data.shape[1]
+    method = self.sampling
 
-    # compute mean
-    u = np.mean(data, axis=0)
+    if method == "random":
+        return np.random.choice(list(range(N), number_of_points))
 
-    # compute proposal distribution
-    q = np.linalg.norm(data - u, axis=1)**2
-    sum = np.sum(q)
+    elif method == "kmeans++":
+        _, indices = kmeans_plusplus(data, n_clusters=Np, random_state=0)
+        return indices
 
-    q2 = np.max(np.abs(data - u), axis=1)
-    sum2 = np.sum(q2)
+    elif method == "kmeans":
+        kmeans = KMeans(n_clusters=Np, random_state=0, n_init="auto").fit(data)
+        return pairwise_distances(data, kmeans.cluster_centers_).argmin(axis=0)
 
-    d = q / sum + q2 / sum2
-    d = d / np.sum(d)
-
-    d = q / sum
-
-    q = 0.5 * (d + 1.0 / N)
-
-    # get sample and fill coreset
-    samples = np.random.choice(N, Np, p=q)
-    coreset = data[samples]
-    weights = 1.0 / (q[samples] * Np)
-
-    return coreset, weights, samples
-
-
-class SaliencyOptimization:
-    def __init__(self, number_of_points=500, regularization_strength=0.005,
-                 sampling="coreset", num_epochs=200, init="random"):
-        self.num_epochs = num_epochs
-        self.regularization_strength = regularization_strength
-        self.sampling = sampling
-        self.number_of_points = number_of_points
-        self.init = init
+    elif method == "coreset":
+        # compute mean
+        u = np.mean(data, axis=0)
+        # compute proposal distribution
+        q = np.linalg.norm(data - u, axis=1)**2
+        sum = np.sum(q)
+        d = q / sum
+        q = 0.5 * (d + 1.0 / N)
+        # get sample and fill coreset
+        return np.random.choice(N, Np, p=q)
 
     def set_image(self, img):
         self.img = img
@@ -63,22 +70,27 @@ class SaliencyOptimization:
         self.img_mask = self.img.max(axis=-1) > 0
         self.resample(number_of_points=self.number_of_points)
 
-        if self.init=="random":
+        if isinstance(self.init, np.ndarray):
+            self.visualization = torch.from_numpy(
+                np.float32(self.init) / 255) * 10 - 5
+            self.visualization = self.visualization.reshape(-1, 3)
+
+        elif self.init == "random":
             self.visualization = torch.rand(
                 size=(self.reshaped.shape[0], 3)) * 10 - 5
-            
-            # self.visualization = torch.randn(
-            #     size=(self.reshaped.shape[0], 3))
 
         elif self.init == "top3":
-            self.visualization = torch.from_numpy(np.float32(top3(img))/255)
+            self.visualization = torch.from_numpy(np.float32(top3(img)) / 255)
             self.visualization = self.visualization.reshape(-1, 3)
         else:
             raise Exception(f"{self.init} not supported as initialization")
 
-
         if torch.cuda.is_available():
             self.visualization = self.visualization.cuda()
+
+        if self.similarity_reg > 0:
+            self.orig = self.visualization.clone()
+
         self.visualization.requires_grad = True
         self.optim = torch.optim.Adam([self.visualization], lr=1.0)
         delta = 0.0 * len(self.indices)
@@ -89,20 +101,18 @@ class SaliencyOptimization:
         self.mask = torch.from_numpy(self.mask_np).float().cuda()
 
     def resample(self, number_of_points):
-        if self.sampling == "coreset":
-            _, _, sampled_indices = core_sets(self.reshaped, number_of_points)
-        elif self.sampling == "random":
-            sampled_indices = np.random.choice(
-                list(range(len(self.reshaped))), number_of_points)
-        else:
-            raise f"Sampling {self.sampling} not implemented, chose coreset/random"
-
+        sampled_indices = self.get_reference_points(
+            self.reshaped, number_of_points)
         self.indices = [
             i for i in sampled_indices if self.reshaped[i, :].max(axis=-1) > 0]
-        coreset = self.reshaped[self.indices, :]
-        cosine = pairwise_distances(self.reshaped, coreset, metric='cosine')
+
+        reference_points = self.reshaped[self.indices, :]
+        cosine = pairwise_distances(
+            self.reshaped,
+            reference_points,
+            metric='cosine')
         chebyshev = pairwise_distances(
-            self.reshaped, coreset, metric='chebyshev')
+            self.reshaped, reference_points, metric='chebyshev')
 
         cosine = cosine.argsort().argsort()
         chebyshev = chebyshev.argsort().argsort()
@@ -134,6 +144,11 @@ class SaliencyOptimization:
         saliency = (saliency * self.mask[:,
                                          None] * self.rank_squares).sum() / (self.mask[:,
                                                                                        None] * self.rank_squares).sum()
+
+        if self.similarity_reg > 0:
+            saliency = saliency + self.similarity_reg * \
+                torch.nn.MSELoss()(self.visualization, self.orig)
+
         self.optim.zero_grad()
         loss = saliency
         loss.backward()

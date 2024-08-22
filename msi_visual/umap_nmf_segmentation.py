@@ -6,23 +6,32 @@ import numpy as np
 from msi_visual.utils import normalize_image_grayscale, image_histogram_equalization
 
 
-class SegmentationUMAP Visualization:
-    def __init__(self, UMAP _model, segmentation_model):
-        self.UMAP _model = UMAP _model
+class SegmentationUMAPVisualization:
+    def __init__(self, UMAP_model, segmentation_model):
+        self.UMAP_model = UMAP_model
         self.segmentation_model = segmentation_model
         self.k = self.segmentation_model.k
 
     def predict(self, img):
-        UMAP _1d = self.UMAP _model.predict(img)[:, :, 0]
+        UMAP_1d = self.UMAP_model.predict(img)[:, :, 0]
         self.segmentation = self.segmentation_model.predict(img)
-        return self.segmentation, UMAP _1d
+        return self.segmentation, UMAP_1d
+    
+    def __call__(self, img, color_scheme_per_region):
+        segmentation, umap = self.predict(img)
+        return self.segment_visualization(img, segmentation, umap, roi_mask=None, color_scheme_per_region=color_scheme_per_region)[-1]
+
+    def visualize(self, img, color_scheme_per_region):
+        segmentation, avgmz = self.predict(img)
+        return self.segment_visualization(img, segmentation, avgmz, roi_mask=None, color_scheme_per_region=color_scheme_per_region)
+
 
     def get_subsegmentation(
             self,
             img,
-            roi_mask,
             segmentation,
-            UMAP _1d,
+            UMAP_1d,
+            roi_mask,
             number_of_bins_for_comparison):
         segmentation_argmax = segmentation.argmax(axis=0)
 
@@ -30,14 +39,14 @@ class SegmentationUMAP Visualization:
         num_regions = len(regions)
         sub_segmentation = np.zeros(
             shape=segmentation_argmax.shape[:2], dtype=np.int32)
-        region_UMAP s = np.zeros(
+        region_UMAPs = np.zeros(
             shape=segmentation_argmax.shape,
             dtype=np.float32)
 
         for region in regions:
             region_mask = np.uint8(segmentation_argmax == region) * 255
             region_mask[roi_mask == 0] = 0
-            region_UMAP  = UMAP _1d.copy()
+            region_UMAP  = UMAP_1d.copy()
             region_UMAP [region_mask == 0] = 0
 
             region_UMAP  = normalize_image_grayscale(
@@ -45,19 +54,19 @@ class SegmentationUMAP Visualization:
             num_bins = 2048
             region_UMAP  = image_histogram_equalization(
                 region_UMAP , region_mask, num_bins) / (num_bins - 1)
-            region_UMAP s[region_mask > 0] = region_UMAP [region_mask > 0]
+            region_UMAPs[region_mask > 0] = region_UMAP [region_mask > 0]
 
             bins = np.linspace(0, 1, number_of_bins_for_comparison)
 
             digitized = np.digitize(region_UMAP , bins)
             sub_segmentation[region_mask > 0] = digitized[region_mask >
                                                           0] + (number_of_bins_for_comparison + 2) * region
-        return sub_segmentation, region_UMAP s
+        return sub_segmentation, region_UMAPs
 
     def segment_visualization(self,
                               img,
                               segmentation,
-                              UMAP _1d,
+                              UMAP_1d,
                               roi_mask,
                               color_scheme_per_region,
                               method='spatial_norm',
@@ -67,8 +76,8 @@ class SegmentationUMAP Visualization:
         segmentation, _ = self.segmentation_model.segment_visualization(
             img, segmentation, method=method, region_factors=region_factors)
         segmentation_argmax = segmentation.argmax(axis=0)
-        sub_segmentation, region_UMAP s = self.get_subsegmentation(
-            img, roi_mask, segmentation, UMAP _1d, number_of_bins_for_comparison)
+        sub_segmentation, region_UMAPs = self.get_subsegmentation(
+            img, segmentation, UMAP_1d, roi_mask, number_of_bins_for_comparison)
         regions = np.unique(segmentation_argmax)
         # Create the colorful image
         visualizations = []
@@ -78,7 +87,7 @@ class SegmentationUMAP Visualization:
             if roi_mask is not None:
                 region_mask[roi_mask == 0] = 0
 
-            region_UMAP  = region_UMAP s.copy()
+            region_UMAP  = region_UMAPs.copy()
             region_UMAP  = np.uint8(region_UMAP  * 255)
             region_visualization = cv2.applyColorMap(
                 region_UMAP , cmapy.cmap(color_scheme_per_region[region]))

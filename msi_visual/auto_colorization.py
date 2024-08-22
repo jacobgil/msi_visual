@@ -5,7 +5,7 @@ class AutoColorizeRandom:
     def __init__(self, color_schemes):
         self.color_schemes = color_schemes
 
-    def colorize(self, img, segmentation, heatmap, ratio, k):
+    def colorize(self, ratio, k):
         num_low = int(ratio * k)
         colors_low = np.random.choice(self.color_schemes["low"], num_low)
         colors_high = np.random.choice(self.color_schemes["high"], k - num_low)

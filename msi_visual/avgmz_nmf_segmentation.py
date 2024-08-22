@@ -14,13 +14,11 @@ class SegmentationAvgMZVisualization:
         if img.dtype != np.float32:
             img = np.float32(img)
 
-        processed_img = img / img.sum(axis=-1)[:, :, None]
-
         self.segmentation = self.segmentation_model.predict(img)
 
-        mz = np.arange(processed_img.shape[-1])
+        mz = np.arange(img.shape[-1])
         mz = mz[None, None, :]
-        avgmz = (processed_img * mz).mean(axis=-1)
+        avgmz = (img * mz).mean(axis=-1)
         return self.segmentation, avgmz
 
     def get_subsegmentation(
@@ -60,7 +58,11 @@ class SegmentationAvgMZVisualization:
                                                           0] + (number_of_bins_for_comparison + 2) * region
         return sub_segmentation, region_heatmaps
 
-    def visualize_factorization(self,
+    def visualize(self, img, color_scheme_per_region):
+        segmentation, avgmz = self.predict(img)
+        return self.segment_visualization(img, segmentation, avgmz, roi_mask=None, color_scheme_per_region=color_scheme_per_region)
+
+    def segment_visualization(self,
                                 img,
                                 segmentation,
                                 avgmz,
@@ -73,7 +75,7 @@ class SegmentationAvgMZVisualization:
         segmentation, _ = self.segmentation_model.segment_visualization(
             img, segmentation, method=method, region_factors=region_factors)
         segmentation_argmax = segmentation.argmax(axis=0)
-        sub_segmentation, region_UMAP s = self.get_subsegmentation(
+        sub_segmentation, region_UMAPs = self.get_subsegmentation(
             img, roi_mask, segmentation, avgmz, number_of_bins_for_comparison)
         regions = np.unique(segmentation_argmax)
         # Create the colorful image
@@ -84,14 +86,19 @@ class SegmentationAvgMZVisualization:
             if roi_mask is not None:
                 region_mask[roi_mask == 0] = 0
 
-            region_UMAP  = region_UMAP s.copy()
+            region_UMAP  = region_UMAPs.copy()
             region_UMAP  = np.uint8(region_UMAP  * 255)
+
             region_visualization = cv2.applyColorMap(
                 region_UMAP , cmapy.cmap(color_scheme_per_region[region]))
+
             region_visualization = region_visualization[:, :, ::-1]
             region_visualization[region_mask == 0] = 0
             visualizations.append(region_visualization)
 
         visualizations = np.array(visualizations)
         visualizations = visualizations.max(axis=0)
+
+        visualizations[img.max(axis=-1) == 0] = 0
+
         return segmentation, sub_segmentation, visualizations

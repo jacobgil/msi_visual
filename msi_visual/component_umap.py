@@ -29,7 +29,7 @@ def get_UMAP (results, colors_for_components):
     # normalized = normalized / (1e-5 + np.std(normalized, axis = 0))
     # all_embeddings = normalized
     plt.gca().set_aspect("equal", "datalim")
-    UMAP _embeddings = UMAP .UMAP (
+    UMAP_embeddings = UMAP.UMAP (
         n_neighbors=5, min_dist=0.95, verbose=True
     ).fit_transform(normalized)
     count = len(all_labels)
@@ -37,7 +37,7 @@ def get_UMAP (results, colors_for_components):
         indices = [
             i for i in range(
                 len(all_markers)) if all_markers[i] == marker]
-        sc = plt.scatter(*UMAP _embeddings[indices, :].T,
+        sc = plt.scatter(*UMAP_embeddings[indices, :].T,
                          s=30,
                          c=[all_colors[i] for i in indices],
                          marker=marker,
