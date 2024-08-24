@@ -5,11 +5,8 @@ from collections import defaultdict
 from scipy.stats import entropy
 
 
-def segment_visualization(img,
-                          visualization):
-
-    number_of_bins_for_comparison = 5
-    bins = np.linspace(0, 1, number_of_bins_for_comparison)
+def segment_visualization(visualization: np.ndarray, number_of_bins_for_comparison: int = 5):
+    bins = np.linspace(0, 255, number_of_bins_for_comparison)
 
     digitized_a = np.digitize(visualization[:, :, 0], bins)
     digitized_b = np.digitize(visualization[:, :, 1], bins)
@@ -18,7 +15,7 @@ def segment_visualization(img,
     digitized = digitized_a * number_of_bins_for_comparison * \
         number_of_bins_for_comparison + digitized_b * number_of_bins_for_comparison + digitized_c
 
-    return digitized, np.uint8(255 * visualization)
+    return digitized
 
 
 def normalize(visualiation, low=0.001, high=99.999):

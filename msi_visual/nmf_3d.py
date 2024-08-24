@@ -16,6 +16,9 @@ class NMF3D:
         self.end_bin = end_bin
         self.max_iter = max_iter
 
+    def __repr__(self):
+        return f"NMF-3D max_iter={self.max_iter}"
+
     def fit(self, images):
         if self.end_bin is None:
             self.end_bin = images[0].shape[-1]
@@ -62,7 +65,7 @@ class NMF3D:
                               visualization,
                               method='spatial_norm'):
 
-        return segment_visualization(img, visualization)
+        return segment_visualization(visualization)
 
     def save(self, path):
         joblib.dump(self, path)

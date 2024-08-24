@@ -42,7 +42,7 @@ class UMAPVirtualStain:
                               visualization,
                               method='spatial_norm'):
 
-        return segment_visualization(img, visualization)
+        return segment_visualization(visualization)
 
 
 class MSIParametricUMAP :

@@ -4,71 +4,67 @@ import cv2
 from msi_visual.normalization import spatial_total_ion_count, total_ion_count, median_ion
 
 
-def top3(img, equalize=False):
-    normalized = img
-    sorted = np.sort(normalized, axis=-1)
+class TOP3:
+    def __init__(self, low=99.9):
+        self.low = low
 
-    p0 = sorted[:, :, -1]
-    p1 = sorted[:, :, -2]
-    p2 = sorted[:, :, -3]
-    a = p0
-    a = a / np.percentile(a, 99.9)
-    a[a > 1] = 1
-    b = p1
-    b = b / np.percentile(b, 99.9)
-    b[b > 1] = 1
-    c = p2
-    c = c / np.percentile(c, 99.9)
-    c[c > 1] = 1
+    def __repr__(self):
+        return f"TOP-3 Intensities. low={self.low}"
 
-    if equalize:
-        visualization = cv2.merge([cv2.equalizeHist(np.uint8(
-            255 * a)), cv2.equalizeHist(np.uint8(255 * b)), cv2.equalizeHist(np.uint8(255 * c))])
-    else:
-        visualization = cv2.merge(
-            [(np.uint8(255 * a)), (np.uint8(255 * b)), (np.uint8(255 * c))])
-    visualization = cv2.cvtColor(visualization, cv2.COLOR_LAB2RGB)
-    visualization[img.max(axis=-1) == 0] = 0
-    return visualization
+    def __call__(self, img):
+        sorted = np.sort(img, axis=-1)
+        p0 = sorted[:, :, -1]
+        p1 = sorted[:, :, -2]
+        p2 = sorted[:, :, -3]
+        a = p0
+        a = a / np.percentile(a, 99.9)
+        a[a > 1] = 1
+        b = p1
+        b = b / np.percentile(b, 99.9)
+        b[b > 1] = 1
+        c = p2
+        c = c / np.percentile(c, 99.9)
+        c[c > 1] = 1
+
+        visualization = cv2.merge([(np.uint8(255 * a)), (np.uint8(255 * b)), (np.uint8(255 * c))])
+        visualization = cv2.cvtColor(visualization, cv2.COLOR_LAB2RGB)
+        visualization[img.max(axis=-1) == 0] = 0
+        return visualization
+
+class PercentileRatio:
+    def __init__(self, percentiles=[99.99, 99.9, 99.9, 99, 98, 85]):
+        self.percentiles = percentiles
+
+    def __repr__(self):
+        return "Percentile Ratio"
+
+    def __call__(self, img):
+        sorted_image = np.sort(img, axis=-1)
+        N = sorted_image.shape[-1]
+
+        p0 = sorted_image[:, :, int(N * self.percentiles[0] / 100)]
+        p1 = sorted_image[:, :, int(N * self.percentiles[1] / 100)]
+        p2 = sorted_image[:, :, int(N * self.percentiles[2] / 100)]
+        p3 = sorted_image[:, :, int(N * self.percentiles[3] / 100)]
+        p4 = sorted_image[:, :, int(N * self.percentiles[4] / 100)]
+        p5 = sorted_image[:, :, int(N * self.percentiles[5] / 100)]
+
+        a = p0 / (1e-5 + p1)
+        a = a / np.percentile(a, 99.9)
+        a[a > 1] = 1
+
+        b = p2 / (1e-5 + p3)
+        b = b / np.percentile(b, 99.9)
+        b[b > 1] = 1
+
+        c = p4 / (1e-5 + p5)
+        c = c / np.percentile(c, 99.9)
+        c[c > 1] = 1
 
 
-def percentile_ratio_rgb(img,
-                         percentiles=[99.99, 99.9, 99.9, 99, 98, 85],
-                         equalize=False):
-
-    sorted_normalized = np.sort(img, axis=-1)
-    N = sorted_normalized.shape[-1]
-
-    p0 = sorted_normalized[:, :, int(N * percentiles[0] / 100)]
-    p1 = sorted_normalized[:, :, int(N * percentiles[1] / 100)]
-    p2 = sorted_normalized[:, :, int(N * percentiles[2] / 100)]
-    p3 = sorted_normalized[:, :, int(N * percentiles[3] / 100)]
-    p4 = sorted_normalized[:, :, int(N * percentiles[4] / 100)]
-    p5 = sorted_normalized[:, :, int(N * percentiles[5] / 100)]
-
-    a = p0 / (1e-5 + p1)
-    a = a / np.percentile(a, 99.9)
-    a[a > 1] = 1
-
-    b = p2 / (1e-5 + p3)
-    b = b / np.percentile(b, 99.9)
-    b[b > 1] = 1
-
-    c = p4 / (1e-5 + p5)
-    c = c / np.percentile(c, 99.9)
-    c[c > 1] = 1
-
-    if equalize:
-        visualization = cv2.merge([cv2.equalizeHist(np.uint8(255 * a)),
-                                   cv2.equalizeHist(np.uint8(255 * b)),
-                                   cv2.equalizeHist(np.uint8(255 * c))])
-
-    else:
         visualization = cv2.merge([(np.uint8(255 * a)),
-                                   (np.uint8(255 * b)),
-                                   (np.uint8(255 * c))])
-
-    visualization = cv2.cvtColor(visualization, cv2.COLOR_LAB2LRGB)
-
-    visualization[img.max(axis=-1) == 0] = 0
-    return visualization
+                                    (np.uint8(255 * b)),
+                                    (np.uint8(255 * c))])
+        visualization = cv2.cvtColor(visualization, cv2.COLOR_LAB2LRGB)
+        visualization[img.max(axis=-1) == 0] = 0
+        return visualization

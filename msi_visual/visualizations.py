@@ -71,29 +71,6 @@ def show_factorization_on_image(img: np.ndarray,
     mask = np.sum(np.float32(masks), axis=0)
     result = img * image_weight + mask * (1 - image_weight)
     result = np.uint8(result * 255)
-
-    if concept_labels is not None:
-        px = 1 / plt.rcParams['figure.dpi']  # pixel in inches
-        fig = plt.figure(figsize=(result.shape[1] * px, result.shape[0] * px))
-        plt.rcParams['legend.fontsize'] = int(
-            14 * result.shape[0] / 256 / max(1, n_components / 6))
-        lw = 5 * result.shape[0] / 256
-        lines = [Line2D([0], [0], color=colors[i], lw=lw)
-                 for i in range(n_components)]
-        plt.legend(lines,
-                   concept_labels,
-                   mode="expand",
-                   fancybox=True,
-                   shadow=True)
-
-        plt.tight_layout(pad=0, w_pad=0, h_pad=0)
-        plt.axis('off')
-        fig.canvas.draw()
-        data = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
-        plt.close(fig=fig)
-        data = data.reshape(fig.canvas.get_width_height()[::-1] + (3,))
-        data = cv2.resize(data, (result.shape[1], result.shape[0]))
-        result = np.hstack((result, data))
     return result
 
 
@@ -128,7 +105,7 @@ def visualizations_from_explanations(
         normalized_by_global_percentile = set_region_importance(
             normalized_by_global_percentile, factors)
 
-    print(shape, "shape")
+    
     spatial_sum_visualization = show_factorization_on_image(
         np.zeros(
             shape=(
@@ -152,233 +129,41 @@ def visualizations_from_explanations(
     return spatial_sum_visualization, global_percentile_visualization, normalized_by_spatial_sum, normalized_by_global_percentile
 
 
-def analyze_region_differences(ion_image: np.ndarray,
-                               region_gray_image: np.ndarray,
-                               mzs_per_bin: int,
-                               number_of_bins=3) -> dict[float]:
-    _, bins = np.histogram(region_gray_image[:], bins=number_of_bins)
-    digitized = np.digitize(region_gray_image, bins) - 1
-    bin_values = []
-    bins = sorted(np.unique(digitized[:]))
-    for bin in bins:
-        digitized_mask = (digitized == bin)
-        digitized_mask[ion_image.max(axis=-1) == 0] = 0
-        bin_values.append(ion_image[digitized_mask > 0])
-    region_pair_aucs = {}
-    for i in range(len(bin_values)):
-        for j in range(i + 1, len(bin_values)):
-            values_a, values_b = bin_values[i], bin_values[j]
-            both = np.concatenate((values_a, values_b), axis=0)
-            peaks_a = np.percentile(values_a, 30, axis=0)
-            peaks_a, _ = find_peaks(peaks_a, height=(0.01 * 1e10, None))
-            peaks_b = np.percentile(values_b, 30, axis=0)
-            peaks_b, _ = find_peaks(peaks_b, height=(0.01 * 1e10, None))
-
-            labels = [0] * len(values_a) + [1] * len(values_b)
-            peaks = list(peaks_a) + list(peaks_b)
-            aucs = defaultdict(float)
-            full_range_aucs = defaultdict(float)
-            for mz in tqdm.tqdm(peaks):
-                auc = roc_auc_score(labels, both[:, mz])
-                auc = 2 * auc - 1
-                full_range_aucs[mz] += auc
-                mz = int(mz * mzs_per_bin / 5)
-                aucs[mz] += auc
-            region_pair_aucs[(i, j)] = (aucs, full_range_aucs)
-
-    return bins, digitized, region_pair_aucs
-
-
-def get_qr_images(
-        region_gray_image,
-        bins,
-        digitized,
-        region_pair_aucs,
-        mzs_per_bin,
-        color_scheme):
-    qr_images = []
-    qr_cols, qr_rows = int(1 + (5005 * mzs_per_bin / 5)
-                           ** 0.5), int(1 + (5005 * mzs_per_bin / 5)**0.5)
-    qr_cell_size = 10
-
-    for (i, j), (aucs, _) in region_pair_aucs.items():
-        color_b = cv2.applyColorMap(np.uint8(np.ones((qr_cell_size,
-                                                      qr_cell_size)) * region_gray_image[digitized == bins[j]].mean()),
-                                    cmapy.cmap(color_scheme))[:,
-                                                              :,
-                                                              ::-1]
-        color_a = cv2.applyColorMap(np.uint8(np.ones((qr_cell_size,
-                                                      qr_cell_size)) * region_gray_image[digitized == bins[i]].mean()),
-                                    cmapy.cmap(color_scheme))[:,
-                                                              :,
-                                                              ::-1]
-        qr_image = np.zeros(
-            (qr_rows *
-             qr_cell_size +
-             qr_cell_size,
-             qr_cols *
-             qr_cell_size +
-             qr_cell_size,
-             3),
-            dtype=np.uint8)
-
-        for mz, auc in aucs.items():
-            if auc > 0:
-                color = color_b.copy()
-            else:
-                color = color_a.copy()
-            auc = abs(auc)
-            auc = auc**3
-            lab = cv2.cvtColor(color, cv2.COLOR_RGB2Lab)
-            l, a, b = cv2.split(lab)
-            l = np.uint8(l * auc)
-            lab = cv2.merge([l, a, b])
-            color = cv2.cvtColor(lab, cv2.COLOR_Lab2RGB)
-            row, col = int(mz / qr_rows), int(mz % qr_cols)
-            qr_image[row *
-                     qr_cell_size: row *
-                     qr_cell_size +
-                     qr_cell_size, col *
-                     qr_cell_size: col *
-                     qr_cell_size +
-                     qr_cell_size, :] = color
-        qr_image[-qr_cell_size:, -2 *
-                 qr_cell_size:] = np.hstack((color_a, color_b))
-        qr_images.append(qr_image)
-    return qr_images
-
-
-def get_difference_summary_table(
-        region_gray_image,
-        digitized,
-        bins,
-        top_mzs,
-        color_scheme):
-    rows = []
-    for i, j in top_mzs:
-        color_b = cv2.applyColorMap(np.uint8(np.ones(
-            (100, 100)) * region_gray_image[digitized == bins[j]].mean()), cmapy.cmap(color_scheme))[:, :, ::-1]
-        color_a = cv2.applyColorMap(np.uint8(np.ones(
-            (100, 100)) * region_gray_image[digitized == bins[i]].mean()), cmapy.cmap(color_scheme))[:, :, ::-1]
-        combination = np.hstack((color_a, color_b))
-        cells = []
-        top_pos_auc = {k: v for k, v in sorted(
-            top_mzs[i, j].items(), key=lambda item: item[1])[::-1][:10]}
-        top_mzs_from_both = {}
-        top_neg_auc = {k: v for k, v in sorted(
-            top_mzs[i, j].items(), key=lambda item: -item[1])[::-1][:10]}
-
-        for k, v in top_neg_auc.items():
-            if v < 0:
-                top_mzs_from_both[k] = v
-
-        for k, v in top_pos_auc.items():
-            if v > 0:
-                top_mzs_from_both[k] = v
-
-        for mz, auc in top_mzs_from_both.items():
-            if abs(auc) < 0.7:
-                continue
-            mz = 300 + mz / 5
-            cell = np.ones((100, 100, 3), dtype=np.uint8) * 255
-
-            if auc > 0:
-                icon = cv2.applyColorMap(np.uint8(np.ones(
-                    (8, 8)) * region_gray_image[digitized == bins[j]].mean()), cmapy.cmap(color_scheme))[:, :, ::-1]
-            else:
-                icon = cv2.applyColorMap(np.uint8(np.ones(
-                    (8, 8)) * region_gray_image[digitized == bins[i]].mean()), cmapy.cmap(color_scheme))[:, :, ::-1]
-
-            cell[20: 20 + icon.shape[0], 10: 10 + icon.shape[1], :] = icon
-
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            bottomLeftCornerOfText = (10, 50)
-            fontScale = 0.5
-            fontColor = (0, 0, 00)
-            thickness = 1
-            lineType = 1
-            cell = cv2.putText(cell, f"{mz:.3f}",
-                               bottomLeftCornerOfText,
-                               font,
-                               fontScale,
-                               fontColor,
-                               thickness,
-                               lineType)
-            cells.append(cell)
-        if len(cells) < 20:
-            for _ in range(20 - len(cells)):
-                cells.append(np.ones((100, 100, 3), dtype=np.uint8) * 255)
-
-        cells = np.hstack(cells)
-        cells = np.hstack((combination, cells))
-        rows.append(cells)
-    rows = np.vstack(rows)
-    return rows
-
-
-def create_ion_image(img, mz_index):
+def create_ion_img(img, mz_index):
     ion = img[:, :, mz_index]
     ion = ion / np.percentile(ion[:], 99)
     ion[ion > 1] = 1
-    ion = np.uint8(255 * ion)
-    ion = cv2.applyColorMap(ion, cmapy.cmap('viridis'))[:, :, ::-1]
     return ion
 
+def create_ion_heatmap(img, mz_index):
+    raw_ion = create_ion_img(img, mz_index)
+    ion = np.uint8(255 * raw_ion)
+    ion = cv2.applyColorMap(ion, cmapy.cmap('viridis'))[:, :, ::-1].copy()
+    return ion
 
 def get_mask(visualization, segmentation_mask, x, y):
     label = segmentation_mask[y, x]
-
     result = visualization.copy()
     mask = np.uint8(255 * (segmentation_mask == label))
     result[mask == 0] = 0
     return result
 
 
-class ObjectsComparison:
-    def __init__(
-            self,
-            mz_image,
-            segmentation_mask,
-            visualization,
-            start_mz=300,
-            bins_per_mz=5):
-        self.mz_image = norm_funtion(mz_image)
-        self.segmentation_mask = segmentation_mask
-        self.visualization = visualization
-        self.start_mz = start_mz
-        self.bins_per_mz = bins_per_mz
-
-    def compare_point(self, point, size=3):
-        x, y = point
-        mask = np.zeros(
-            (self.mz_image.shape[0],
-             self.mz_image.shape[1]),
-            dtype=np.uint8)
-        mask = cv2.circle((mask, (x, y), size, 255, -1))
-        mask[y, x] = 0
-
-        values_a = self.mz_image[y, x]
-        values_b = self.mz_image[mask > 0]
-
 
 class RegionComparison:
     def __init__(
             self,
-            mz_image,
-            segmentation_mask,
-            visualization,
-            mzs,
-            bins_per_mz=5):
-        self.mz_image = mz_image
-        self.segmentation_mask = segmentation_mask
-        self.visualization = visualization
+            img,
+            mzs):
+        self.img = img
         self.mzs = mzs
-        self.bins_per_mz = bins_per_mz
 
     def ranking_comparison(self, mask_a, mask_b, peak_minimum=0):
-        values_a = self.mz_image[mask_a > 0]
-        values_b = self.mz_image[mask_b > 0]
+        values_a = self.img[mask_a > 0]
+        values_b = self.img[mask_b > 0]
         t0 = time.time()
+
+        #peaks = list(range(self.img.shape[-1]))
 
         peaks_a30, _ = find_peaks(
             np.percentile(
@@ -392,8 +177,19 @@ class RegionComparison:
         peaks = list(peaks_a30) + list(peaks_b30)
         peaks = sorted(list(set(peaks)))
 
+        # ion_images = self.img[:, :, peaks]
+        # ion_images = ion_images / np.max(ion_images, axis=(0, 1))[None, None, :]
+        # ion_images_a = ion_images[mask_a > 0]
+        # ion_images_b = ion_images[mask_b > 0]
+        # score_a = ion_images_a.mean(axis=0)
+        # score_b = ion_images_b.mean(axis=0)
+        # score = score_a / (1e-5 + score_b)
+        # result = {self.mzs[peaks[i]] : score[i] for i in range(len(peaks))}
+
+
+
         result = scipy.stats.mannwhitneyu(
-            values_b[:, peaks], values_a[:, peaks], keepdims=True)
+            values_a[:, peaks], values_b[:, peaks], keepdims=True)
         us = result.statistic[0, :]
         p = result.pvalue[0, :]
         print("u test took", time.time() - t0)
@@ -401,7 +197,7 @@ class RegionComparison:
         result = us / (values_a.shape[0] * values_b.shape[0])
         result = dict(zip(range(len(result)), result))
 
-        result = {peaks[index]: u for index,
+        result = {self.mzs[peaks[index]]: u for index,
                   u in result.items() if p[index] < 0.05}
         return result
 
@@ -462,13 +258,6 @@ class RegionComparison:
         label_a = self.segmentation_mask[y1, x1]
         label_b = self.segmentation_mask[y2, x2]
         return self.compare_two_labels(label_a, label_b), label_a, label_b
-
-    @lru_cache()
-    def compare_two_labels(self, label_a, label_b):
-        mask_a = np.uint8(255 * (self.segmentation_mask == label_a))
-        mask_b = np.uint8(255 * (self.segmentation_mask == label_b))
-        aucs = self.ranking_comparison(mask_a, mask_b)
-        return aucs, mask_a, mask_b
 
     def visualize_comparison_between_regions(self, point_a, point_b):
         (aucs, mask_a, mask_b), label_a, label_b = self.compare_two_regions(

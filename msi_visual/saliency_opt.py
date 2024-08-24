@@ -6,7 +6,7 @@ import tqdm
 import torchsort
 import cv2
 
-from msi_visual.percentile_ratio import top3
+from msi_visual.percentile_ratio import TOP3
 from sklearn.cluster import KMeans, kmeans_plusplus
 
 
@@ -26,42 +26,45 @@ class SaliencyOptimization:
         self.init = init
         self.similarity_reg = similarity_reg
 
+    def __repr__(self):
+        return f"Saliency Optimization: num_epochs: {self.num_epochs} regularization_strength: {self.regularization_strength} \
+            sampling: {self.sampling} number_of_points:{self.number_of_points}"
 
-def get_reference_points(self, data, Np):
-    """Reduces (NxD) data matrix from N to Np data points.
+    def get_reference_points(self, data, Np):
+        """Reduces (NxD) data matrix from N to Np data points.
 
-    Args:
-        data: ndarray of shape [N, D]
-        Np: number of data points in the coreset
-    Returns:
-        coreset: ndarray of shape [Np, D]
-        weights: 1darray of shape [Np, 1]
-    """
-    N = data.shape[0]
-    D = data.shape[1]
-    method = self.sampling
+        Args:
+            data: ndarray of shape [N, D]
+            Np: number of data points in the coreset
+        Returns:
+            coreset: ndarray of shape [Np, D]
+            weights: 1darray of shape [Np, 1]
+        """
+        N = data.shape[0]
+        D = data.shape[1]
+        method = self.sampling
 
-    if method == "random":
-        return np.random.choice(list(range(N), number_of_points))
+        if method == "random":
+            return np.random.choice(list(range(N), number_of_points))
 
-    elif method == "kmeans++":
-        _, indices = kmeans_plusplus(data, n_clusters=Np, random_state=0)
-        return indices
+        elif method == "kmeans++":
+            _, indices = kmeans_plusplus(data, n_clusters=Np, random_state=0)
+            return indices
 
-    elif method == "kmeans":
-        kmeans = KMeans(n_clusters=Np, random_state=0, n_init="auto").fit(data)
-        return pairwise_distances(data, kmeans.cluster_centers_).argmin(axis=0)
+        elif method == "kmeans":
+            kmeans = KMeans(n_clusters=Np, random_state=0, n_init="auto").fit(data)
+            return pairwise_distances(data, kmeans.cluster_centers_).argmin(axis=0)
 
-    elif method == "coreset":
-        # compute mean
-        u = np.mean(data, axis=0)
-        # compute proposal distribution
-        q = np.linalg.norm(data - u, axis=1)**2
-        sum = np.sum(q)
-        d = q / sum
-        q = 0.5 * (d + 1.0 / N)
-        # get sample and fill coreset
-        return np.random.choice(N, Np, p=q)
+        elif method == "coreset":
+            # compute mean
+            u = np.mean(data, axis=0)
+            # compute proposal distribution
+            q = np.linalg.norm(data - u, axis=1)**2
+            sum = np.sum(q)
+            d = q / sum
+            q = 0.5 * (d + 1.0 / N)
+            # get sample and fill coreset
+            return np.random.choice(N, Np, p=q)
 
     def set_image(self, img):
         self.img = img
@@ -80,7 +83,7 @@ def get_reference_points(self, data, Np):
                 size=(self.reshaped.shape[0], 3)) * 10 - 5
 
         elif self.init == "top3":
-            self.visualization = torch.from_numpy(np.float32(top3(img)) / 255)
+            self.visualization = torch.from_numpy(np.float32(TOP3()(img)) / 255)
             self.visualization = self.visualization.reshape(-1, 3)
         else:
             raise Exception(f"{self.init} not supported as initialization")
@@ -93,7 +96,7 @@ def get_reference_points(self, data, Np):
 
         self.visualization.requires_grad = True
         self.optim = torch.optim.Adam([self.visualization], lr=1.0)
-        delta = 0.0 * len(self.indices)
+        delta = 0.0
 
         self.loss_saliency = torch.nn.MarginRankingLoss(
             margin=-delta, reduction='none')

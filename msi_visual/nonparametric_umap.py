@@ -40,6 +40,9 @@ class MSINonParametricUMAP:
         self.n_neighbors = n_neighbors
         self.metric = metric
 
+    def __repr__(self):
+        return f"MSINonParametricUMAP min_dist: {self.min_dist} n_neighbors: {self.n_neighbors} metric: {self.metric}"
+
     def predict(self, img):
         vector = img.reshape(-1, img.shape[-1])[:, self.start_bin:self.end_bin]
         output = UMAP(

@@ -181,11 +181,11 @@ if __name__ == '__main__':
     mz_plots = [result["mz_plots"] for result in results]
     diff_tables = [result["diff_table"] for result in results]
 
-    UMAP _plot = get_UMAP (results, colors)
+    UMAP_plot = get_UMAP (results, colors)
 
     images_for_pdf.extend(visualizations)
     images_for_pdf.extend(sub_segmentations)
-    images_for_pdf.append(UMAP _plot)
+    images_for_pdf.append(UMAP_plot)
     images_for_pdf.extend(mz_plots)
     images_for_pdf.extend(diff_tables)
 
