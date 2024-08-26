@@ -15,6 +15,10 @@ from msi_visual.extraction import get_extraction_mz_list
 from msi_visual.visualizations import get_mask
 from msi_visual.utils import segment_visualization
 from dataclasses import dataclass
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
+
 @dataclass
 class ClickData:
     visualiation_path: str
@@ -316,7 +320,23 @@ def get_2d_spectrum(
                     qr_cell_size: col *
                     qr_cell_size +
                     qr_cell_size, :] = color
-    return qr_image[:, :, ::-1]
+
+    fig = plt.figure()
+    plt.rcParams['text.color'] = 'white'
+    fig.patch.set_facecolor("#01224d")
+    qr_cols, qr_rows = int(1 + (len(extraction_mzs))** 0.5), int(1 + (len(extraction_mzs))** 0.5)
+    qr_cell_size = 10
+    spec = qr_image[:, :, ::-1]
+    plt.imshow(spec)
+    plt.annotate(f"m/z {min(extraction_mzs):.1f}", (0, 20))
+    plt.annotate(f"m/z {max(extraction_mzs)}", (0.8 *spec.shape[1], 0.95*spec.shape[0]))
+    plt.tight_layout()
+    plt.axis('off')
+    fig.canvas.draw()
+    data = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
+    data = data.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+    data = data[20:-55, 110:-110]
+    return data
 
 def get_aggregated_ion_image(stats, data, extraction_mzs):
     mzs = list(stats.keys())
