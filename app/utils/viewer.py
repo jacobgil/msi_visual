@@ -203,6 +203,7 @@ def show_ion_images(mzs):
             aggregated = aggregated / np.max(aggregated)
             aggregated = np.uint8(aggregated * 255)
             aggregated = cv2.applyColorMap(aggregated, cmapy.cmap('viridis'))[:, :, ::-1].copy()
+            aggregated = aggregated.transpose().transpose(1, 2, 0)[::-1, :, :]
             st.image(aggregated)
 
 
