@@ -342,30 +342,17 @@ def get_aggregated_ion_image(stats, data, extraction_mzs):
     mzs = list(stats.keys())
     mz_indices = [extraction_mzs.index(mz) for mz in mzs]
     scores = np.float32([stats[mz] for mz in mzs])
-
-    # scores[scores < 0.8] = 0
-    # scores = scores ** 4
-    # scores = scores / np.max(scores)    
-    # ion = data / np.max(data, axis=(0, 1))
-    # ion = (ion[:, :, mz_indices] * scores[None, None, :]).sum(axis=-1)
-    # ion = ion / np.max(ion)
-    # ion = np.uint8(255 * ion)
-    # ion = cv2.applyColorMap(ion, cmapy.cmap("cividis"))[:, :, ::-1]
-    # return ion
     scores = np.float32([stats[mz] for mz in mzs])
     mz_indices = np.int32([extraction_mzs.index(mz) for mz in mzs])
     mz_indices = mz_indices[np.argsort(scores)[-5 : ]]
 
     top5 = data / np.max(data, axis=(0, 1))
     top5 = top5[:, :, mz_indices].mean(axis=-1)
-    
-    #top5 = top5 / np.max(top5)
     top5 = top5 / np.percentile(top5, 99)
     top5[top5 > 1] = 1
     top5 = np.uint8(255 * top5)
     top5 = cv2.applyColorMap(top5, cmapy.cmap("cividis"))[:, :, ::-1]
     return top5
-    #return np.hstack((ion, top5))
 
 
 def get_mz_value_img(stats, height, top=5):
@@ -376,17 +363,7 @@ def get_mz_value_img(stats, height, top=5):
     loc = (cell.shape[1]//2-50, cell.shape[0]//2)
     fontScale = 1.0
     fontColor = (255, 255, 255)
-    thickness = 1
     lineType = 1
-    # cell = cv2.putText(cell, f"Top m/z's",
-    #                     loc,
-    #                     font,
-    #                     fontScale,
-    #                     fontColor,
-    #                     thickness,
-    #                     lineType)
-
-    fontScale = 1
     thickness = 3
     cells = []
     for mz in mzs:
@@ -449,10 +426,6 @@ def display_mzs(img, stats, color_a, color_b, extraction_mzs, threshold=1.0, num
         neg_aucs = {
             mz: stats[mz] for mz in stats}
 
-
-    #st.write(str({mz: float(f"{stats[mz]:.3f}") for mz in pos_aucs}))   
-
-
     pos_aucs_keys = sorted(list(pos_aucs.keys()),
                            key=lambda x: pos_aucs[x])[-num_mzs:]
     neg_aucs_keys = sorted(list(neg_aucs.keys()),
@@ -472,11 +445,6 @@ def display_mzs(img, stats, color_a, color_b, extraction_mzs, threshold=1.0, num
             reverse=True)
         N = 8
         num_rows = math.ceil(len(sorted_indices) / N)
-
-
-        #mzs = ",".join([str(mz) for mz in sorted_indices])
-
-
         for row in range(num_rows):
             indices = sorted_indices[N * row: N * row + N]
             indices = indices + [None] * (N - len(indices))
@@ -498,6 +466,9 @@ def display_mzs(img, stats, color_a, color_b, extraction_mzs, threshold=1.0, num
                         args=[img,
                             mz,
                             extraction_mzs])
+        
+        mzs = ",".join([str(mz) for mz in sorted_indices])
+        st.write(mzs)
 
             
     with st.sidebar:
