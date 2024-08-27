@@ -37,23 +37,6 @@ def get_args():
     args = parser.parse_args()
     return args
 
-
-def _bisect_spectrum(mzs, mz_value, tol):
-    ix_l, ix_u = bisect_left(
-        mzs, mz_value - tol), bisect_right(mzs, mz_value + tol) - 1
-    if ix_l == len(mzs):
-        return len(mzs), len(mzs)
-    if ix_u < 1:
-        return 0, 0
-    if ix_u == len(mzs):
-        ix_u -= 1
-    if mzs[ix_l] < (mz_value - tol):
-        ix_l += 1
-    if mzs[ix_u] > (mz_value + tol):
-        ix_u -= 1
-    return ix_l, ix_u
-
-
 def get_image(
         path: str,
         output_path: str,
@@ -119,7 +102,7 @@ def get_image(
             img[y, x, bins] = img[y, x, bins] + intensities
 
     mzs = np.arange(min_mz, max_mz + 1, 1.0/bins_per_mz)
-    print("shapes", len(mzs), img.shape[-1])
+    
 
     indices = list(range(img.shape[-1]))
     if nonzero:

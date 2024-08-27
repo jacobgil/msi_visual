@@ -30,6 +30,7 @@ def get_extraction(cache_path='extraction.cache'):
             'Extraction folder',
             extraction_folders_keys,
             index=extraction_folders_keys_index)
+        
         if selected_extraction:
             extraction_folder = extraction_folders[selected_extraction]
             region_list = get_files_from_folder(extraction_folder)
@@ -37,9 +38,6 @@ def get_extraction(cache_path='extraction.cache'):
                 default = None
             else:
                 default = cache['Regions to include']
-                if False in [
-                        r in region_list for r in cache['Regions to include']]:
-                    default = None
 
             regions = st.multiselect(
                 'Regions to include', region_list, default=default)

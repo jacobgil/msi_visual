@@ -1,6 +1,8 @@
 import streamlit as st
 import numpy as np
 import cv2
+import os
+import joblib
 from collections import defaultdict
 import cmapy
 import importlib
@@ -15,21 +17,37 @@ def reset_clicks():
     st.session_state["clicks"] = defaultdict(list)
     st.session_state['id'] = st.session_state['id'] + 1
 
+def save_cache():
+    cache["Visualization folder"] = folder
+    cache["bins"] = bins
+    cache["Equalize Visualizations"] = equalize
+    cache["Comparison type"] = comparison
+    cache["Selection type"] = selection_type
+    joblib.dump(cache, "viewer.cache")    
+
+
 if "clicks" not in st.session_state:
     st.session_state["clicks"] = defaultdict(list)
     st.session_state["data"] = {}
     st.session_state["extraction_mzs"] = {}
     st.session_state['id'] = 0
 
+if os.path.exists("viewer.cache"):
+    cache = joblib.load("viewer.cache")
+else:
+    cache = {}
 
 viz_tab, region_tab, ion_tab, settings_tab = st.tabs(["Visualizations", "Comparisons", "M/Z", "Settings"])
 
 with settings_tab:
-    folder = st.text_input("Visualization folder")
-    bins = st.number_input("Number of segmentation bins", min_value=5, step=1, value=5)
-    equalize = st.checkbox('Equalize')
-    comparison = st.selectbox("Comparison type", ["Region with Region", "Region with all", "Point with Point"], on_change=reset_clicks)
-    selection_type = st.selectbox("Selection Type", ["Click", "Polygon"], on_change=reset_clicks)
+    folder = st.text_input("Visualization folder", value=cache.get("Visualization folder", ""))
+    bins = st.number_input("Number of RGB bins", min_value=5, step=1, value=cache.get("bins", 5))
+    equalize = st.checkbox('Equalize Visualizations', value=cache.get("Equalize", False))
+    comparison_types = ["Region with Region", "Region with all", "Point with Point"]
+    comparison = st.selectbox("Comparison type", comparison_types, on_change=reset_clicks, index=comparison_types.index(cache.get("Comparison type", "Region with all")))
+    selection_types = ["Click", "Polygon"]
+    selection_type = st.selectbox("Selection type", selection_types, on_change=reset_clicks, index=selection_types.index(cache.get("Selection type", "Polygon")))
+
     stats_method = st.selectbox("Compairson method", ["U-Test", "Difference in ROI-MEAN"], on_change=reset_clicks)
 
 
@@ -54,3 +72,5 @@ with ion_tab:
         except Exception as e:
             st.write(e)
             pass
+
+save_cache()
