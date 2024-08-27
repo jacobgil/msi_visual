@@ -36,18 +36,18 @@ dll.tims_read_pasef_msms.argtypes = [ c_uint64, POINTER(c_int64), c_uint32, MSMS
 dll.tims_read_pasef_msms.restype = c_uint32
 dll.tims_read_pasef_msms_for_frame.argtypes = [ c_uint64, c_int64, MSMS_SPECTRUM_FUNCTOR ]
 dll.tims_read_pasef_msms_for_frame.restype = c_uint32
-MSMS_Percentile RatioOFILE_SPECTRUM_FUNCTOR = CFUNCTYPE(None, c_int64, c_uint32, POINTER(c_int32))
-dll.tims_read_pasef_Percentile Ratioofile_msms.argtypes = [ c_uint64, POINTER(c_int64), c_uint32, MSMS_Percentile RatioOFILE_SPECTRUM_FUNCTOR ]
-dll.tims_read_pasef_Percentile Ratioofile_msms.restype = c_uint32
-dll.tims_read_pasef_Percentile Ratioofile_msms_for_frame.argtypes = [ c_uint64, c_int64, MSMS_Percentile RatioOFILE_SPECTRUM_FUNCTOR ]
-dll.tims_read_pasef_Percentile Ratioofile_msms_for_frame.restype = c_uint32
+MSMS_PROFILE_SPECTRUM_FUNCTOR = CFUNCTYPE(None, c_int64, c_uint32, POINTER(c_int32))
+dll.tims_read_pasef_profile_msms.argtypes = [ c_uint64, POINTER(c_int64), c_uint32, MSMS_PROFILE_SPECTRUM_FUNCTOR ]
+dll.tims_read_pasef_profile_msms.restype = c_uint32
+dll.tims_read_pasef_profile_msms_for_frame.argtypes = [ c_uint64, c_int64, MSMS_PROFILE_SPECTRUM_FUNCTOR ]
+dll.tims_read_pasef_profile_msms_for_frame.restype = c_uint32
 
 dll.tims_extract_centroided_spectrum_for_frame_v2.argtypes = [ c_uint64, c_int64, c_uint32, c_uint32, MSMS_SPECTRUM_FUNCTOR, c_void_p ]
 dll.tims_extract_centroided_spectrum_for_frame_v2.restype = c_uint32
 dll.tims_extract_centroided_spectrum_for_frame_ext.argtypes = [ c_uint64, c_int64, c_uint32, c_uint32, c_double, MSMS_SPECTRUM_FUNCTOR, c_void_p ]
 dll.tims_extract_centroided_spectrum_for_frame_ext.restype = c_uint32
-dll.tims_extract_Percentile Ratioofile_for_frame.argtypes = [ c_uint64, c_int64, c_uint32, c_uint32, MSMS_Percentile RatioOFILE_SPECTRUM_FUNCTOR, c_void_p ]
-dll.tims_extract_Percentile Ratioofile_for_frame.restype = c_uint32
+dll.tims_extract_profile_for_frame.argtypes = [ c_uint64, c_int64, c_uint32, c_uint32, MSMS_PROFILE_SPECTRUM_FUNCTOR, c_void_p ]
+dll.tims_extract_profile_for_frame.restype = c_uint32
 
 class ChromatogramJob(Structure):
     _fields_ = [
@@ -101,14 +101,14 @@ def ccsToOneOverK0ToCCSforMz(ccs, charge, mz):
     return dll.tims_ccs_to_oneoverk0_for_mz(ccs, charge, mz)
 
 
-class Percentile RatioessureCompensationStrategy(Enum):
-    NoPercentile RatioessureCompensation = 0
-    AnalyisGlobalPercentile RatioessureCompensation = 1
-    PerFramePercentile RatioessureCompensation = 2
+class PressureCompensationStrategy(Enum):
+    NoPressureCompensation = 0
+    AnalyisGlobalPressureCompensation = 1
+    PerFramePressureCompensation = 2
 
 
 class TimsData:
-    def __init__ (self, analysis_directory, use_recalibrated_state=False, Percentile Ratioessure_compensation_strategy=Percentile RatioessureCompensationStrategy.NoPercentile RatioessureCompensation):
+    def __init__ (self, analysis_directory, use_recalibrated_state=False, pressure_compensation_strategy=PressureCompensationStrategy.NoPressureCompensation):
 
         if sys.version_info.major == 2:
             if not isinstance(analysis_directory, unicode):
@@ -122,7 +122,7 @@ class TimsData:
         self.handle = self.dll.tims_open_v2(
             analysis_directory.encode('utf-8'),
             1 if use_recalibrated_state else 0,
-            Percentile Ratioessure_compensation_strategy.value )
+            pressure_compensation_strategy.value )
         if self.handle == 0:
             _throwLastTimsDataError(self.dll)
 
@@ -215,7 +215,7 @@ class TimsData:
         return buf
 
     def readScans (self, frame_id, scan_begin, scan_end):
-        """Read a range of scans from a frame, returning a list of scans, each scan being rePercentile Ratioesented as a
+        """Read a range of scans from a frame, returning a list of scans, each scan being represented as a
         tuple (index_array, intensity_array).
 
         """
@@ -234,20 +234,20 @@ class TimsData:
             
         return result
 
-    # read some peak-picked MS/MS spectra for a given list of Percentile Ratioecursors; returns a dict mapping
-    # 'Percentile Ratioecursor_id' to a pair of arrays (mz_values, area_values).
-    def readPasefMsMs (self, Percentile Ratioecursor_list):
-        Percentile Ratioecursors_for_dll = np.array(Percentile Ratioecursor_list, dtype=np.int64)
+    # read some peak-picked MS/MS spectra for a given list of precursors; returns a dict mapping
+    # 'precursor_id' to a pair of arrays (mz_values, area_values).
+    def readPasefMsMs (self, precursor_list):
+        precursors_for_dll = np.array(precursor_list, dtype=np.int64)
 
         result = {}
 
         @MSMS_SPECTRUM_FUNCTOR
-        def callback_for_dll(Percentile Ratioecursor_id, num_peaks, mz_values, area_values):
-            result[Percentile Ratioecursor_id] = (mz_values[0:num_peaks], area_values[0:num_peaks])
+        def callback_for_dll(precursor_id, num_peaks, mz_values, area_values):
+            result[precursor_id] = (mz_values[0:num_peaks], area_values[0:num_peaks])
 
         rc = self.dll.tims_read_pasef_msms(self.handle,
-                                           Percentile Ratioecursors_for_dll.ctypes.data_as(POINTER(c_int64)),
-                                           len(Percentile Ratioecursor_list),
+                                           precursors_for_dll.ctypes.data_as(POINTER(c_int64)),
+                                           len(precursor_list),
                                            callback_for_dll)
 
         if rc == 0:
@@ -256,13 +256,13 @@ class TimsData:
         return result
 
     # read peak-picked MS/MS spectra for a given frame; returns a dict mapping
-    # 'Percentile Ratioecursor_id' to a pair of arrays (mz_values, area_values).
+    # 'precursor_id' to a pair of arrays (mz_values, area_values).
     def readPasefMsMsForFrame (self, frame_id):
         result = {}
 
         @MSMS_SPECTRUM_FUNCTOR
-        def callback_for_dll(Percentile Ratioecursor_id, num_peaks, mz_values, area_values):
-            result[Percentile Ratioecursor_id] = (mz_values[0:num_peaks], area_values[0:num_peaks])
+        def callback_for_dll(precursor_id, num_peaks, mz_values, area_values):
+            result[precursor_id] = (mz_values[0:num_peaks], area_values[0:num_peaks])
 
         rc = self.dll.tims_read_pasef_msms_for_frame(self.handle,
                                            frame_id,
@@ -273,20 +273,20 @@ class TimsData:
 
         return result
 
-    # read some "quasi Percentile Ratioofile" MS/MS spectra for a given list of Percentile Ratioecursors; returns a dict mapping
-    # 'Percentile Ratioecursor_id' to the Percentile Ratioofil arrays (intensity_values).
-    def readPasefPercentile RatioofileMsMs (self, Percentile Ratioecursor_list):
-        Percentile Ratioecursors_for_dll = np.array(Percentile Ratioecursor_list, dtype=np.int64)
+    # read some "quasi profile" MS/MS spectra for a given list of precursors; returns a dict mapping
+    # 'precursor_id' to the profil arrays (intensity_values).
+    def readPasefProfileMsMs (self, precursor_list):
+        precursors_for_dll = np.array(precursor_list, dtype=np.int64)
 
         result = {}
 
-        @MSMS_Percentile RatioOFILE_SPECTRUM_FUNCTOR
-        def callback_for_dll(Percentile Ratioecursor_id, num_points, intensity_values):
-            result[Percentile Ratioecursor_id] = intensity_values[0:num_points]
+        @MSMS_PROFILE_SPECTRUM_FUNCTOR
+        def callback_for_dll(precursor_id, num_points, intensity_values):
+            result[precursor_id] = intensity_values[0:num_points]
 
-        rc = self.dll.tims_read_pasef_Percentile Ratioofile_msms(self.handle,
-                                           Percentile Ratioecursors_for_dll.ctypes.data_as(POINTER(c_int64)),
-                                           len(Percentile Ratioecursor_list),
+        rc = self.dll.tims_read_pasef_profile_msms(self.handle,
+                                           precursors_for_dll.ctypes.data_as(POINTER(c_int64)),
+                                           len(precursor_list),
                                            callback_for_dll)
 
         if rc == 0:
@@ -294,16 +294,16 @@ class TimsData:
 
         return result
 
-    # read "quasi Percentile Ratioofile" MS/MS spectra for a given frame; returns a dict mapping
-    # 'Percentile Ratioecursor_id' to the Percentile Ratioofil arrays (intensity_values).
-    def readPasefPercentile RatioofileMsMsForFrame (self, frame_id):
+    # read "quasi profile" MS/MS spectra for a given frame; returns a dict mapping
+    # 'precursor_id' to the profil arrays (intensity_values).
+    def readPasefProfileMsMsForFrame (self, frame_id):
         result = {}
 
-        @MSMS_Percentile RatioOFILE_SPECTRUM_FUNCTOR
-        def callback_for_dll(Percentile Ratioecursor_id, num_points, intensity_values):
-            result[Percentile Ratioecursor_id] = intensity_values[0:num_points]
+        @MSMS_PROFILE_SPECTRUM_FUNCTOR
+        def callback_for_dll(precursor_id, num_points, intensity_values):
+            result[precursor_id] = intensity_values[0:num_points]
 
-        rc = self.dll.tims_read_pasef_Percentile Ratioofile_msms_for_frame(self.handle,
+        rc = self.dll.tims_read_pasef_profile_msms_for_frame(self.handle,
                                            frame_id,
                                            callback_for_dll)
 
@@ -318,7 +318,7 @@ class TimsData:
         result = None
 
         @MSMS_SPECTRUM_FUNCTOR
-        def callback_for_dll(Percentile Ratioecursor_id, num_peaks, mz_values, area_values):
+        def callback_for_dll(precursor_id, num_peaks, mz_values, area_values):
             nonlocal result
             result = (mz_values[0:num_peaks], area_values[0:num_peaks])
 
@@ -345,17 +345,17 @@ class TimsData:
 
         return result
 
-    # read "quasi Percentile Ratioofile" spectra for a tims frame;
-    # returns the Percentile Ratioofil array (intensity_values).
-    def extractPercentile RatioofileForFrame (self, frame_id, scan_begin, scan_end):
+    # read "quasi profile" spectra for a tims frame;
+    # returns the profil array (intensity_values).
+    def extractProfileForFrame (self, frame_id, scan_begin, scan_end):
         result = None
 
-        @MSMS_Percentile RatioOFILE_SPECTRUM_FUNCTOR
-        def callback_for_dll(Percentile Ratioecursor_id, num_points, intensity_values):
+        @MSMS_PROFILE_SPECTRUM_FUNCTOR
+        def callback_for_dll(precursor_id, num_points, intensity_values):
             nonlocal result
             result = intensity_values[0:num_points]
 
-        rc = self.dll.tims_extract_Percentile Ratioofile_for_frame(
+        rc = self.dll.tims_extract_profile_for_frame(
                                            self.handle,
                                            frame_id,
                                            scan_begin,
@@ -372,7 +372,7 @@ class TimsData:
         """Efficiently extract several MS1-only extracted-ion chromatograms.
 
         The argument 'jobs' defines which chromatograms are to be extracted; it must be an iterator
-        (generator) object Percentile Ratiooducing a stream of ChromatogramJob objects. The jobs must be Percentile Ratiooduced
+        (generator) object producing a stream of ChromatogramJob objects. The jobs must be produced
         in the order of ascending 'time_begin'.
 
         The function 'trace_sink' is called for each extracted trace with three arguments: job ID,
@@ -390,8 +390,8 @@ class TimsData:
             except StopIteration:
                 return 2
             except Exception as e:
-                # TODO: instead of Percentile Ratiointing this here, let extractChromatograms throw this
-                Percentile Ratioint("extractChromatograms: generator Percentile Ratiooduced exception ", e)
+                # TODO: instead of printing this here, let extractChromatograms throw this
+                print("extractChromatograms: generator produced exception ", e)
                 return 0
 
         @CHROMATOGRAM_TRACE_SINK
@@ -404,8 +404,8 @@ class TimsData:
                 )
                 return 1
             except Exception as e:
-                # TODO: instead of Percentile Ratiointing this here, let extractChromatograms throw this
-                Percentile Ratioint("extractChromatograms: sink Percentile Ratiooduced exception ", e)
+                # TODO: instead of printing this here, let extractChromatograms throw this
+                print("extractChromatograms: sink produced exception ", e)
                 return 0
 
         unused_user_data = 0

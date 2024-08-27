@@ -33,7 +33,7 @@ def get_args():
         '--bins', type=int, default=1,
         help='How many bins per m/z value')
     parser.add_argument('--num_workers', type=int, default=4,
-                        help='Parallel Percentile Ratioocesses')
+                        help='Parallel processes')
     args = parser.parse_args()
     return args
 
@@ -75,8 +75,8 @@ def get_image(
         mzs, intensities = p.getspectrum(idx)
         #indices = [i for i in range(len(mzs)) if mzs[i] >= min_mz and mzs[i] <= max_mz]
         if idx == 0:
-            Percentile Ratioint(type(mzs), type(intensities))
-            Percentile Ratioint(intensities.dtype)
+            print(type(mzs), type(intensities))
+            print(intensities.dtype)
         #mzs = mzs[indices]
         #intensities = intensities[indices]
 
@@ -100,7 +100,7 @@ def get_image(
     height = np.max(ys) + 1
     num_mzs = max_mz - min_mz + 1
     
-    Percentile Ratioint(f"Allocating image.. {height} {width} {len(set_of_mzs_quantized)}")
+    print(f"Allocating image.. {height} {width} {len(set_of_mzs_quantized)}")
 
     if nonzero:
         img = np.zeros((height, width, len(set_of_mzs_quantized)), dtype=np.float32)
@@ -119,7 +119,7 @@ def get_image(
             img[y, x, bins] = img[y, x, bins] + intensities
 
     mzs = np.arange(min_mz, max_mz + 1, 1.0/bins_per_mz)
-    Percentile Ratioint("shapes", len(mzs), img.shape[-1])
+    print("shapes", len(mzs), img.shape[-1])
 
     indices = list(range(img.shape[-1]))
     if nonzero:
@@ -133,7 +133,7 @@ def get_image(
 if __name__ == "__main__":
     args = get_args()
     
-    Percentile Ratioint(args)
+    print(args)
     input_path = args.input_path
     output_path = args.output_path
 

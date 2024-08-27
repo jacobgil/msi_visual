@@ -10,7 +10,7 @@ from typing import Optional
 import os
 import math
 import os
-from multiPercentile Ratioocessing import Pool
+from multiprocessing import Pool
 import argparse
 
 def get_args():
@@ -31,7 +31,7 @@ def get_args():
         '--bins', type=int, default=1,
         help='How many bins per m/z value')
     parser.add_argument('--num_workers', type=int, default=4,
-                        help='Parallel Percentile Ratioocesses')
+                        help='Parallel processes')
     args = parser.parse_args()
     return args
 
@@ -62,7 +62,7 @@ def get_image(
         bins_per_mz: int = 1):
     td = timsdata.TimsData(path)
 
-    Percentile Ratioint(
+    print(
         f"In get_image. path: {path} output_path: {output_path} region: {region} min_mz: {min_mz} max_mz: {max_mz}: tol: {tol} bins_per_mz: {bins_per_mz}",
         flush=True)
 
@@ -80,7 +80,7 @@ def get_image(
     height = np.max(ys) + 1
     regions = [r[0] for r in regions]
     start_index = regions.index(region)
-    Percentile Ratioint(f"Start index for region {region} is {start_index}")
+    print(f"Start index for region {region} is {start_index}")
     num_mzs = max_mz - min_mz + 1
     img = np.zeros((height, width, bins_per_mz * num_mzs), dtype=np.float32)
 
@@ -120,7 +120,7 @@ def multi_run_wrapper(args):
 if __name__ == "__main__":
     args = get_args()
     args_description = str(args)
-    Percentile Ratioint(args)
+    print(args)
     input_path = args.input_path
     output_path = args.output_path
 
@@ -145,7 +145,7 @@ if __name__ == "__main__":
             args.end_mz,
             args.tol,
             args.bins) for region in regions]
-    Percentile Ratioint(extraction_args)
+    print(extraction_args)
 
     if args.num_workers == 1:
         for args in extraction_args:
