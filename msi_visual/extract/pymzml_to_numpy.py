@@ -1,43 +1,17 @@
 import numpy as np
-import cv2
 import tqdm
-import os
 import math
-import os
-from argparse import Namespace
-from typing import Optional
 from pyimzml.ImzMLParser import ImzMLParser
 
-class PymzmlToNumpy:
-    def __init__(self,
-        min_mz: Optional[float] = None,
-        max_mz: Optional[float] = None,
-        bins_per_mz: int = 1,
-        nonzero=False):
-        self.min_mz = min_mz
-        self.max_mz = max_mz
-        self.bins_per_mz = bins_per_mz
-        self.nonzero = nonzero
-    
-    def save(self, img, mzs, input_path, output_path):
-        os.makedirs(output_path, exist_ok=True)
+from msi_visual.extract import BaseMSIToNumpy
+        
+class PymzmlToNumpy(BaseMSIToNumpy):
+    def get_regions(self):
+        return [0]
 
-        np.save(os.path.join(output_path, "0.npy"), img)
-        extraction_args = Namespace(path=input_path, min_mz=self.min_mz, max_mz=self.max_mz, bins_per_mz=self.bins_per_mz, nonzero=self.nonzero, mzs=mzs)
-        extraction_args = str(extraction_args)
-        with open(os.path.join(output_path, "args.txt"), "w") as f:
-            f.write(extraction_args)
-
-    def __call__(self, input_path, output_path):
-        img, mzs = self.to_numpy(input_path)
-        self.save(img, mzs, input_path, output_path)
-
-    def to_numpy(self, input_path):   
+    def to_numpy(self, input_path, region=0):   
         p = ImzMLParser(input_path)
-        xs = []
-        ys = []
-        all_mzs = []
-        all_intensities = []
+        xs, ys, all_mzs, all_intensities = [], [], [], []
         for idx, (x,y,z) in tqdm.tqdm(enumerate(p.coordinates), total=len(p.coordinates)):
             mzs, intensities = p.getspectrum(idx)
             xs.append(x)
