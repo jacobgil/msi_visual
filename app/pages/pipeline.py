@@ -9,6 +9,12 @@ import pandas as pd
 import time
 from utils.pipeline import create_pipeline
 from utils.extraction import get_extraction
+import wx
+app = wx.App()
+wx.DisableAsserts()
+
+
+
 
 extraction_tab, pipeline_tab = st.tabs(["Data", "Visualizations"])
 
@@ -17,8 +23,30 @@ with extraction_tab:
 
 with pipeline_tab:
     models = []
+
     if os.path.exists("pipeline.cache"):
         models = joblib.load("pipeline.cache")
+
+    cols = st.columns(2)
+    with cols[0]:
+        if st.button("Load"):
+            dialog = wx.FileDialog(
+                None, "Settings file", style=wx.DD_DEFAULT_STYLE)
+            if dialog.ShowModal() == wx.ID_OK:
+                # folder_path will contain the path of the folder you
+                # have selected as
+                import_path = dialog.GetPath()
+                models = joblib.load(import_path)
+
+    with cols[1]:
+        if st.button("Save"):
+            dialog = wx.FileDialog(
+                None, "Settings file", style=wx.DD_DEFAULT_STYLE)
+            if dialog.ShowModal() == wx.ID_OK:
+                # folder_path will contain the path of the folder you
+                # have selected as
+                export_path = dialog.GetPath()
+                joblib.dump(models, export_path)
 
     model, normalization, output_path = create_pipeline()
     if model:

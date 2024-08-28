@@ -9,18 +9,11 @@ import datetime
 from pathlib import Path
 from argparse import Namespace
 from PIL import Image
-from st_pages import show_pages_from_config, add_page_title
 from collections import defaultdict
 from msi_visual import nmf_segmentation, kmeans_segmentation
 from msi_visual.app_utils.extraction_info import display_paths_to_extraction_paths, \
     get_files_from_folder
 
-# Either this or add_indentation() MUST be called on each page in your
-# app to add indendation in the sidebar
-
-add_page_title()
-
-show_pages_from_config()
 if 'bins' not in st.session_state:
     st.session_state.bins = 5
 
