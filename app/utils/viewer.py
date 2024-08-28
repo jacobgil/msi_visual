@@ -27,6 +27,7 @@ class ClickData:
     visualization: np.ndarray
     timestamp: float
 
+
 def get_image(path, bins=5, equalize=False):
     key = "cache" + str(bins) + str(equalize)
     if key not in st.session_state:
@@ -91,12 +92,20 @@ def viewer(folder, bins, equalize, comparison, selection_type):
                         point = streamlit_image_coordinates(visualization, key=path+str(st.session_state['id']))
                         if point:
                             x, y = int(point['x']), int(point['y'])
-                            existing_clicks = [p.point for p in st.session_state["clicks"][data_path]]
-                            if (x, y) not in existing_clicks:
+                            last_click_for_visualizaton = None
+                            if "last" not in st.session_state:
+                                st.session_state["last"] = {}
+                            if "last" in st.session_state and path in st.session_state["last"]:
+                                last_click_for_visualizaton = st.session_state["last"][path]
+
+                            
+                            if  (not last_click_for_visualizaton) or (last_click_for_visualizaton and last_click_for_visualizaton != (x, y)):
                                 mask = get_mask(visualization, seg, x, y)
+                                st.session_state["last"][path] = (x,y)
                                 st.session_state["clicks"][data_path].append(ClickData(path, (x, y), mask, visualization, time.time()))
                             else:
                                 print(f"Point exists {x} {y}")
+                            
                     elif selection_type == "Polygon":
                         polygon = image_selector(visualization, selection_type="lasso", key=str(st.session_state['id'])+path+'lasso')
                         if polygon and "selection" in polygon and len(polygon["selection"]["lasso"]) > 0:

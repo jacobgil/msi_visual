@@ -9,7 +9,6 @@ from collections import defaultdict
 from pathlib import Path
 from argparse import Namespace
 from PIL import Image
-from st_pages import show_pages_from_config, add_page_title
 from msi_visual.normalization import spatial_total_ion_count, total_ion_count, median_ion
 from msi_visual import nmf_3d
 from msi_visual import parametric_umap
@@ -27,11 +26,6 @@ class MyCallback(Callback):
         trainprogress_bar.progress(int(train_progress * 100), "Training..")
 
 
-# Either this or add_indentation() MUST be called on each page in your
-# app to add indendation in the sidebar
-add_page_title()
-
-show_pages_from_config()
 
 def get_settings():
     return {
