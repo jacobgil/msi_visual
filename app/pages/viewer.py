@@ -31,6 +31,8 @@ def save_cache():
     cache["Selection type"] = selection_type
     joblib.dump(cache, "viewer.cache")    
 
+if 'rotate' not in st.session_state:
+    st.session_state['rotate'] = False
 
 if "clicks" not in st.session_state:
     reset()
@@ -52,6 +54,9 @@ with settings_tab:
     selection_type = st.selectbox("Selection type", selection_types, on_change=reset_clicks, index=selection_types.index(cache.get("Selection type", "Polygon")))
 
     stats_method = st.selectbox("Compairson method", ["U-Test", "Difference in ROI-MEAN"], on_change=reset_clicks)
+
+    rotate = st.checkbox('Rotate', value=st.session_state['rotate'])
+    st.session_state['rotate'] = rotate
 
 
 with viz_tab:

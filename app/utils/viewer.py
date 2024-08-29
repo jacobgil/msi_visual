@@ -216,7 +216,8 @@ def show_ion_images(mzs):
             aggregated = aggregated / np.max(aggregated)
             aggregated = np.uint8(aggregated * 255)
             aggregated = cv2.applyColorMap(aggregated, cmapy.cmap('viridis'))[:, :, ::-1].copy()
-            aggregated = aggregated.transpose().transpose(1, 2, 0)[::-1, :, :]
+            if st.session_state['rotate']:
+                aggregated = aggregated.transpose().transpose(1, 2, 0)[::-1, :, :]
             st.image(aggregated)
 
 
@@ -392,7 +393,8 @@ def get_mz_value_img(stats, height, top=5):
 
 def display_aggregated_ion_image(stats, data, extraction_mzs, color_scheme="cividis"):
     img = get_aggregated_ion_image(stats, data, extraction_mzs)
-    img = img.transpose().transpose(1, 2, 0)[::-1, :, :]
+    if st.session_state['rotate']:
+        img = img.transpose().transpose(1, 2, 0)[::-1, :, :]
     img = cv2.resize(img, (8*img.shape[1], 8*img.shape[0]))
     spectrum = get_2d_spectrum(
         stats,
