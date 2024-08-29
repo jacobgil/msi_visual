@@ -23,7 +23,7 @@ class BaseMSIToNumpy(ABC):
         np.save(os.path.join(output_path, f"{region}.npy"), img)
 
     def save_extraction_args(self, mzs, input_path, output_path):
-        extraction_args = Namespace(path=input_path, min_mz=self.min_mz, max_mz=self.max_mz, bins=self.bins_per_mz, nonzero=self.nonzero, mzs=mzs, id=self.id)
+        extraction_args = Namespace(path=input_path, start_mz=self.min_mz, end_mz=self.max_mz, bins=self.bins_per_mz, nonzero=self.nonzero, mzs=mzs, id=self.id)
         extraction_args = str(extraction_args)
         with open(os.path.join(output_path, "args.txt"), "w") as f:
             f.write(extraction_args)
