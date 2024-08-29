@@ -13,6 +13,12 @@ from utils.viewer import display_comparison, get_stats, get_raw_ion_image, creat
 import msi_visual.visualizations
 importlib.reload(msi_visual.visualizations)
 
+def reset():
+    st.session_state["clicks"] = defaultdict(list)
+    st.session_state["data"] = {}
+    st.session_state["extraction_mzs"] = {}
+    st.session_state['id'] = 0
+
 def reset_clicks():
     st.session_state["clicks"] = defaultdict(list)
     st.session_state['id'] = st.session_state['id'] + 1
@@ -27,10 +33,7 @@ def save_cache():
 
 
 if "clicks" not in st.session_state:
-    st.session_state["clicks"] = defaultdict(list)
-    st.session_state["data"] = {}
-    st.session_state["extraction_mzs"] = {}
-    st.session_state['id'] = 0
+    reset()
 
 if os.path.exists("viewer.cache"):
     cache = joblib.load("viewer.cache")
@@ -40,7 +43,7 @@ else:
 viz_tab, region_tab, ion_tab, settings_tab = st.tabs(["Visualizations", "Comparisons", "M/Z", "Settings"])
 
 with settings_tab:
-    folder = st.text_input("Visualization folder", value=cache.get("Visualization folder", ""))
+    folder = st.text_input("Visualization folder", value=cache.get("Visualization folder", ""), on_change=reset)
     bins = st.number_input("Number of RGB bins", min_value=5, step=1, value=cache.get("bins", 5))
     equalize = st.checkbox('Equalize Visualizations', value=cache.get("Equalize", False))
     comparison_types = ["Region with Region", "Region with all", "Point with Point"]
