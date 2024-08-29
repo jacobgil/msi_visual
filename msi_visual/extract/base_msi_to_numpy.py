@@ -11,19 +11,19 @@ class BaseMSIToNumpy(ABC):
         max_mz: Optional[float] = None,
         bins_per_mz: int = 1,
         nonzero=False,
-        num_workers=1):
+        id=''):
         self.min_mz = min_mz
         self.max_mz = max_mz
         self.bins_per_mz = bins_per_mz
         self.nonzero = nonzero
-        self.num_workers = num_workers
+        self.id = id
 
     def save_numpy(self, img: np.ndarray, mzs: list[float], input_path: str, output_path: str, region: int):
         os.makedirs(output_path, exist_ok=True)
         np.save(os.path.join(output_path, f"{region}.npy"), img)
 
     def save_extraction_args(self, mzs, input_path, output_path):
-        extraction_args = Namespace(path=input_path, min_mz=self.min_mz, max_mz=self.max_mz, bins_per_mz=self.bins_per_mz, nonzero=self.nonzero, mzs=mzs)
+        extraction_args = Namespace(path=input_path, min_mz=self.min_mz, max_mz=self.max_mz, bins=self.bins_per_mz, nonzero=self.nonzero, mzs=mzs, id=self.id)
         extraction_args = str(extraction_args)
         with open(os.path.join(output_path, "args.txt"), "w") as f:
             f.write(extraction_args)

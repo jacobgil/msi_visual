@@ -9,6 +9,8 @@ st.title('Convert a PyMZML or Bruker TSF/Tims files into an MSI-VISUAL numpy fil
 input_path = st.text_input('Input (PyMZML file, or Bruker data folder)')
 output_path = st.text_input('Output folder')
 
+id = st.text_input('Identifier')
+
 start_mz = st.number_input('Start m/z', value=None, help='If you specify the start and stop m/z, bins in these ranges will be created. Otherwise, the minimum and maximum m/z values in the data will be used')
 end_mz = st.number_input('End M/Z', value=None, help='If you specify the start and stop m/z, bins in these ranges will be created. Otherwise, the minimum and maximum m/z values in the data will be used')
 
@@ -21,11 +23,11 @@ if st.button("Run"):
         start_mz, end_mz = None, None
 
     if '.imzML' in input_path:
-        extraction = PymzmlToNumpy(start_mz, end_mz, bins, nonzero)
-    elif len(glob.glob(input + "/*.tdf")) > 0:
-        extraction = BrukerTimsToNumpy(start_mz, end_mz, bins, nonzero)
-    elif len(glob.glob(input + "/*.tsf")) > 0:
-        extraction = BrukerTsfToNumpy(start_mz, end_mz, bins, nonzero)
+        extraction = PymzmlToNumpy(start_mz, end_mz, bins, nonzero, id)
+    elif len(glob.glob(input_path + "/*.tdf")) > 0:
+        extraction = BrukerTimsToNumpy(start_mz, end_mz, bins, nonzero, id)
+    elif len(glob.glob(input_path + "/*.tsf")) > 0:
+        extraction = BrukerTsfToNumpy(start_mz, end_mz, bins, nonzero, id)
 
     with st.spinner("Extracting.. "):
         extraction(input_path, output_path)
