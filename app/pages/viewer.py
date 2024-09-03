@@ -7,9 +7,9 @@ from collections import defaultdict
 import cmapy
 import importlib
 import time
-import utils.viewer
-importlib.reload(utils.viewer)
-from utils.viewer import display_comparison, get_stats, get_raw_ion_image, create_ion_image, get_data, viewer, ClickData, region_with_all_comparisons, region_with_region_comparisons, point_with_point_comparisons, show_ion_images
+import msi_visual.app.utils.viewer
+importlib.reload(msi_visual.app.utils.viewer)
+from msi_visual.app.utils.viewer import display_comparison, get_stats, get_raw_ion_image, create_ion_image, get_data, viewer, ClickData, region_with_all_comparisons, region_with_region_comparisons, point_with_point_comparisons, show_ion_images
 import msi_visual.visualizations
 importlib.reload(msi_visual.visualizations)
 

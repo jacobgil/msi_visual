@@ -6,6 +6,8 @@ from matplotlib import pyplot as plt
 import torch
 from msi_visual.visualizations import visualizations_from_explanations
 from sklearn.metrics.pairwise import euclidean_distances, cosine_similarity
+import cmapy
+from msi_visual.utils import get_certainty
 
 
 class KmeansSegmentation:
@@ -69,6 +71,10 @@ class KmeansSegmentation:
         return result
 
     def predict(self, img):
+        if not self._trained:
+            self.fit([img])
+            self._trained = True
+
         img = img[:, :, self.start_bin:self.end_bin]
         vector = img.reshape((-1, img.shape[-1]))
         centroids = self.model.cluster_centers_
@@ -82,7 +88,7 @@ class KmeansSegmentation:
         return segmentation
 
     def __call__(self, img):
-        return self.visualize(img, color_scheme=self.color_scheme, method=self.method)[-1]
+        return self.visualize(img, color_scheme=self.color_scheme, method=self.method)
 
 
     def segment_visualization(self,
@@ -113,5 +119,14 @@ class KmeansSegmentation:
             self.fit([img])
 
         factorization = self.predict(img)
-        return self.segment_visualization(
-            img, factorization, color_scheme, method=method)
+        certainty = get_certainty(factorization)
+
+        certainty = certainty / (1e-6 + np.max(certainty))
+        certainty = np.uint8(255 * certainty)
+
+        certainty = cv2.applyColorMap(certainty, cmapy.cmap('viridis'))[:, :, ::-1].copy()
+
+        result = [self.segment_visualization(
+            img, factorization, color_scheme, method=method)[1]]
+        result.append(certainty)
+        return result

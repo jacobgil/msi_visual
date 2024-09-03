@@ -1,15 +1,17 @@
 import streamlit as st
-
+import joblib
 from msi_visual.saliency_opt import SaliencyOptimization
 from msi_visual.nmf_3d import NMF3D
 from msi_visual.nonparametric_umap  import MSINonParametricUMAP
 from msi_visual.kmeans_segmentation import KmeansSegmentation
 from msi_visual.percentile_ratio import TOP3, PercentileRatio
 from msi_visual.nmf_segmentation import NMFSegmentation
+from msi_visual.segmentation_visualization_comb import SegmentationAndGuidingImageFolder
+
 from msi_visual.normalization import total_ion_count, spatial_total_ion_count
 
 def create_pipeline():
-    options = ["NMF3D", "Segmentation-NMF", "Segmentation-Kmeans", "Saliency Optimization", "UMAP-3D", "TOP-3", "Percentile-Ratio", "Existing model"]
+    options = ["NMF3D", "Segmentation-NMF", "Segmentation-Kmeans", "Saliency Optimization", "UMAP-3D", "TOP-3", "Percentile-Ratio", "Existing model", "Combining with Segmentation"]
     method = st.selectbox("Add visualization method", options, index=None)
 
     model = None
@@ -63,6 +65,21 @@ def create_pipeline():
 
         if st.button("Add"):
             model = MSINonParametricUMAP(min_dist=min_dist, n_neighbors=n_neighbors, metric=distance)
+
+    elif method == "Combining with Segmentation":
+        segmentation_type = st.selectbox('Segmentation model', ['Kmeans', 'NMF'])
+        k = st.number_input("Number of segmentation components", value=8, step=1)
+        folder = st.text_input("Visualization source folder")
+        number_of_random_colors = st.number_input("Number of random color schemes", min_value=1, step=1)
+        if folder:
+            if st.button("Add"):
+                if segmentation_type == 'Kmeans':
+                    seg_model = KmeansSegmentation(k)
+                else:
+                    max_iter = st.number_input('Number of iterations', value=2000, step=1)
+                    seg_model = NMFSegmentation(k ,max_iter=max_iter)
+            
+                model = SegmentationAndGuidingImageFolder(seg_model, folder, number_of_random_colors)
 
     normalization_method = st.selectbox('Normalization', ['total_ion_count', 'spatial_total_ion_count'])
     normalization = {'total_ion_count': total_ion_count, 'spatial_total_ion_count': spatial_total_ion_count}[normalization_method]

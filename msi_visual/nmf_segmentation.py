@@ -7,6 +7,9 @@ from matplotlib import pyplot as plt
 from msi_visual.normalization import spatial_total_ion_count, total_ion_count, median_ion
 from msi_visual.visualizations import visualizations_from_explanations
 
+import cmapy
+from msi_visual.utils import get_certainty
+
 
 class NMFSegmentation:
     def __init__(self, k, start_bin=0, end_bin=None, max_iter=200, color_scheme='gist_rainbow', method='spatial_norm'):
@@ -62,6 +65,9 @@ class NMFSegmentation:
         return result
 
     def predict(self, img):
+        if not self._trained:
+            self.fit([img])
+
         img = img[:, :, self.start_bin:self.end_bin]
         vector = img.reshape((-1, img.shape[-1]))
         w_new, h_new, n_iter = non_negative_factorization(
@@ -87,16 +93,19 @@ class NMFSegmentation:
             return seg_normalized_percentile, global_percentile_visualization
 
     def __call__(self, img):
-        return self.visualize(img, color_scheme=self.color_scheme, method=self.method)[-1]
+        return self.visualize(img, color_scheme=self.color_scheme, method=self.method)
 
     def visualize(
             self,
             img,
             color_scheme='gist_rainbow',
             method='spatial_norm'):
-        if not self._trained:
-            self.fit([img])
         factorization = self.predict(img)
-
-        return self.segment_visualization(
-            img, factorization, color_scheme, method=method)
+        certainty = get_certainty(factorization)
+        certainty = certainty / (1e-6 + np.max(certainty))
+        certainty = np.uint8(255 * certainty)
+        certainty = cv2.applyColorMap(certainty, cmapy.cmap('viridis'))[:, :, ::-1].copy()
+        result = [self.segment_visualization(
+            img, factorization, color_scheme, method=method)[1]]
+        result.append(certainty)
+        return result

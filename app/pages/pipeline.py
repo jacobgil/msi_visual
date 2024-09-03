@@ -7,8 +7,8 @@ from PIL import Image
 from collections import defaultdict
 import pandas as pd
 import time
-from utils.pipeline import create_pipeline
-from utils.extraction import get_extraction
+from msi_visual.app.utils.pipeline import create_pipeline
+from msi_visual.app.utils.extraction import get_extraction
 import wx
 app = wx.App()
 wx.DisableAsserts()
@@ -74,18 +74,23 @@ with pipeline_tab:
                 for method_index, method in enumerate(models):
                     progress = (index * len(models) + method_index) / (len(regions) * len(models))
                     with st.spinner(f'Computing {method} for {path}'):
-                        visualization = method(img)
-                        visualization[img.max(axis=-1) == 0] = 0
+                        result = method(img)
+                        if not isinstance(result, list):
+                            result = [result]
+                        for visualization_index, visualization in enumerate(result):
+                            visualization[img.max(axis=-1) == 0] = 0
+                            if len(result) > 1:
+                                name = str(index) + "_" + str(method).replace(' ', '').replace(':', '_') + str(visualization_index) + '.png'
+                            else:
+                                name = str(index) + "_" + str(method).replace(' ', '').replace(':', '_') + '.png'
+                                
+                            visualization_output_path = str(Path(output_path) / name)
+                            Image.fromarray(visualization).save(visualization_output_path)
 
+                            paths["visualization"].append(name)
+                            paths["data"].append(path)
+                            paths["method"].append(str(method))
                     st.progress(progress)
-                    name = str(index) + "_" + str(method).replace(' ', '').replace(':', '_') + '.png'
-                    visualization_output_path = str(Path(output_path) / name)
-                    Image.fromarray(visualization).save(visualization_output_path)
-
-                    
-                    paths["visualization"].append(name)
-                    paths["data"].append(path)
-                    paths["method"].append(str(method))
 
 
                 pd.DataFrame.from_dict(paths).to_csv(str(Path(output_path) / "visualization_details.csv"), index=False)

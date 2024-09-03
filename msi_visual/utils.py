@@ -64,6 +64,7 @@ def image_histogram_equalization(image, mask, number_bins=256):
 def get_certainty(segmentation):
     normalized = segmentation / (1e-6 + segmentation.sum(axis=0))
     e = entropy(normalized, axis=0, base=normalized.shape[0])
+    e[np.isnan(e)] = 0
     e = 1 - e
     return e
 
