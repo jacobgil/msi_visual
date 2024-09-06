@@ -8,6 +8,9 @@ class PymzmlToNumpy(BaseMSIToNumpy):
     def get_regions(self):
         return [0]
 
+    def get_img_type(self):
+        return np.float32
+
     def read_all_point_data(self, input_path: str, region: int=0):
         p = ImzMLParser(input_path)
         xs, ys, all_mzs, all_intensities = [], [], [], []

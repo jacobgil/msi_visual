@@ -15,6 +15,10 @@ class BrukerTimsToNumpy(BaseMSIToNumpy):
         regions = sorted(list(set(regions)))
         return regions
 
+    def get_img_type(self):
+        return np.uint32
+
+
     def read_all_point_data(self, input_path: str, region: int = 0):
         td = timsdata.TimsData(input_path)
         conn = td.conn
@@ -39,6 +43,7 @@ class BrukerTimsToNumpy(BaseMSIToNumpy):
                 index = np.array(scan[0], dtype=np.float64)
                 mz = td.indexToMz(frame_id, index)
                 intensity = scan[1]
+                print(mz.shape, intensity.shape, mz, intensity)
                 mzs.extend(list(mz))
                 intensities.extend(list(intensity))
             all_mzs.append(mzs)

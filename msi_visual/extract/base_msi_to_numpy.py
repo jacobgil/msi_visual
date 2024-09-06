@@ -38,9 +38,12 @@ class BaseMSIToNumpy(ABC):
         for region in regions:
             self.extract_region(input_path, output_path, region)
 
+    @abstractmethod
+    def get_img_type(self):
+        pass
 
     @abstractmethod
-    def read_all_point_data(input_path, region):
+    def read_all_point_data(self, input_path, region):
         pass
     
 
@@ -55,6 +58,7 @@ class BaseMSIToNumpy(ABC):
             mz_to_index = {mz: i for i, mz in enumerate(set_of_mzs_quantized)}
 
         xs, ys = np.int32(xs), np.int32(ys)
+        print(self.max_mz, self.min_mz)
         if self.max_mz is None or self.min_mz is None:
             set_of_mzs = set()
             for mz_list in all_mzs:
@@ -68,9 +72,9 @@ class BaseMSIToNumpy(ABC):
         height = np.max(ys) + 1
         num_mzs = int(self.max_mz - self.min_mz + 1)
         if self.nonzero:
-            img = np.zeros((height, width, len(set_of_mzs_quantized)), dtype=np.float32)
+            img = np.zeros((height, width, len(set_of_mzs_quantized)), dtype=self.get_img_type())
         else:
-            img = np.zeros((height, width, self.bins_per_mz * num_mzs), dtype=np.float32)
+            img = np.zeros((height, width, self.bins_per_mz * num_mzs), dtype=self.get_img_type())
 
         for x, y, mzs, intensities in tqdm.tqdm(zip(xs, ys, all_mzs, all_intensities)):
             intensities = np.float32(intensities)
@@ -88,7 +92,7 @@ class BaseMSIToNumpy(ABC):
         else:
             mzs = [float(f"{mzs[i]:.6f}") for i in indices]
 
-        return img, mzs
+        return np.float32(img), mzs
 
 
     @abstractmethod

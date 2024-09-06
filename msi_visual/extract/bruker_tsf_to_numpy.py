@@ -15,6 +15,9 @@ class BrukerTsfToNumpy(BaseMSIToNumpy):
         regions = sorted(list(set(regions)))
         return regions
 
+    def get_img_type(self):
+        return np.float32
+
     def read_all_point_data(self, input_path: str, region: int = 0):
         tsf = tsfdata.TsfData(input_path)
         conn = tsf.conn
@@ -32,7 +35,9 @@ class BrukerTsfToNumpy(BaseMSIToNumpy):
         for index, (x, y) in tqdm.tqdm(enumerate(zip(xs, ys)), total=len(xs)):
             indices, intensities = tsf.readLineSpectrum(start_index + index + 1)
             mzs = tsf.indexToMz(start_index + index + 1, indices)
+            
             intensities = np.float32(intensities)
+
             all_xs.append(x)
             all_ys.append(y)
             all_mzs.append(mzs)
