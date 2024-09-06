@@ -43,7 +43,6 @@ class BrukerTimsToNumpy(BaseMSIToNumpy):
                 index = np.array(scan[0], dtype=np.float64)
                 mz = td.indexToMz(frame_id, index)
                 intensity = scan[1]
-                print(mz.shape, intensity.shape, mz, intensity)
                 mzs.extend(list(mz))
                 intensities.extend(list(intensity))
             all_mzs.append(mzs)

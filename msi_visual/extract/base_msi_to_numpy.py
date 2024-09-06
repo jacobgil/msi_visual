@@ -58,7 +58,7 @@ class BaseMSIToNumpy(ABC):
             mz_to_index = {mz: i for i, mz in enumerate(set_of_mzs_quantized)}
 
         xs, ys = np.int32(xs), np.int32(ys)
-        print(self.max_mz, self.min_mz)
+        
         if self.max_mz is None or self.min_mz is None:
             set_of_mzs = set()
             for mz_list in all_mzs:
