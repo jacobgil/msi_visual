@@ -47,6 +47,5 @@ class BrukerTimsToNumpy(BaseMSIToNumpy):
                 intensities.extend(list(intensity))
             all_mzs.append(mzs)
             all_intensities.append(intensities)
-            print(np.array(all_intensities).max())
 
         return all_xs, all_ys, all_mzs, all_intensities
