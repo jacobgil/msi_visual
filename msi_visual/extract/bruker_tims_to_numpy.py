@@ -32,20 +32,21 @@ class BrukerTimsToNumpy(BaseMSIToNumpy):
         xs, ys = np.int32(xs), np.int32(ys)
         start_index = regions.index(region)
         all_xs, all_ys, all_mzs, all_intensities = [], [], [], []
-        for index, (x, y) in tqdm.tqdm(enumerate(zip(xs, ys)), total=len(xs)):
-            frame_id = start_index+index+1
+        for point_index, (x, y) in tqdm.tqdm(enumerate(zip(xs, ys)), total=len(xs)):
+            frame_id = start_index+point_index+1
             all_xs.append(x)
             all_ys.append(y)
             q = conn.execute("SELECT NumScans FROM Frames WHERE Id={0}".format(frame_id))
             num_scans = q.fetchone()[0]
             mzs, intensities = [], []
             for scan in td.readScans(frame_id, 0, num_scans):
-                index = np.array(scan[0], dtype=np.float64)
+                index = np.array(scan[0])
                 mz = td.indexToMz(frame_id, index)
                 intensity = scan[1]
                 mzs.extend(list(mz))
                 intensities.extend(list(intensity))
             all_mzs.append(mzs)
             all_intensities.append(intensities)
+            print(np.array(all_intensities).max())
 
         return all_xs, all_ys, all_mzs, all_intensities

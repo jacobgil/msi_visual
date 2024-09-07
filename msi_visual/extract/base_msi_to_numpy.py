@@ -77,7 +77,7 @@ class BaseMSIToNumpy(ABC):
             img = np.zeros((height, width, self.bins_per_mz * num_mzs), dtype=self.get_img_type())
 
         for x, y, mzs, intensities in tqdm.tqdm(zip(xs, ys, all_mzs, all_intensities)):
-            intensities = np.float32(intensities)
+            intensities = np.array(intensities)
             if self.nonzero:
                 mzs = np.float32(mzs)
                 mz_indices = [mz_to_index[mz] for mz in list(np.int32(np.round(mzs * self.bins_per_mz)))]
