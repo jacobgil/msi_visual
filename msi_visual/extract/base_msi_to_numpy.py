@@ -64,7 +64,7 @@ class BaseMSIToNumpy(ABC):
             for mz_list in all_mzs:
                 set_of_mzs.update(mz_list)
             set_of_mzs = np.float32(list(set_of_mzs))
-            self.max_mz = np.max(set_of_mzs)
+            self.max_mz = np.max(set_of_mzs) + 1
             self.min_mz = np.min(set_of_mzs)
         xs = xs - np.min(xs)
         ys = ys - np.min(ys)
@@ -81,10 +81,14 @@ class BaseMSIToNumpy(ABC):
             if self.nonzero:
                 mzs = np.float32(mzs)
                 mz_indices = [mz_to_index[mz] for mz in list(np.int32(np.round(mzs * self.bins_per_mz)))]
-                img[y, x, mz_indices] = img[y, x, mz_indices] + intensities
+
+                for bin, intensity in zip(mz_indices, intensities):
+                    img[y, x, bin] = img[y, x, bin] + intensity
             else:
                 bins = np.int32(np.round((np.float32(mzs) - self.min_mz) * self.bins_per_mz))
-                img[y, x, bins] = img[y, x, bins] + intensities
+                for bin, intensity in zip(bins, intensities):
+                    img[y, x, bin] = img[y, x, bin] + intensity
+
         mzs = np.arange(self.min_mz, self.max_mz + 1, 1.0/self.bins_per_mz)
         indices = list(range(img.shape[-1]))
         if self.nonzero:
