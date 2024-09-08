@@ -64,13 +64,13 @@ class BaseMSIToNumpy(ABC):
             for mz_list in all_mzs:
                 set_of_mzs.update(mz_list)
             set_of_mzs = np.float32(list(set_of_mzs))
-            self.max_mz = np.max(set_of_mzs) + 1
+            self.max_mz = np.max(set_of_mzs)
             self.min_mz = np.min(set_of_mzs)
         xs = xs - np.min(xs)
         ys = ys - np.min(ys)
         width = np.max(xs) + 1
         height = np.max(ys) + 1
-        num_mzs = int(self.max_mz - self.min_mz + 1)
+        num_mzs = round(self.max_mz - self.min_mz + 1)
         if self.nonzero:
             img = np.zeros((height, width, len(set_of_mzs_quantized)), dtype=self.get_img_type())
         else:
@@ -78,8 +78,7 @@ class BaseMSIToNumpy(ABC):
 
         for x, y, mzs, intensities in tqdm.tqdm(zip(xs, ys, all_mzs, all_intensities)):
             intensities = np.array(intensities)
-            if self.nonzero:
-                mzs = np.float32(mzs)
+            if self.nonzero:                
                 mz_indices = [mz_to_index[mz] for mz in list(np.int32(np.round(mzs * self.bins_per_mz)))]
 
                 for bin, intensity in zip(mz_indices, intensities):
@@ -89,12 +88,11 @@ class BaseMSIToNumpy(ABC):
                 for bin, intensity in zip(bins, intensities):
                     img[y, x, bin] = img[y, x, bin] + intensity
 
-        mzs = np.arange(self.min_mz, self.max_mz + 1, 1.0/self.bins_per_mz)
-        indices = list(range(img.shape[-1]))
         if self.nonzero:
             mzs = [float(f"{(mz/self.bins_per_mz):.6f}") for mz in set_of_mzs_quantized]
         else:
-            mzs = [float(f"{mzs[i]:.6f}") for i in indices]
+            mzs = np.arange(self.min_mz, self.max_mz + 1, 1.0/self.bins_per_mz)
+            mzs = [float(f"{mzs[i]:.6f}") for i in range(img.shape[-1])]
 
         return np.float32(img), mzs
 
