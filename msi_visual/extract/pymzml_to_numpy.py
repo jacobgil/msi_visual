@@ -5,7 +5,7 @@ from pyimzml.ImzMLParser import ImzMLParser
 from msi_visual.extract.base_msi_to_numpy import BaseMSIToNumpy
         
 class PymzmlToNumpy(BaseMSIToNumpy):
-    def get_regions(self):
+    def get_regions(self, input_path):
         return [0]
 
     def get_img_type(self):
