@@ -79,7 +79,7 @@ class BaseMSIToNumpy(ABC):
         for x, y, mzs, intensities in tqdm.tqdm(zip(xs, ys, all_mzs, all_intensities)):
             intensities = np.array(intensities)
             if self.nonzero:                
-                mz_indices = [mz_to_index[mz] for mz in list(np.int32(np.round(mzs * self.bins_per_mz)))]
+                mz_indices = [mz_to_index[mz] for mz in list(np.int32(np.round(np.float32(mzs) * self.bins_per_mz)))]
 
                 for bin, intensity in zip(mz_indices, intensities):
                     img[y, x, bin] = img[y, x, bin] + intensity

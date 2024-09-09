@@ -26,21 +26,24 @@ def get_extraction(cache_path='extraction.cache'):
                 cache['Extraction folder'])
         else:
             extraction_folders_keys_index = None
-        selected_extraction = st.selectbox(
+        selected_extraction = st.multiselect(
             'Extraction folder',
             extraction_folders_keys,
-            index=extraction_folders_keys_index)
+            [])
         
         if selected_extraction:
-            extraction_folder = extraction_folders[selected_extraction]
-            region_list = get_files_from_folder(extraction_folder)
+            region_list = []
             if cache['Regions to include'] == '':
                 default = None
             else:
                 default = cache['Regions to include']
 
+            for folder in selected_extraction:
+                extraction_folder = extraction_folders[folder]
+                region_list.extend(get_files_from_folder(extraction_folder))
+
             regions = st.multiselect(
-                'Regions to include', region_list, default=default)
+                'Regions to include', region_list, default=region_list)
 
         cache['Regions to include'] = regions
         cache['Extraction folder'] = selected_extraction
