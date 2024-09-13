@@ -24,5 +24,5 @@ def get_args():
 if __name__ == "__main__":
     args = get_args()
     print(args)
-    extraction = BrukerTsfToNumpy(args.start_mz, args.end_mz, args.bins, args.nonzero, args.id)
+    extraction = BrukerTsfToNumpy(args.id, args.start_mz, args.end_mz, args.bins, args.nonzero)
     extraction(args.input_path, args.output_path)

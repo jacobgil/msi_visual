@@ -72,6 +72,7 @@ with pipeline_tab:
                 img = normalization(np.load(path))
 
                 for method_index, method in enumerate(models):
+                    method._trained = False
                     progress = (index * len(models) + method_index) / (len(regions) * len(models))
                     with st.spinner(f'Computing {method} for {path}'):
                         result = method(img)

@@ -1,6 +1,6 @@
 *.pyc
 *.png
 *.jpg
-app/deploy.cache
-app/train.cache
+app/*.cache
 .vscode/settings.json
+*.cache
