@@ -13,6 +13,10 @@ from msi_visual.app.utils.viewer import display_comparison, get_stats, get_raw_i
 import msi_visual.visualizations
 importlib.reload(msi_visual.visualizations)
 
+import PIL
+PIL.Image.MAX_IMAGE_PIXELS = 933120000
+
+
 def reset():
     st.session_state["clicks"] = defaultdict(list)
     st.session_state["data"] = {}
@@ -42,7 +46,7 @@ if os.path.exists("viewer.cache"):
 else:
     cache = {}
 
-viz_tab, region_tab, ion_tab, settings_tab = st.tabs(["Visualizations", "Comparisons", "M/Z", "Settings"])
+viz_tab, region_tab, ion_tab, settings_tab = st.tabs(["Settings", "Visualizations", "Comparisons", "M/Z"])
 
 with settings_tab:
     folder = st.text_input("Visualization folder", value=cache.get("Visualization folder", ""), on_change=reset)

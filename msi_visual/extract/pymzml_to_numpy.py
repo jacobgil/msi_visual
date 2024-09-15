@@ -20,5 +20,6 @@ class PymzmlToNumpy(BaseMSIToNumpy):
             ys.append(y)
             all_mzs.append(mzs)
             all_intensities.append(intensities)
-        
+        print("IMS slide max mz", np.max([np.max(m) for m in all_mzs]))
+        print("IMS slide min mz", np.min([np.min(m) for m in all_mzs]))
         return xs, ys, all_mzs, all_intensities
