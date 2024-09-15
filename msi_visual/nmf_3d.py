@@ -15,6 +15,7 @@ class NMF3D:
         self.start_bin = start_bin
         self.end_bin = end_bin
         self.max_iter = max_iter
+        self._trained = False
 
     def __repr__(self):
         return f"NMF-3D max_iter={self.max_iter}"
@@ -34,6 +35,7 @@ class NMF3D:
         self.W = self.model.fit_transform(vector)
         self.H = self.model.components_
         self.train_image_shapes = [img.shape[:2] for img in images]
+        self._trained = True
 
     def visualize_training_components(self):
         result = []
@@ -57,7 +59,8 @@ class NMF3D:
         return np.uint8(255 * normalize(result.transpose((1, 2, 0))))
 
     def __call__(self, img):
-        self.fit([img])
+        if not self._trained:
+            self.fit([img])
         return self.predict(img)
 
     def segment_visualization(self,
