@@ -45,7 +45,7 @@ class SaliencyOptimization:
         method = self.sampling
 
         if method == "random":
-            return np.random.choice(list(range(N), self.number_of_points))
+            return np.random.choice(list(range(N)), self.number_of_points)
 
         elif method == "kmeans++":
             _, indices = kmeans_plusplus(data, n_clusters=Np, random_state=0)
