@@ -8,3 +8,7 @@ cmapy
 streamlit
 streamlit-image-coordinates
 st-pages
+torchsort
+joblib
+Pillow
+scikit-image

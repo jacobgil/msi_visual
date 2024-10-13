@@ -46,7 +46,7 @@ if os.path.exists("viewer.cache"):
 else:
     cache = {}
 
-viz_tab, region_tab, ion_tab, settings_tab = st.tabs(["Settings", "Visualizations", "Comparisons", "M/Z"])
+settings_tab, viz_tab, region_tab, ion_tab = st.tabs(["Settings", "Visualizations", "Comparisons", "M/Z"])
 
 with settings_tab:
     folder = st.text_input("Visualization folder", value=cache.get("Visualization folder", ""), on_change=reset)
