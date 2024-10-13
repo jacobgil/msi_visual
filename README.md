@@ -3,7 +3,9 @@
 `pip install msi-visual`
 
 ⭐ Unlock the potential of MASS mass spectrometry imaging (MSI) data with extremely rich visualizations.
+
 ⭐ Quick interactive exploration and mapping of MSI data based on statistical tests between different regions.
+
 ⭐ Improved quantitive methods for evaluating these visualizations.
 
 
@@ -34,7 +36,11 @@ Supported visualizations are:
 
 
 ```python
-method = SaliencyOptimization(num_epochs=200, regularization_strength=0.001, sampling="random", number_of_points=600, init="coreset")
+method = SaliencyOptimization(num_epochs=200,
+                              regularization_strength=0.001,
+                              sampling="random",
+                              number_of_points=600,
+                              init="coreset")
 visualization = method(data)
 ```
 
@@ -55,8 +61,8 @@ To help you convert your raw MSI data into the required format, we provide sever
 | Data Format | Import | Script Name | Description |
 |-------------|--------|-------------|-------------|
 | Bruker TIMS | `from msi_visual.extract.bruker_tims_to_numpy import BrukerTimsToNumpy` | `scripts/extraction/extract_bruker_tims.py` | Converts Bruker TIMS data (.d folder) |
-| Bruker TSG | `from msi_visual.extract.bruker_tsf_to_numpy import BrukerTSFToNumpy` | `scripts/extraction/extract_bruker_tsf.py` | Converts Bruker TSF data (.d folder) |
-| imzML | `from msi_visual.extract.pymzml_to_numpy import ImzMLToNumpy` | `scripts/extraction/extract_pymzml.py` | Converts imzML data to numpy arrays (.npy files) |
+| Bruker TSF | `from msi_visual.extract.bruker_tsf_to_numpy import BrukerTSFToNumpy` | `scripts/extraction/extract_bruker_tsf.py` | Converts Bruker TSF data (.d folder) |
+| pymzML | `from msi_visual.extract.pymzml_to_numpy import ImzMLToNumpy` | `scripts/extraction/extract_pymzml.py` | Converts the open source pymzML data format to numpy arrays (.npy files) |
 
 Example running dataset extraction from python code:
 
