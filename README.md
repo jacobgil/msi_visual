@@ -16,7 +16,7 @@ We believe that Mass Spectometry Imaging is the future of biological and medical
 MSI-VISUAL is a python package for visualizing and interacting with MSI data.
 It is intended for both life science researchers that can use it from an interactive web app, as well as developers that can use the underlying algorithms in their own software.
 It includes:
-- A python library with multiple novel state of the art visualization and evaluation algorithms for MSI data.
+- A python library with multiple novel state of the art visualization, evaluation algorithms for MSI data, methods for statistical testing between different regions, tools for data extraction and normalization, and tools for visualizing region differences.
 - A web app (currently based on [streamlit](https://streamlit.io/)) for interactively visualizing MSI data, and performing statistical comparison between different regions, to map significant m/z values.
 
 
@@ -31,7 +31,7 @@ To help you convert your raw MSI data into the required format, we provide sever
 
 | Data Format | Import | Script Name | Description |
 |-------------|--------|-------------|-------------|
-| Bruker TIMS | `from msi_visual.extract.bruker_tims_to_numpy import BrukerTimsToNumpy` | `scripts/extraction/extract_bruker_tims.py` | Converts Bruker TIMS data (.d folder) |
+| Bruker TIMS | <br><pre lang="python">from msi_visual.extract.bruker_tims_to_numpy import BrukerTimsToNumpy<pre> | `scripts/extraction/extract_bruker_tims.py` | Converts Bruker TIMS data (.d folder) |
 | Bruker TSF | `from msi_visual.extract.bruker_tsf_to_numpy import BrukerTSFToNumpy` | `scripts/extraction/extract_bruker_tsf.py` | Converts Bruker TSF data (.d folder) |
 | pymzML | `from msi_visual.extract.pymzml_to_numpy import ImzMLToNumpy` | `scripts/extraction/extract_pymzml.py` | Converts the open source pymzML data format to numpy arrays (.npy files) |
 
