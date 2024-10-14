@@ -2,7 +2,7 @@
 
 `pip install msi-visual`
 
-⭐ Unlock the potential of MASS mass spectrometry imaging (MSI) data with extremely rich visualizations.
+⭐ Unlock the potential of mass spectrometry imaging (MSI) with rich visualizations showing hidden information.
 
 ⭐ Quick interactive exploration and mapping of MSI data based on statistical tests between different regions.
 
@@ -74,8 +74,8 @@ See the data extraction section for more information on how to convert your data
 Supported visualizations are:
 | Visualization Name | Import | Description |
 |--------------------|--------|-------------|
-| Saliency Optimization | <pre lang="python">from msi_visual.saliency_opt import SaliencyOptimization</pre> | A novel optimization-based approach for creating high-fidelity visualizations of MSI data. |
-| NMF (Non-negative Matrix Factorization) | <pre lang="python">from msi_visual.nmf_3d import NMF3D</pre> | Applies NMF to decompose the MSI data into meaningful components for visualization. |
+| Saliency Optimization | <pre lang="python">from msi_visual.saliency_opt import SaliencyOptimization</pre> | A novel optimization-based approach for creating high-fidelity visualizations of MSI data, by preserving high ranking point pair distances |
+| NMF (Non-negative Matrix Factorization) | <pre lang="python">from msi_visual.nmf_3d import NMF3D</pre> | Applies NMF to decompose the MSI data into meaningful components. |
 | Non-parametric UMAP | <pre lang="python">from msi_visual.nonparametric_umap import MSINonParametricUMAP</pre> | Uses UMAP (Uniform Manifold Approximation and Projection) for dimensionality reduction and visualization of MSI data. |
 | Top 3 | <pre lang="python">from msi_visual.percentile_ratio import top3</pre> | Visualizes the top 3 most intense m/z values for each pixel. |
 | Percentile Ratio RGB | <pre lang="python">from msi_visual.percentile_ratio import percentile_ratio_rgb</pre> | Creates an RGB image based on the ratio of high to low percentiles of m/z intensities. |
