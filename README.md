@@ -31,9 +31,9 @@ To help you convert your raw MSI data into the required format, we provide sever
 
 | Data Format | Import | Script Name | Description |
 |-------------|--------|-------------|-------------|
-| Bruker TIMS | <br><pre lang="python">from msi_visual.extract.bruker_tims_to_numpy import BrukerTimsToNumpy</pre> | `scripts/extraction/extract_bruker_tims.py` | Converts Bruker TIMS data (.d folder) |
-| Bruker TSF | <br><pre lang="python">from msi_visual.extract.bruker_tsf_to_numpy import BrukerTSFToNumpy</pre> | `scripts/extraction/extract_bruker_tsf.py` | Converts Bruker TSF data (.d folder) |
-| pymzML | <br><pre lang="python">from msi_visual.extract.pymzml_to_numpy import ImzMLToNumpy` | `scripts/extraction/extract_pymzml.py</pre> | Converts the open source pymzML data format to numpy arrays (.npy files) |
+| Bruker TIMS | <pre lang="python">from msi_visual.extract.bruker_tims_to_numpy import BrukerTimsToNumpy</pre> | `scripts/extraction/extract_bruker_tims.py` | Converts Bruker TIMS data (.d folder) |
+| Bruker TSF | <pre lang="python">from msi_visual.extract.bruker_tsf_to_numpy import BrukerTSFToNumpy</pre> | `scripts/extraction/extract_bruker_tsf.py` | Converts Bruker TSF data (.d folder) |
+| pymzML | <pre lang="python">from msi_visual.extract.pymzml_to_numpy import ImzMLToNumpy` | `scripts/extraction/extract_pymzml.py</pre> | Converts the open source pymzML data format to numpy arrays (.npy files) |
 
 Example running dataset extraction from python code:
 
@@ -75,10 +75,10 @@ Supported visualizations are:
 | Visualization Name | Import | Description |
 |--------------------|--------|-------------|
 | Saliency Optimization | <pre lang="python">from msi_visual.saliency_opt import SaliencyOptimization</pre> | A novel optimization-based approach for creating high-fidelity visualizations of MSI data. |
-| NMF (Non-negative Matrix Factorization) | <br><pre lang="python">from msi_visual.nmf_3d import NMF3D</pre> | Applies NMF to decompose the MSI data into meaningful components for visualization. |
-| Non-parametric UMAP | <br><pre lang="python">from msi_visual.nonparametric_umap import MSINonParametricUMAP</pre> | Uses UMAP (Uniform Manifold Approximation and Projection) for dimensionality reduction and visualization of MSI data. |
-| Top 3 | <br><pre lang="python">from msi_visual.percentile_ratio import top3</pre> | Visualizes the top 3 most intense m/z values for each pixel. |
-| Percentile Ratio RGB | <br><pre lang="python">from msi_visual.percentile_ratio import percentile_ratio_rgb</pre> | Creates an RGB image based on the ratio of high to low percentiles of m/z intensities. |
+| NMF (Non-negative Matrix Factorization) | <pre lang="python">from msi_visual.nmf_3d import NMF3D</pre> | Applies NMF to decompose the MSI data into meaningful components for visualization. |
+| Non-parametric UMAP | <pre lang="python">from msi_visual.nonparametric_umap import MSINonParametricUMAP</pre> | Uses UMAP (Uniform Manifold Approximation and Projection) for dimensionality reduction and visualization of MSI data. |
+| Top 3 | <pre lang="python">from msi_visual.percentile_ratio import top3</pre> | Visualizes the top 3 most intense m/z values for each pixel. |
+| Percentile Ratio RGB | <pre lang="python">from msi_visual.percentile_ratio import percentile_ratio_rgb</pre> | Creates an RGB image based on the ratio of high to low percentiles of m/z intensities. |
 
 ```python
 method = SaliencyOptimization(num_epochs=200,
@@ -100,8 +100,8 @@ from msi_visual.kmeans_segmentation import KmeansSegmentation
 from msi_visual.nmf_segmentation import NMFSegmentation
 | Visualization Name | Import | Description |
 |--------------------|--------|-------------|
-| K-means Segmentation | <br><pre lang="python">from msi_visual.kmeans_segmentation import KmeansSegmentation</pre> | Kmeans clustering. |
-| NMF Segmentation | <br><pre lang="python">from msi_visual.nmf_segmentation import NMFSegmentation</pre> | NMF based clustering. |
+| K-means Segmentation | <pre lang="python">from msi_visual.kmeans_segmentation import KmeansSegmentation</pre> | Kmeans clustering. |
+| NMF Segmentation | <pre lang="python">from msi_visual.nmf_segmentation import NMFSegmentation</pre> | NMF based clustering. |
 
 ```python
 method = KmeansSegmentation(num_clusters=10)
@@ -112,9 +112,9 @@ In this approach a single dimensional image is created with a method, and is the
 
 | Visualization Name | Import | Description |
 |--------------------|--------|-------------|
-| Rare NMF Segmentation | <br><pre lang="python">from msi_visual.rare_nmf_segmentation import SegmentationPercentileRatio</pre> | Measure a percentile ratio for every pixel and visualize it. |
-| Avg MZ NMF Segmentation | <br><pre lang="python">from msi_visual.avgmz_nmf_segmentation import SegmentationAvgMZVisualization</pre> | Measure the average m/z in each pixel and visualize it. |
-| UMAP NMF Segmentation | <br><pre lang="python">from msi_visual.umap_nmf_segmentation import SegmentationUMAPVisualization</pre> | Use a 1D UMAP. |
+| Rare NMF Segmentation | <pre lang="python">from msi_visual.rare_nmf_segmentation import SegmentationPercentileRatio</pre> | Measure a percentile ratio for every pixel and visualize it. |
+| Avg MZ NMF Segmentation | <pre lang="python">from msi_visual.avgmz_nmf_segmentation import SegmentationAvgMZVisualization</pre> | Measure the average m/z in each pixel and visualize it. |
+| UMAP NMF Segmentation | <pre lang="python">from msi_visual.umap_nmf_segmentation import SegmentationUMAPVisualization</pre> | Use a 1D UMAP. |
 
 A matplotlib color scheme for each region has to be specified.
 One way of generating this is with:
