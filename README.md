@@ -20,6 +20,22 @@ It includes:
 - A web app (currently based on [streamlit](https://streamlit.io/)) for interactively visualizing MSI data, and performing statistical comparison between different regions, to map significant m/z values.
 
 
+# Running the web app
+
+```bash
+pip install -e .
+```
+
+```bash
+streamlit run app/main.py
+```
+
+
+![MSI-VISUAL Demo](images/gif.gif)
+
+
+
+
 # Using from the python library
 
 ## Data format and data extraction
