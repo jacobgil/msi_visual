@@ -20,6 +20,48 @@ It includes:
 
 # Using from the python library
 
+## Data format and data extraction
+
+The input files a simply .npy files with tensors of shape rows x cols x number_of_mz_values.
+
+
+To help you convert your raw MSI data into the required format, we provide several data extraction scripts. Here's a summary of the available data extraction methods:
+
+| Data Format | Import | Script Name | Description |
+|-------------|--------|-------------|-------------|
+| Bruker TIMS | `from msi_visual.extract.bruker_tims_to_numpy import BrukerTimsToNumpy` | `scripts/extraction/extract_bruker_tims.py` | Converts Bruker TIMS data (.d folder) |
+| Bruker TSF | `from msi_visual.extract.bruker_tsf_to_numpy import BrukerTSFToNumpy` | `scripts/extraction/extract_bruker_tsf.py` | Converts Bruker TSF data (.d folder) |
+| pymzML | `from msi_visual.extract.pymzml_to_numpy import ImzMLToNumpy` | `scripts/extraction/extract_pymzml.py` | Converts the open source pymzML data format to numpy arrays (.npy files) |
+
+Example running dataset extraction from python code:
+
+```python
+extractor = BrukerTimsToNumpy(identifier, start_mz, end_mz, bins, nonzero)
+extractor(input_folder, output_folder)
+```
+
+if nonzero is set to true, the script will identify m/z values that have non zero intensities somewhere in the data, and will keep only those.
+In case peak selection was used, this may reduce the data size substantially.
+
+You can also run the extraction from scripts (and from the User Interface).
+
+```bash
+python extract_bruker_tims.py --input_path input_folder --output_path output_folder --bins 5 --num_workers 1 --id some_string_identifier
+```
+
+
+
+## Data normalization
+Two data normalizations are provided: total ion count, and spatial total ion count.
+```python
+from msi_visual.normalization import total_ion_count, spatial_total_ion_count
+data = total_ion_count(data)
+data = spatial_total_ion_count(data)
+```
+
+Total ION count normalizes every pixel so the sum of the intensities is 1.
+Spatial total ion count first normalizes every m/z intensity by a high percentile of that m/z accross the image, spatially, and then performs total ION count.
+
 ## Creating visualizations
 
 The input data is expected to be a .npy file with a tensor of shape rows x cols x number_of_mz_values.
@@ -68,16 +110,26 @@ In this approach a single dimensional image is created with a method, and is the
 
 | Visualization Name | Import | Description |
 |--------------------|--------|-------------|
-| Rare NMF Segmentation | `from msi_visual.rare_nmf_segmentation import SegmentationPercentileRatio` | NMF based clustering. |
-| Avg MZ NMF Segmentation | `from msi_visual.avgmz_nmf_segmentation import SegmentationAvgMZVisualization` | NMF based clustering. |
-| UMAP NMF Segmentation | `from msi_visual.umap_nmf_segmentation import SegmentationUMAPVisualization` | NMF based clustering. |
+| Rare NMF Segmentation | `from msi_visual.rare_nmf_segmentation import SegmentationPercentileRatio` | Measure a percentile ratio for every pixel and visualize it. |
+| Avg MZ NMF Segmentation | `from msi_visual.avgmz_nmf_segmentation import SegmentationAvgMZVisualization` | Measure the average m/z in each pixel and visualize it. |
+| UMAP NMF Segmentation | `from msi_visual.umap_nmf_segmentation import SegmentationUMAPVisualization` | Use a 1D UMAP. |
+
+A matplotlib color scheme for each region has to be specified.
+One way of generating this is with:
+```python
+from msi_visual.colorize import AutoColorizeRandom
+import json
+schemes = json.load(open(r"app\\auto_color_schemes.json"))
+color_schemes = AutoColorizeRandom(schemes).colorize(ratio=0.5, k=10)
+```
+
+This loads a default color scheme selection, and will select half of the regions to have high frequency color scehems, and the other half to have smoother, gradual color schemes.
+
 
 ```python
 method = SegmentationPercentileRatio(joblib.load("nmf_model_k=16.joblib"))
-visualization = method(data)
+visualization = method.visualize(data, color_schemes)
 ```
-
-
 
 
 ## Evaluating visualizations
@@ -86,35 +138,3 @@ visualization = method(data)
 from msi_visual.metrics import MSIVisualizationMetrics
 metrics = MSIVisualizationMetrics(data, visualization)
 ```
-
-## Data format and data extraction
-
-The input files a simply .npy files with tensors of shape rows x cols x number_of_mz_values.
-
-
-To help you convert your raw MSI data into the required format, we provide several data extraction scripts. Here's a summary of the available data extraction methods:
-
-| Data Format | Import | Script Name | Description |
-|-------------|--------|-------------|-------------|
-| Bruker TIMS | ```python from msi_visual.extract.bruker_tims_to_numpy import BrukerTimsToNumpy``` | `scripts/extraction/extract_bruker_tims.py` | Converts Bruker TIMS data (.d folder) |
-| Bruker TSF | ```python from msi_visual.extract.bruker_tsf_to_numpy import BrukerTSFToNumpy``` | `scripts/extraction/extract_bruker_tsf.py` | Converts Bruker TSF data (.d folder) |
-| pymzML | ```python from msi_visual.extract.pymzml_to_numpy import ImzMLToNumpy``` | `scripts/extraction/extract_pymzml.py` | Converts the open source pymzML data format to numpy arrays (.npy files) |
-
-Example running dataset extraction from python code:
-
-```python
-extractor = BrukerTimsToNumpy(identifier, start_mz, end_mz, bins, nonzero)
-extractor(input_folder, output_folder)
-```
-
-if nonzero is set to true, the script will identify m/z values that have non zero intensities somewhere in the data, and will keep only those.
-In case peak selection was used, this may reduce the data size substantially.
-
-You can also run the extraction from scripts (and from the User Interface).
-
-```bash
-python extract_bruker_tims.py --input_path input_folder --output_path output_folder --bins 5 --num_workers 1 --id some_string_identifier
-```
-
-
-

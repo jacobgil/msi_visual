@@ -58,9 +58,6 @@ class SegmentationPercentileRatio:
             region_heatmap = image_histogram_equalization(
                 region_heatmap, region_mask, num_bins) / (num_bins - 1)
 
-            # region_heatmap_ranks = region_heatmap.argsort().argsort()
-            # region_heatmap = region_heatmap_ranks / np.max(region_heatmap_ranks)
-
 
             region_heatmaps[region_mask > 0] = region_heatmap[region_mask > 0]
 
