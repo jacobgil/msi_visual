@@ -8,6 +8,8 @@
 
 ⭐ Improved quantitive methods for evaluating these visualizations.
 
+![Example MSI Visualization](images/salo.jpg)
+
 
 We believe that Mass Spectometry Imaging is the future of biological and medical diagnostics and research. There is extremely rich information in this kind of data that is currently not being utilized. We are on a mission to solve this.
 
