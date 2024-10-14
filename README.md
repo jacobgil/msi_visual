@@ -74,7 +74,7 @@ See the data extraction section for more information on how to convert your data
 Supported visualizations are:
 | Visualization Name | Import | Description |
 |--------------------|--------|-------------|
-| Saliency Optimization | <br><pre lang="python">from msi_visual.saliency_opt import SaliencyOptimization</pre> | A novel optimization-based approach for creating high-fidelity visualizations of MSI data. |
+| Saliency Optimization | <pre lang="python">from msi_visual.saliency_opt import SaliencyOptimization</pre> | A novel optimization-based approach for creating high-fidelity visualizations of MSI data. |
 | NMF (Non-negative Matrix Factorization) | <br><pre lang="python">from msi_visual.nmf_3d import NMF3D</pre> | Applies NMF to decompose the MSI data into meaningful components for visualization. |
 | Non-parametric UMAP | <br><pre lang="python">from msi_visual.nonparametric_umap import MSINonParametricUMAP</pre> | Uses UMAP (Uniform Manifold Approximation and Projection) for dimensionality reduction and visualization of MSI data. |
 | Top 3 | <br><pre lang="python">from msi_visual.percentile_ratio import top3</pre> | Visualizes the top 3 most intense m/z values for each pixel. |
