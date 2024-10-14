@@ -136,7 +136,21 @@ visualization = method.visualize(data, color_schemes)
 
 ## Evaluating visualizations
 
+Two methods for comparing masks of regions are provided, in order to score m/z values by how significant their presence is in one region compared to the other:
+- U-Test: Performs the Mann–Whitney U test between the intensities, for each m/z value, between both regions.
+- Difference in ROI-MEAN: Measures the ratio of the mean intensity of the two regions.
+
 ```python
 from msi_visual.metrics import MSIVisualizationMetrics
 metrics = MSIVisualizationMetrics(data, visualization)
+```
+## Statistical testing between regions
+```python
+region_comparison = visualizations.RegionComparison(
+    data,
+    mzs=extraction_mzs)
+
+# stats_method can be "U-Test" or "Difference in ROI-MEAN"
+stats_method = "U-Test"
+stats = region_comparison.ranking_comparison(mask_a, mask_b, method=stats_method)
 ```
