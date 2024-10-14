@@ -96,9 +96,9 @@ To help you convert your raw MSI data into the required format, we provide sever
 
 | Data Format | Import | Script Name | Description |
 |-------------|--------|-------------|-------------|
-| Bruker TIMS | `from msi_visual.extract.bruker_tims_to_numpy import BrukerTimsToNumpy` | `scripts/extraction/extract_bruker_tims.py` | Converts Bruker TIMS data (.d folder) |
-| Bruker TSF | `from msi_visual.extract.bruker_tsf_to_numpy import BrukerTSFToNumpy` | `scripts/extraction/extract_bruker_tsf.py` | Converts Bruker TSF data (.d folder) |
-| pymzML | `from msi_visual.extract.pymzml_to_numpy import ImzMLToNumpy` | `scripts/extraction/extract_pymzml.py` | Converts the open source pymzML data format to numpy arrays (.npy files) |
+| Bruker TIMS | ```python from msi_visual.extract.bruker_tims_to_numpy import BrukerTimsToNumpy``` | `scripts/extraction/extract_bruker_tims.py` | Converts Bruker TIMS data (.d folder) |
+| Bruker TSF | ```python from msi_visual.extract.bruker_tsf_to_numpy import BrukerTSFToNumpy``` | `scripts/extraction/extract_bruker_tsf.py` | Converts Bruker TSF data (.d folder) |
+| pymzML | ```python from msi_visual.extract.pymzml_to_numpy import ImzMLToNumpy``` | `scripts/extraction/extract_pymzml.py` | Converts the open source pymzML data format to numpy arrays (.npy files) |
 
 Example running dataset extraction from python code:
 
