@@ -6,6 +6,7 @@ from msi_visual.nonparametric_umap  import MSINonParametricUMAP
 from msi_visual.kmeans_segmentation import KmeansSegmentation
 from msi_visual.percentile_ratio import TOP3, PercentileRatio
 from msi_visual.nmf_segmentation import NMFSegmentation
+
 from msi_visual.segmentation_visualization_comb import SegmentationAndGuidingImageFolder
 
 from msi_visual.normalization import total_ion_count, spatial_total_ion_count

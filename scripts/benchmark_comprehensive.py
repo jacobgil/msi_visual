@@ -13,6 +13,12 @@ from msi_visual.phate3d import PHATE3D
 from msi_visual.isomap_3d import Isomap3D
 from msi_visual.trimap_3d import Trimap3D
 from msi_visual.spectral_3d import Spectral3D
+from msi_visual.fastica_3d import FastICA3D
+from msi_visual.lda_3d import LDA3D
+from msi_visual.nmf_segmentation import NMFSegmentation
+from msi_visual.kmeans_segmentation import KmeansSegmentation
+
+
 from msi_visual.metrics import MSIVisualizationMetrics
 from msi_visual.normalization import total_ion_count
 from PIL import Image
@@ -46,7 +52,8 @@ if __name__ == "__main__":
     random.seed(0)
 
 
-    methods = [("Spectral3D", Spectral3D()), \
+    methods = [("FastICA3D", FastICA3D()),
+               ("Spectral3D", Spectral3D()), \
                ("PCA3D", PCA3D()), 
                ("SaliencyOptimization", SaliencyOptimization(num_epochs=500, regularization_strength=0.001, sampling="coreset", number_of_points=1000, init="random")), 
                ("SpearmanOptimization", SpearmanOptimization(num_epochs=500, regularization_strength=0.001, sampling="coreset", number_of_points=1000, init="random")),
@@ -78,6 +85,9 @@ if __name__ == "__main__":
             else:
                 t0 = time.time()
                 visualizations[name] = method(img)
+                if isinstance(visualizations[name], list):
+                    visualizations[name] = visualizations[name][0]
+
                 t = time.time() - t0
             random.seed(0)
 
