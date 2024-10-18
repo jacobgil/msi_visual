@@ -10,7 +10,8 @@ import matplotlib
 from PIL import Image
 import matplotlib.pyplot as plt
 import cv2
-
+from zadu import zadu
+from sklearn.manifold import trustworthiness
 
 def smoothness_saliency_metrics(cosine, maxabs, outputs):
     max_rank = np.maximum(
@@ -25,36 +26,40 @@ def smoothness_saliency_metrics(cosine, maxabs, outputs):
     corr_cosine = scipy.stats.pearsonr(cosine, outputs).statistic
     corr_maxabs = scipy.stats.pearsonr(maxabs, outputs).statistic
 
+    spearman_cosine = scipy.stats.spearmanr(cosine, outputs).statistic
+    spearman_maxabs = scipy.stats.spearmanr(maxabs, outputs).statistic
+
     N = len(outputs)
-    gamma = 2
-    saliency_30 = (((result_rank - max_rank + N * 0.3) > 0)
-                   * max_rank**gamma).sum() / sum(max_rank**gamma)
-    saliency_20 = (((result_rank - max_rank + N * 0.2) > 0)
-                   * max_rank**gamma).sum() / sum(max_rank**gamma)
-    saliency_10 = (((result_rank - max_rank + N * 0.1) > 0)
-                   * max_rank**gamma).sum() / sum(max_rank**gamma)
-    smoothness_30 = (((cosine_rank - result_rank - N * 0.3) < 0)
-                     * (N - cosine_rank)**gamma).sum() / sum((N - cosine_rank)**gamma)
-    smoothness_20 = (((cosine_rank - result_rank - N * 0.2) < 0)
-                     * (N - cosine_rank)**gamma).sum() / sum((N - cosine_rank)**gamma)
-    smoothness_10 = (((cosine_rank - result_rank - N * 0.1) < 0)
-                     * (N - cosine_rank)**gamma).sum() / sum((N - cosine_rank)**gamma)
+    for gamma in [0, 2.0]:
 
-    
-    saliency_20 = (((result_rank - max_rank + N * 0.2) > 0)
-                   * max_rank**gamma).sum() / sum(max_rank**gamma)
-
-    result["Saliency Δ=20%"] = saliency_20
-    result["Smoothness Δ=20%"] = smoothness_20
-    result["Saliency Δ=30%"] = saliency_30
-    result["Smoothness Δ=30%"] = smoothness_30
-    result["Saliency Δ=10%"] = saliency_10
-    result["Smoothness Δ=10%"] = smoothness_10
+        #max_rank = max_rank + 1e-6
+        saliency_30 = (((result_rank - max_rank + N * 0.3) > 0)
+                    * max_rank**gamma).sum() / sum(max_rank**gamma)
+        saliency_20 = (((result_rank - max_rank + N * 0.2) > 0)
+                    * max_rank**gamma).sum() / sum(max_rank**gamma)
+        saliency_10 = (((result_rank - max_rank + N * 0.1) > 0)
+                    * max_rank**gamma).sum() / sum(max_rank**gamma)
+        smoothness_30 = (((cosine_rank - result_rank - N * 0.3) < 0)
+                        * (N - cosine_rank)**gamma).sum() / sum((N - cosine_rank)**gamma)
+        smoothness_20 = (((cosine_rank - result_rank - N * 0.2) < 0)
+                        * (N - cosine_rank)**gamma).sum() / sum((N - cosine_rank)**gamma)
+        smoothness_10 = (((cosine_rank - result_rank - N * 0.1) < 0)
+                        * (N - cosine_rank)**gamma).sum() / sum((N - cosine_rank)**gamma)        
+        saliency_20 = (((result_rank - max_rank + N * 0.2) > 0)
+                    * max_rank**gamma).sum() / sum(max_rank**gamma)
+        result[f"Saliency Δ=20% gamma={gamma}"] = saliency_20
+        result[f"Smoothness Δ=20% gamma={gamma}"] = smoothness_20
+        result[f"Saliency Δ=30% gamma={gamma}"] = saliency_30
+        result[f"Smoothness Δ=30% gamma={gamma}"] = smoothness_30
+        result[f"Saliency Δ=10% gamma={gamma}"] = saliency_10
+        result[f"Smoothness Δ=10% gamma={gamma}"] = smoothness_10
+        result[f"Avg. Saliency gamma={gamma}"] = (saliency_10 + saliency_20 + saliency_30) / 3
+        result[f"Avg. Smoothness gamma={gamma}"] = (smoothness_10 + smoothness_20 + smoothness_30) / 3
     result["Correlation Cosine"] = corr_cosine
     result["Correlation L-∞"] = corr_maxabs
+    result["Spearman Cosine"] = spearman_cosine
+    result["Spearman L-∞"] = spearman_maxabs
 
-    result["Avg. Saliency"] = (saliency_10 + saliency_20 + saliency_30) / 3
-    result["Avg. Smoothness"] = (smoothness_10 + smoothness_20 + smoothness_30) / 3
 
 
     return result
@@ -62,6 +67,7 @@ def smoothness_saliency_metrics(cosine, maxabs, outputs):
 
 class RandomPairSampler:
     def __init__(self, img, num_samples, mask):
+    
         self.pairs = self.generate_pairs(img, num_samples, mask)
 
     def generate_pairs(self, img, num_samples, mask):
@@ -123,6 +129,18 @@ class RandomPairSampler:
 
 class MSIVisualizationMetrics:
     def __init__(self, normalized, visualization, mask=None, num_samples=30000):
+        self.img_mask = np.uint8(normalized.max(axis=-1) > 0) * 255
+        self.img_mask_reshaped = self.img_mask.reshape(self.img_mask.shape[0] * self.img_mask.shape[1])
+        indices = [i for i in range(len(self.img_mask_reshaped)) if self.img_mask_reshaped[i] > 0]
+        if len(indices) <= num_samples:
+            self.random_indices = indices
+        else:
+            self.random_indices = random.sample(indices, num_samples // 5)
+
+        self.data_subset = normalized.reshape(-1, normalized.shape[-1])
+        self.visualization_subset = visualization.reshape((self.data_subset.shape[0], -1))
+        self.data_subset = self.data_subset[self.random_indices]
+        self.visualization_subset = self.visualization_subset[self.random_indices]
 
         self.sampler = RandomPairSampler(normalized, num_samples, mask)
 
@@ -141,8 +159,24 @@ class MSIVisualizationMetrics:
         maxabs = self.data["L-∞"]
         outputs = self.data["Output"]
     
-
         metrics = smoothness_saliency_metrics(cosine, maxabs, outputs)
+
+
+        spec = [{"id": "mrre", "params": { "k": 100 },}, {"id": "lcmc", "params": { "k": 100 }}]
+        t0 = time.time()
+        scores = zadu.ZADU(spec, self.data_subset).measure(self.visualization_subset)
+        for zadu_metric in scores:
+            for m in zadu_metric:
+                metrics[m] = zadu_metric[m]
+        print("zadu took", time.time() - t0)
+        t0 = time.time()
+        trustworthiness_score = trustworthiness(self.data_subset, self.visualization_subset, metric='euclidean', n_neighbors=100)
+        trustworthiness_score_chevbyshev = trustworthiness(self.data_subset, self.visualization_subset, metric='chebyshev', n_neighbors=100)
+        metrics["Trustworthiness"] = trustworthiness_score
+        metrics["Trustworthiness L-∞"] = trustworthiness_score_chevbyshev
+
+        print(time.time() - t0, "trustwo")
+
         return metrics
 
     def get_correlation_scatter_plot(self, title=None):

@@ -12,3 +12,9 @@ torchsort
 joblib
 Pillow
 scikit-image
+umap-learn
+pandas
+tqdm
+numba
+phate
+trimap

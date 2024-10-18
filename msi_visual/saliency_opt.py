@@ -8,6 +8,7 @@ import cv2
 
 from msi_visual.percentile_ratio import TOP3
 from sklearn.cluster import KMeans, kmeans_plusplus
+from msi_visual.utils import normalize
 
 
 class SaliencyOptimization:
@@ -161,11 +162,8 @@ class SaliencyOptimization:
         x[self.mask_np == 0] = 0
         x = x.reshape((self.img.shape[0], self.img.shape[1], 3))
 
-        for i in range(3):
-            x[:, :, i] = x[:, :, i] - np.percentile(x[:, :, i], 0.001)
-            x[:, :, i][x[:, :, i] < 0] = 0
-            x[:, :, i] = x[:, :, i] / np.percentile(x[:, :, i], 99.999)
-            x[:, :, i][x[:, :, i] > 1] = 1
+        x = normalize(x)
+
 
         x = np.uint8(255 * x)
 

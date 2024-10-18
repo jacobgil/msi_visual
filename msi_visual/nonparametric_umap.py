@@ -6,7 +6,7 @@ import cv2
 from pathlib import Path
 import joblib
 from msi_visual.normalization import spatial_total_ion_count, total_ion_count, median_ion
-
+from msi_visual.utils import normalize
 
 def norm_umap_channel(channel, low=0.01, high=99.99):
     channel = channel - np.percentile(channel, low)
@@ -18,9 +18,10 @@ def norm_umap_channel(channel, low=0.01, high=99.99):
 
 def embeddings_to_image(embeddings, rows, cols):
     color_image = embeddings.reshape((rows, cols, embeddings.shape[-1]))
-    color_image[:, :, 0] = norm_umap_channel(color_image[:, :, 0])
-    color_image[:, :, 1] = norm_umap_channel(color_image[:, :, 1])
-    color_image[:, :, 2] = norm_umap_channel(color_image[:, :, 2])
+    color_image = normalize(color_image)
+    # color_image[:, :, 0] = norm_umap_channel(color_image[:, :, 0])
+    # color_image[:, :, 1] = norm_umap_channel(color_image[:, :, 1])
+    # color_image[:, :, 2] = norm_umap_channel(color_image[:, :, 2])
     return np.uint8(color_image * 255)
 
 
@@ -51,7 +52,7 @@ class MSINonParametricUMAP:
             metric=self.metric).fit_transform(vector)
         output = output.reshape(img.shape[0], img.shape[1], output.shape[-1])
         visualization = embeddings_to_image(output, img.shape[0], img.shape[1])
-        visualization = cv2.cvtColor(visualization, cv2.COLOR_RGB2LAB)
+        #visualization = cv2.cvtColor(visualization, cv2.COLOR_RGB2LAB)
         visualization[img.max(axis=-1) == 0] = 0
 
         return visualization
