@@ -51,12 +51,11 @@ if __name__ == "__main__":
     np.random.seed(0)
     random.seed(0)
 
-
     methods = [("FastICA3D", FastICA3D()),
                ("Spectral3D", Spectral3D()), \
                ("PCA3D", PCA3D()), 
-               ("SaliencyOptimization", SaliencyOptimization(num_epochs=500, regularization_strength=0.001, sampling="coreset", number_of_points=1000, init="random")), 
-               ("SpearmanOptimization", SpearmanOptimization(num_epochs=500, regularization_strength=0.001, sampling="coreset", number_of_points=1000, init="random")),
+               ("SaliencyOptimization", SaliencyOptimization(num_epochs=300, regularization_strength=0.001, sampling="coreset", number_of_points=500, init="random")),
+               ("SpearmanOptimization", SpearmanOptimization(num_epochs=300, regularization_strength=0.001, sampling="coreset", number_of_points=500, init="random")),
                ("NMF3D", NMF3D()), ("PACMAC3D", PACMAC3D()),
                ("TSNE3D", TSNE3D()), 
                ("PHATE3D", PHATE3D()),
