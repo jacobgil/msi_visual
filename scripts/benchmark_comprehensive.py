@@ -46,28 +46,31 @@ def get_args():
 if __name__ == "__main__":
     args = get_args()
     paths = glob.glob(str(Path(args.dir) / "*.npy"))
+    print(paths)
+    print(len(paths))
+    paths += glob.glob(str(Path(args.dir) / "*" / "*.npy"))
     torch.manual_seed(0)
     np.random.seed(0)
     random.seed(0)
 
-    methods = [("FastICA3D", FastICA3D()),
-               ("Spectral3D", Spectral3D()), \
-               ("PCA3D", PCA3D()), 
-               ("SaliencyOptimization", SaliencyOptimization(num_epochs=500, regularization_strength=0.001, sampling="coreset", number_of_points=1000, init="random")),
-               ("SpearmanOptimization", SpearmanOptimization(num_epochs=500, regularization_strength=0.001, sampling="coreset", number_of_points=1000, init="random")),
-               ("NMF3D", NMF3D()), ("PACMAC3D", PACMAC3D()),
-               ("TSNE3D", TSNE3D()), 
-               ("PHATE3D", PHATE3D()),
-               ("Isomap3D", Isomap3D()),
-               ("Trimap3D", Trimap3D()), 
-               ("UMAP1", MSINonParametricUMAP()),
-               ("UMAP2", MSINonParametricUMAP(metric='chebyshev')),
-               ("TOP3", TOP3()),
-               ("PercentileRatio", PercentileRatio())]
+    methods = [
+        "FastICA3D",
+        "Spectral3D",
+        "PCA3D",
+        "SaliencyOptimization",
+        "SpearmanOptimization",
+        "NMF3D",
+        "PACMAC3D",
+        "TSNE3D",
+        "PHATE3D",
+        "Isomap3D",
+        "Trimap3D",
+        "UMAP1",
+        "UMAP2",
+        "TOP3",
+        "PercentileRatio"
+    ]
 
-
-    # methods = [("PACMAC3D", PACMAC3D()),
-    #            ("Trimap3D", Trimap3D())]
 
     result = defaultdict(list)
     for index, path in enumerate(paths):
@@ -76,12 +79,37 @@ if __name__ == "__main__":
         img = total_ion_count(img)
         visualizations = {}
         metrics = {}
-        for name, method in tqdm.tqdm(methods):
-
-            if name == "Trimap3D":
-                method = Trimap3D()
+        for name in tqdm.tqdm(methods):
+            if name == "FastICA3D":
+                method = FastICA3D()
+            elif name == "Spectral3D":
+                method = Spectral3D()
+            elif name == "PCA3D":
+                method = PCA3D()
+            elif name == "SaliencyOptimization":
+                method = SaliencyOptimization(num_epochs=500, regularization_strength=0.001, sampling="coreset", number_of_points=1000, init="random")
+            elif name == "SpearmanOptimization":
+                method = SpearmanOptimization(num_epochs=500, regularization_strength=0.001, sampling="coreset", number_of_points=1000, init="random")
+            elif name == "NMF3D":
+                method = NMF3D()
             elif name == "PACMAC3D":
                 method = PACMAC3D()
+            elif name == "TSNE3D":
+                method = TSNE3D()
+            elif name == "PHATE3D":
+                method = PHATE3D()
+            elif name == "Isomap3D":
+                method = Isomap3D()
+            elif name == "Trimap3D":
+                method = Trimap3D()
+            elif name == "UMAP1":
+                method = MSINonParametricUMAP()
+            elif name == "UMAP2":
+                method = MSINonParametricUMAP(metric='chebyshev')
+            elif name == "TOP3":
+                method = TOP3()
+            elif name == "PercentileRatio":
+                method = PercentileRatio()
 
             exists = False            
             dst_path = str(Path(args.dst) / f"{index}_{name}.png")
