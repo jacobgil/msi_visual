@@ -50,8 +50,6 @@ if __name__ == "__main__":
     np.random.seed(0)
     random.seed(0)
 
-    #methods = [("SaliencyOptimization", SaliencyOptimization(num_epochs=300, regularization_strength=0.001, sampling="coreset", number_of_points=500, init="random")), ("SpearmanOptimization", SpearmanOptimization(num_epochs=300, regularization_strength=0.001, sampling="coreset", number_of_points=500, init="random"))]
-
     methods = [("FastICA3D", FastICA3D()),
                ("Spectral3D", Spectral3D()), \
                ("PCA3D", PCA3D()), 
@@ -67,6 +65,10 @@ if __name__ == "__main__":
                ("TOP3", TOP3()),
                ("PercentileRatio", PercentileRatio())]
 
+
+    # methods = [("PACMAC3D", PACMAC3D()),
+    #            ("Trimap3D", Trimap3D())]
+
     result = defaultdict(list)
     for index, path in enumerate(paths):
         img = np.load(path)[::4, ::4, :]
@@ -75,6 +77,11 @@ if __name__ == "__main__":
         visualizations = {}
         metrics = {}
         for name, method in tqdm.tqdm(methods):
+
+            if name == "Trimap3D":
+                method = Trimap3D()
+            elif name == "PACMAC3D":
+                method = PACMAC3D()
 
             exists = False            
             dst_path = str(Path(args.dst) / f"{index}_{name}.png")
