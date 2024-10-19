@@ -14,7 +14,6 @@ from msi_visual.isomap_3d import Isomap3D
 from msi_visual.trimap_3d import Trimap3D
 from msi_visual.spectral_3d import Spectral3D
 from msi_visual.fastica_3d import FastICA3D
-from msi_visual.lda_3d import LDA3D
 from msi_visual.nmf_segmentation import NMFSegmentation
 from msi_visual.kmeans_segmentation import KmeansSegmentation
 
@@ -51,11 +50,13 @@ if __name__ == "__main__":
     np.random.seed(0)
     random.seed(0)
 
+    #methods = [("SaliencyOptimization", SaliencyOptimization(num_epochs=300, regularization_strength=0.001, sampling="coreset", number_of_points=500, init="random")), ("SpearmanOptimization", SpearmanOptimization(num_epochs=300, regularization_strength=0.001, sampling="coreset", number_of_points=500, init="random"))]
+
     methods = [("FastICA3D", FastICA3D()),
                ("Spectral3D", Spectral3D()), \
                ("PCA3D", PCA3D()), 
-               ("SaliencyOptimization", SaliencyOptimization(num_epochs=300, regularization_strength=0.001, sampling="coreset", number_of_points=500, init="random")),
-               ("SpearmanOptimization", SpearmanOptimization(num_epochs=300, regularization_strength=0.001, sampling="coreset", number_of_points=500, init="random")),
+               ("SaliencyOptimization", SaliencyOptimization(num_epochs=500, regularization_strength=0.001, sampling="coreset", number_of_points=1000, init="random")),
+               ("SpearmanOptimization", SpearmanOptimization(num_epochs=500, regularization_strength=0.001, sampling="coreset", number_of_points=1000, init="random")),
                ("NMF3D", NMF3D()), ("PACMAC3D", PACMAC3D()),
                ("TSNE3D", TSNE3D()), 
                ("PHATE3D", PHATE3D()),
