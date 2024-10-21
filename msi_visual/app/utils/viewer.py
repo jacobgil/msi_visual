@@ -6,6 +6,7 @@ from msi_visual import visualizations
 import math
 import cv2
 import cmapy
+import joblib
 import time
 from PIL import Image
 from pathlib import Path
@@ -26,6 +27,118 @@ class ClickData:
     mask: np.ndarray
     visualization: np.ndarray
     timestamp: float
+
+class GetOverlay:
+    def __init__(self):
+        pass
+
+    def get_2d_spectrum(self, 
+            scores,
+            extraction_mzs,
+            color_scheme="cividis"):
+        qr_images = []
+        qr_cols, qr_rows = int(1 + (len(extraction_mzs))** 0.5), int(1 + (len(extraction_mzs))** 0.5)
+        qr_cell_size = 10
+        qr_image = np.zeros(
+            (qr_rows *
+                qr_cell_size +
+                qr_cell_size,
+                qr_cols *
+                qr_cell_size +
+                qr_cell_size,
+                3),
+            dtype=np.uint8)
+        qr_image[:, :, :] = 0
+        for mz, score in scores.items():
+            mz_index = extraction_mzs.index(mz)
+            score_for_display = score**4
+            if color_scheme == "red":
+                color = [int(255*score_for_display), 0, 0]
+            else:
+                color = [0, int(255*score_for_display), 0]
+
+            row, col = int(mz_index / qr_rows), int(mz_index % qr_cols)
+            qr_image[row *
+                        qr_cell_size: row *
+                        qr_cell_size +
+                        qr_cell_size, col *
+                        qr_cell_size: col *
+                        qr_cell_size +
+                        qr_cell_size, :] = color
+
+        fig = plt.figure()
+        plt.rcParams['text.color'] = 'white'
+        fig.patch.set_facecolor("#01224d")
+        qr_cols, qr_rows = int(1 + (len(extraction_mzs))** 0.5), int(1 + (len(extraction_mzs))** 0.5)
+        qr_cell_size = 10
+        spec = qr_image
+        plt.imshow(spec)
+        plt.annotate(f"m/z {min(extraction_mzs):.1f}", (0, 20))
+        plt.annotate(f"m/z {max(extraction_mzs)}", (0.8 *spec.shape[1], 0.95*spec.shape[0]))
+        plt.tight_layout()
+        plt.axis('off')
+        fig.canvas.draw()
+        data = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
+        data = data.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+        data = data[20:-55, 110:-110]
+        return data
+
+    def get_aggregated_ion_image(self, stats, data, extraction_mzs, color_scheme):
+        mzs = list(stats.keys())
+        mz_indices = [extraction_mzs.index(mz) for mz in mzs]
+        scores = np.float32([stats[mz] for mz in mzs])
+        scores = np.float32([stats[mz] for mz in mzs])
+        mz_indices = np.int32([extraction_mzs.index(mz) for mz in mzs])
+        mz_indices = mz_indices[np.argsort(scores)[-5 : ]]
+        data = data.transpose().transpose(1, 2, 0)[::-1, :, :]
+        top5 = data / np.max(data, axis=(0, 1))
+        top5 = top5[:, :, mz_indices].mean(axis=-1)
+        top5 = top5 / np.percentile(top5, 99.9)
+        top5[top5 > 1] = 1
+        top5 = np.uint8(255 * top5)
+        orig = top5.copy()
+        if color_scheme == "red":
+            top5 = cv2.merge([top5, np.zeros_like(top5), np.zeros_like(top5)])
+        else:
+            top5 = cv2.merge([np.zeros_like(top5), top5, np.zeros_like(top5)])
+        top5[orig == 0] = 0
+        return top5
+
+
+    def __call__(self, stats, reverse_stats, data, extraction_mzs):
+        spectrum1 = self.get_2d_spectrum(
+            stats,
+            extraction_mzs,
+            color_scheme="red")
+
+        spectrum2 = self.get_2d_spectrum(
+            reverse_stats,
+            extraction_mzs,
+            color_scheme="green")
+
+        overlay = cv2.addWeighted(spectrum1, 0.5, spectrum2, 0.5, 0)
+        ion1 = self.get_aggregated_ion_image(stats, data, extraction_mzs, "red")
+        ion2 = self.get_aggregated_ion_image(reverse_stats, data, extraction_mzs, "green")
+        overlay_ion = cv2.addWeighted(ion1, 0.5, ion2, 0.5, 0)
+
+        overlay_ion = np.float32(overlay_ion)
+        overlay_ion = overlay_ion / overlay_ion.max()
+        overlay_ion = np.uint8(255 * overlay_ion)
+        overlay_ion = np.float32(overlay_ion) * 1.4
+        overlay_ion[overlay_ion > 255] = 255
+        overlay_ion = np.uint8(overlay_ion)
+
+        overlay = np.float32(overlay)
+        overlay = overlay / overlay_ion.max()
+        overlay = np.uint8(255 * overlay)
+        overlay = np.float32(overlay) * 2
+        overlay[overlay > 255] = 255
+        overlay = np.uint8(overlay)
+
+        overlay = cv2.resize(overlay, (overlay_ion.shape[1], overlay_ion.shape[0]))
+
+        both = np.hstack([overlay_ion, overlay])
+        return both
 
 
 def get_image(path, bins=5, equalize=False):
@@ -413,12 +526,18 @@ def display_comparison(data_path, stats, data, visualization_a, visualization_b,
         img1 = display_aggregated_ion_image(stats, data, extraction_mzs)
         reverse_stats = {mz: 1-stats[mz] for mz in stats}
         img2 = display_aggregated_ion_image(reverse_stats, data, extraction_mzs)
-        st.session_state[key] = img1, img2
+
+
+        img3 = GetOverlay()(stats, reverse_stats, data, extraction_mzs)
+
+        #joblib.dump((stats, reverse_stats, data, extraction_mzs), "data.joblib")
+
+        st.session_state[key] = img1, img2, img3
     else:
-        img1, img2 = st.session_state[key]
+        img1, img2, img3 = st.session_state[key]
     st.image(img1)
     st.image(img2)
-
+    st.image(img3)
 
     color_a = visualization_a[mask_a > 0].mean(axis=0)
     color_b = visualization_b[mask_b > 0].mean(axis=0)
