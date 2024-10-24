@@ -78,7 +78,7 @@ if __name__ == "__main__":
 
     result = defaultdict(list)
     for index, path in enumerate(paths):
-        img = np.load(path)[::4, ::4, :]
+        img = np.load(path)
         t0 = time.time()
         img = total_ion_count(img)
         visualizations = {}
