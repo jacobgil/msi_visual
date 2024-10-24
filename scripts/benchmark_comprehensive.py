@@ -16,7 +16,7 @@ from msi_visual.spectral_3d import Spectral3D
 from msi_visual.fastica_3d import FastICA3D
 from msi_visual.nmf_segmentation import NMFSegmentation
 from msi_visual.kmeans_segmentation import KmeansSegmentation
-
+from msi_visual.saliency_clustering_opt import SaliencyClusteringOptimization
 
 from msi_visual.metrics import MSIVisualizationMetrics
 from msi_visual.normalization import total_ion_count
@@ -71,6 +71,10 @@ if __name__ == "__main__":
         "PercentileRatio"
     ]
 
+    methods = ["PCA3D"]
+
+    methods =["SaliencyClusteringOptimization1", "SaliencyClusteringOptimization2", "SaliencyClusteringOptimization3"]
+
 
     result = defaultdict(list)
     for index, path in enumerate(paths):
@@ -110,6 +114,15 @@ if __name__ == "__main__":
                 method = TOP3()
             elif name == "PercentileRatio":
                 method = PercentileRatio()
+            elif name == "SaliencyClusteringOptimization1":
+                method = SaliencyClusteringOptimization(num_epochs=500, regularization_strength=0.001, cluster_fraction=0.1,
+                                                        number_of_points=1000, clusters=[8], sampling="coreset", lab_to_rgb=False)
+            elif name == "SaliencyClusteringOptimization2":
+                method = SaliencyClusteringOptimization(num_epochs=500, regularization_strength=0.001, cluster_fraction=0.1,
+                                                        number_of_points=1000, clusters=[16], sampling="coreset", lab_to_rgb=False)
+            elif name == "SaliencyClusteringOptimization3":
+                method = SaliencyClusteringOptimization(num_epochs=500, regularization_strength=0.001, cluster_fraction=0.1,
+                                                        number_of_points=1000, clusters=[8, 16, 32, 64], sampling="coreset", lab_to_rgb=False)
 
             exists = False            
             dst_path = str(Path(args.dst) / f"{index}_{name}.png")

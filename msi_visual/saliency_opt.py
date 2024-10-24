@@ -19,13 +19,17 @@ class SaliencyOptimization:
             sampling="coreset",
             num_epochs=200,
             init="random",
-            similarity_reg=0):
+            similarity_reg=0,
+            number_of_components=3,
+            lab_to_rgb=True):
         self.num_epochs = num_epochs
         self.regularization_strength = regularization_strength
         self.sampling = sampling
         self.number_of_points = number_of_points
         self.init = init
         self.similarity_reg = similarity_reg
+        self.number_of_components = number_of_components
+        self.lab_to_rgb = lab_to_rgb
 
     def __repr__(self):
         return f"Saliency Optimization: num_epochs: {self.num_epochs} regularization_strength: {self.regularization_strength} \
@@ -77,15 +81,15 @@ class SaliencyOptimization:
         if isinstance(self.init, np.ndarray):
             self.visualization = torch.from_numpy(
                 np.float32(self.init) / 255) * 10 - 5
-            self.visualization = self.visualization.reshape(-1, 3)
+            self.visualization = self.visualization.reshape(-1, self.number_of_components)
 
         elif self.init == "random":
             self.visualization = torch.rand(
-                size=(self.reshaped.shape[0], 3)) * 10 - 5
+                size=(self.reshaped.shape[0], self.number_of_components)) * 10 - 5
 
         elif self.init == "top3":
             self.visualization = torch.from_numpy(np.float32(TOP3()(img)) / 255)
-            self.visualization = self.visualization.reshape(-1, 3)
+            self.visualization = self.visualization.reshape(-1, self.number_of_components)
         else:
             raise Exception(f"{self.init} not supported as initialization")
 
@@ -111,6 +115,7 @@ class SaliencyOptimization:
             i for i in sampled_indices if self.reshaped[i, :].max(axis=-1) > 0]
 
         reference_points = self.reshaped[self.indices, :]
+
         cosine = pairwise_distances(
             self.reshaped,
             reference_points,
@@ -134,7 +139,7 @@ class SaliencyOptimization:
     def __call__(self, img):
         return self.predict(img)
 
-    def compute_epoch(self):
+    def get_loss(self):
         reference_points = self.visualization[self.indices]
         output_distances = torch.cdist(self.visualization, reference_points)
         output_ranks = torchsort.soft_rank(
@@ -153,20 +158,24 @@ class SaliencyOptimization:
             saliency = saliency + self.similarity_reg * \
                 torch.nn.MSELoss()(self.visualization, self.orig)
 
+        return saliency
+
+    def optimize_embeddings(self):
         self.optim.zero_grad()
-        loss = saliency
+        loss = self.get_loss()
         loss.backward()
         self.optim.step()
+
+    def compute_epoch(self):
+        self.optimize_embeddings()
 
         x = self.visualization.detach().cpu().numpy()
         x[self.mask_np == 0] = 0
         x = x.reshape((self.img.shape[0], self.img.shape[1], 3))
-
         x = normalize(x)
-
-
         x = np.uint8(255 * x)
 
-        x = cv2.cvtColor(x, cv2.COLOR_LAB2RGB)
+        if self.lab_to_rgb:
+            x = cv2.cvtColor(x, cv2.COLOR_LAB2RGB)
         x[self.img_mask == 0] = 0
         return x
