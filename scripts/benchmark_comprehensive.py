@@ -142,7 +142,7 @@ if __name__ == "__main__":
 
 
             metrics[name] = MSIVisualizationMetrics(
-                img, visualizations[name], num_samples=6000).get_metrics()
+                img, visualizations[name], num_samples=8000).get_metrics()
             print(index, name, metrics[name])
             result["method"].append(name)
             result["path"].append(path)
