@@ -46,7 +46,7 @@ if __name__ == "__main__":
             X = np.concatenate([X_all_a, X_all_b], axis=0)
             y = [0] * len(X_all_a) + [1] * len(X_all_b)    
             X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.6, random_state=42, stratify=y)
-            sample_weights = compute_sample_weight(class_weight='balanced', y=y)
+            sample_weights = compute_sample_weight(class_weight='balanced', y=y_train)
             
             xgb_model = XGBClassifier(
                 n_estimators=40,
@@ -71,8 +71,9 @@ if __name__ == "__main__":
             
             separation_data[(category1, category2)] = []
             for index in indices:
-                statistic, pvalue = mannwhitneyu(X_all_a[::5, index], X_all_b[::5, index])
-                statistic = statistic / (len(a) * len(b))
+                x_a, x_b = X_all_a[::5, index], X_all_b[::5, index]
+                statistic, pvalue = mannwhitneyu(x_a, x_b)
+                statistic = statistic / (len(x_a) * len(x_b))
                 separation_data[(category1, category2)].append((extraction_mzs[index], statistic, pvalue))
                 
         result = {"ks": ks, "separation_data": separation_data, "similarity": similarity, "categories": categories}
