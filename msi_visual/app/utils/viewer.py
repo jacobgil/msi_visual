@@ -468,10 +468,11 @@ def get_aggregated_ion_image(stats, data, extraction_mzs):
     scores = np.float32([stats[mz] for mz in mzs])
     mz_indices = np.int32([extraction_mzs.index(mz) for mz in mzs])
     mz_indices = mz_indices[np.argsort(scores)[-5 : ]]
+    mz_indices = [i for i in mz_indices if scores[i] > 0]
 
     top5 = data / np.max(data, axis=(0, 1))
     top5 = top5[:, :, mz_indices].mean(axis=-1)
-    top5 = top5 / np.percentile(top5, 99)
+    top5 = top5 / np.percentile(top5, 99.5)
     top5[top5 > 1] = 1
     top5 = np.uint8(255 * top5)
     top5 = cv2.applyColorMap(top5, cmapy.cmap("cividis"))[:, :, ::-1]
@@ -504,9 +505,9 @@ def get_mz_value_img(stats, height, top=5):
     result = cv2.resize(result, (height//top, height))
     return result
 
-def display_aggregated_ion_image(stats, data, extraction_mzs, color_scheme="cividis"):
+def display_aggregated_ion_image(stats, data, extraction_mzs, color_scheme="cividis", rotate=False):
     img = get_aggregated_ion_image(stats, data, extraction_mzs)
-    if st.session_state['rotate']:
+    if rotate:
         img = img.transpose().transpose(1, 2, 0)[::-1, :, :]
     img = cv2.resize(img, (8*img.shape[1], 8*img.shape[0]))
     spectrum = get_2d_spectrum(
@@ -523,9 +524,9 @@ def display_aggregated_ion_image(stats, data, extraction_mzs, color_scheme="civi
 def display_comparison(data_path, stats, data, visualization_a, visualization_b, mask_a, mask_b, extraction_mzs, threshold=1.0):
     key = "6"+data_path + ''.join([str(mz) + str(stats[mz]) for mz in stats])
     if key not in st.session_state:
-        img1 = display_aggregated_ion_image(stats, data, extraction_mzs)
+        img1 = display_aggregated_ion_image(stats, data, extraction_mzs, rotate=st.session_state['rotate'])
         reverse_stats = {mz: 1-stats[mz] for mz in stats}
-        img2 = display_aggregated_ion_image(reverse_stats, data, extraction_mzs)
+        img2 = display_aggregated_ion_image(reverse_stats, data, extraction_mzs, rotate=st.session_state['rotate'])
 
 
         img3 = GetOverlay()(stats, reverse_stats, data, extraction_mzs)
