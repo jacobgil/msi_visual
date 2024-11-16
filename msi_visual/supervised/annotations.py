@@ -27,7 +27,6 @@ def parse_parent_category(category):
         category = "HPF"
     return category
 
-@lru_cache(maxsize=1000)
 def get_annotations(annotation_path, index, ignore=[], keep=None, category_key="Allen atlas anatomy"):
     annotation = json.load(open(annotation_path))
     
