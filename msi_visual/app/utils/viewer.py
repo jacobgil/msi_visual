@@ -382,7 +382,7 @@ def show_mz_on_ion_image(ion, mz):
     fontColor = (255, 255, 255)
     thickness = 1
     lineType = 1
-    ion = cv2.putText(ion, f"{mz:.5f}",
+    ion = cv2.putText(ion, f"{mz:.1f}",
                          bottomLeftCornerOfText,
                          font,
                          fontScale,
@@ -411,9 +411,11 @@ def create_ion_image(img, mz, extraction_mzs, mask = None):
         #ion = ion.transpose().transpose(1, 2, 0)[::-1, :, :].copy()
         ion = ion[:, ::-1, :].copy()
 
+    ion_no_text = ion.copy()
     ion = show_mz_on_ion_image(ion, closest_mz)
     print("setting ion", mz, closest_mz)
     st.session_state.ion = ion
+    st.session_state.ion_no_text = ion_no_text
     return ion, closest_mz
 
 def get_stats_point_to_point(data, extraction_mzs, clicks):
@@ -646,7 +648,7 @@ def display_mzs(img, stats, color_a, color_b, extraction_mzs, threshold=1.0, num
                         use_container_width=True)
                 else:
                     col.button(
-                        f"{mz}: {stats[mz]:.3f}",
+                        f"{mz}: {stats[mz]:.2f}",
                         use_container_width=True,
                         key=f"{time.time()}+{mz}+{i}+{row}+{col}",
                         on_click=create_ion_image,
@@ -661,3 +663,4 @@ def display_mzs(img, stats, color_a, color_b, extraction_mzs, threshold=1.0, num
     with st.sidebar:
         if "ion" in st.session_state:
             st.image(st.session_state.ion)
+            st.image(st.session_state.ion_no_text)
