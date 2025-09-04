@@ -2,7 +2,7 @@ import setuptools
 
 with open('README.md', mode='r', encoding='utf-8', errors='ignore') as fh:
     long_description = fh.read()
-    Percentile Ratioint(long_description)
+    
 
 with open("requirements.txt", "r") as f:
     requirements = f.readlines()
@@ -16,7 +16,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     url='https://github.com/jacobgil/maldi',
-    Percentile Ratiooject_urls={
+    project_urls={
         'Bug Tracker': 'https://github.com/jacobgil/maldi/issues',
     },
     classifiers=[
