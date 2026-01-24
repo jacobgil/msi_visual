@@ -1,0 +1,47 @@
+# Hyperparameter sweep configuration for MSIParametricMiCSLMC
+# This file demonstrates how to set up sweeps using Hydra's multirun feature
+
+# Defaults - can be overridden
+defaults:
+  - train_parametric_mics_lmc
+
+# Sweep configuration
+# To run a sweep, use: python train_parametric_mics_lmc.py --multirun model.sampling=random,coreset,kmeans++
+
+# Example sweep configurations (uncomment and modify as needed):
+
+# Sweep over sampling methods
+# hydra:
+#   sweeper:
+#     params:
+#       model.sampling: random,coreset,kmeans++,kmeans
+
+# Sweep over number of epochs
+# hydra:
+#   sweeper:
+#     params:
+#       model.num_epochs: 50,100,200
+
+# Sweep over cluster configurations
+# Each run will use one of these cluster configurations
+# To modify: Change the numbers in the lists below
+# Format: Each quoted list "[...]" is one sweep option
+
+hydra:
+  sweeper:
+    params:
+      model.number_of_points: 1000
+      model.sampling: random
+      model.num_samples: 5000
+      model.num_epochs: 30
+      model.beta: 10.0,20.0
+      model.clusters: 32-128-512,256-512-1024,1024-2048-4096,2048-4096-8192
+      
+# Combined sweep example (all combinations)
+# hydra:
+#   sweeper:
+#     params:
+#       model.sampling: random,coreset
+#       model.num_epochs: 50,100
+#       model.beta: 0.0,1.0
+

@@ -23,11 +23,11 @@ if st.button("Run"):
         start_mz, end_mz = None, None
 
     if '.imzML' in input_path:
-        extraction = PymzmlToNumpy(start_mz, end_mz, bins, nonzero, id)
+        extraction = PymzmlToNumpy(min_mz=start_mz, max_mz=end_mz, bins_per_mz=bins, nonzero=nonzero, id=id)
     elif len(glob.glob(input_path + "/*.tdf")) > 0:
-        extraction = BrukerTimsToNumpy(start_mz, end_mz, bins, nonzero, id)
+        extraction = BrukerTimsToNumpy(min_mz=start_mz, max_mz=end_mz, bins_per_mz=bins, nonzero=nonzero, id=id)
     elif len(glob.glob(input_path + "/*.tsf")) > 0:
-        extraction = BrukerTsfToNumpy(start_mz, end_mz, bins, nonzero, id)
+        extraction = BrukerTsfToNumpy(min_mz=start_mz, max_mz=end_mz, bins_per_mz=bins, nonzero=nonzero, id=id)
 
     with st.spinner("Extracting.. "):
         extraction(input_path, output_path)

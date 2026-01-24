@@ -70,11 +70,11 @@ class GetOverlay:
         plt.rcParams['text.color'] = 'white'
         fig.patch.set_facecolor("#01224d")
         qr_cols, qr_rows = int(1 + (len(extraction_mzs))** 0.5), int(1 + (len(extraction_mzs))** 0.5)
-        qr_cell_size = 10
+        qr_cell_size = 10                                                                               
         spec = qr_image
         plt.imshow(spec)
-        plt.annotate(f"m/z {min(extraction_mzs):.1f}", (0, 20))
-        plt.annotate(f"m/z {max(extraction_mzs)}", (0.8 *spec.shape[1], 0.95*spec.shape[0]))
+        plt.annotate(f"m/z {int(min(extraction_mzs))}", (0, 20))
+        plt.annotate(f"m/z {int(max(extraction_mzs))}", (0.8 *spec.shape[1], 0.95*spec.shape[0]))
         plt.tight_layout()
         plt.axis('off')
         fig.canvas.draw()
@@ -90,8 +90,8 @@ class GetOverlay:
         scores = np.float32([stats[mz] for mz in mzs])
         mz_indices = np.int32([extraction_mzs.index(mz) for mz in mzs])
         mz_indices = mz_indices[np.argsort(scores)[-5 : ]]
-        #data = data.transpose().transpose(1, 2, 0)[::-1, :, :]
-        data = data[:, ::-1, :]
+        data = data.transpose().transpose(1, 2, 0)[::-1, :, :]
+        #data = data[:, ::-1, :]
         top5 = data / np.max(data, axis=(0, 1))
         top5 = top5[:, :, mz_indices].mean(axis=-1)
         top5 = top5 / np.percentile(top5, 99.9)
@@ -370,8 +370,8 @@ def show_ion_images(mzs):
             aggregated[mask == 0] = 0
 
             if st.session_state['rotate']:
-               #aggregated = aggregated.transpose().transpose(1, 2, 0)[::-1, :, :]
-               aggregated = aggregated[:, ::-1, :]
+               aggregated = aggregated.transpose().transpose(1, 2, 0)[::-1, :, :]
+               #aggregated = aggregated[:, ::-1, :]
             st.image(aggregated)
 
 
@@ -408,8 +408,8 @@ def create_ion_image(img, mz, extraction_mzs, mask = None):
         ion[mask == 0] = 0
 
     if st.session_state['rotate']:
-        #ion = ion.transpose().transpose(1, 2, 0)[::-1, :, :].copy()
-        ion = ion[:, ::-1, :].copy()
+        ion = ion.transpose().transpose(1, 2, 0)[::-1, :, :].copy()
+        #ion = ion[:, ::-1, :].copy()
 
     ion_no_text = ion.copy()
     ion = show_mz_on_ion_image(ion, closest_mz)
@@ -502,8 +502,8 @@ def get_2d_spectrum(
     qr_cell_size = 10
     spec = qr_image[:, :, ::-1]
     plt.imshow(spec)
-    plt.annotate(f"m/z {min(extraction_mzs):.2f}", (0, 20))
-    plt.annotate(f"m/z {max(extraction_mzs)}", (0.8 *spec.shape[1], 0.95*spec.shape[0]))
+    plt.annotate(f"m/z {int(min(extraction_mzs))}", (0, 20))
+    plt.annotate(f"m/z {int(max(extraction_mzs))}", (0.8 *spec.shape[1], 0.95*spec.shape[0]))
     plt.tight_layout()
     plt.axis('off')
     fig.canvas.draw()
@@ -567,8 +567,8 @@ def display_aggregated_ion_image(stats, data, extraction_mzs, color_scheme="civi
     img = get_aggregated_ion_image(stats, data, extraction_mzs)
     print("rotate", rotate)
     if rotate:
-        #img = img.transpose().transpose(1, 2, 0)[::-1, :, :]
-        img = img[:, ::-1, :]
+        img = img.transpose().transpose(1, 2, 0)[::-1, :, :]
+        #img = img[:, ::-1, :]
     img = cv2.resize(img, (8*img.shape[1], 8*img.shape[0]))
     spectrum = get_2d_spectrum(
         stats,

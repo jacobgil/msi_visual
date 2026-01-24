@@ -15,7 +15,7 @@ def spatial_total_ion_count(img):
     t0 = time.time()
     processed = total_ion_count(img)
     processed = processed / \
-        (1e-6 + np.percentile(processed, 99, axis=(0, 1))[None, None, :])
+        (1e-6 + np.percentile(processed, 100, axis=(0, 1))[None, None, :])
     processed[processed > 1] = 1
     print("norm took", time.time() - t0)
-    return img
+    return processed

@@ -19,7 +19,7 @@ from msi_visual.kmeans_segmentation import KmeansSegmentation
 from msi_visual.saliency_clustering_opt import SaliencyClusteringOptimization
 
 from msi_visual.metrics import MSIVisualizationMetrics
-from msi_visual.normalization import total_ion_count
+from msi_visual.normalization import total_ion_count, spatial_total_ion_count
 from PIL import Image
 import tqdm
 import os
@@ -45,45 +45,52 @@ def get_args():
 
 if __name__ == "__main__":
     args = get_args()
+    print(args)
     paths = glob.glob(str(Path(args.dir) / "*.npy"))
+    paths += glob.glob(str(Path(args.dir) / "*" / "*.npy"))
     print(paths)
     print(len(paths))
-    paths += glob.glob(str(Path(args.dir) / "*" / "*.npy"))
+
     torch.manual_seed(0)
     np.random.seed(0)
     random.seed(0)
 
     methods = [
-        "FastICA3D",
-        "Spectral3D",
+        "TOP3",
+        "PercentileRatio",
+        #"Spectral3D",
         "PCA3D",
+        #"FastICA3D",
         "SaliencyOptimization",
         "SpearmanOptimization",
         "NMF3D",
         "PACMAC3D",
-        "TSNE3D",
-        "PHATE3D",
-        "Isomap3D",
-        "Trimap3D",
-        "UMAP1",
-        "UMAP2",
-        "TOP3",
-        "PercentileRatio"
+        #"TSNE3D",
+        #"PHATE3D",
+        #"Isomap3D",
+        #"Trimap3D",
+        #"UMAP1",
+        #"UMAP2",
     ]
 
-    methods = ["PCA3D"]
+    #methods = ["PCA3D"]
+    #methods =["SaliencyClusteringOptimization1", "SaliencyClusteringOptimization2", "SaliencyClusteringOptimization3"]
 
-    methods =["SaliencyClusteringOptimization1", "SaliencyClusteringOptimization2", "SaliencyClusteringOptimization3"]
-
+    metric_keys = None
 
     result = defaultdict(list)
     for index, path in enumerate(paths):
         img = np.load(path)
+
+        # if img.shape[0] > 500 or img.shape[1] > 500:
+        #     img = img[::2, ::2, :]
+
         t0 = time.time()
         img = total_ion_count(img)
         visualizations = {}
         metrics = {}
         for name in tqdm.tqdm(methods):
+            print(path, name)
             if name == "FastICA3D":
                 method = FastICA3D()
             elif name == "Spectral3D":
@@ -124,32 +131,57 @@ if __name__ == "__main__":
                 method = SaliencyClusteringOptimization(num_epochs=500, regularization_strength=0.001, cluster_fraction=0.1,
                                                         number_of_points=1000, clusters=[8, 16, 32, 64], sampling="coreset", lab_to_rgb=True)
 
-            exists = False            
-            dst_path = str(Path(args.dst) / f"{index}_{name}.png")
+            exists = False
+            failed = False
+
+            identifier = path.split("\\")[-1].split('.')[0]
+            print(identifier)
+
+            dst_path = str(Path(args.dst) / f"{identifier}_{name}.png")
             if os.path.exists(dst_path):
                 exists = True
                 visualizations[name] = np.array(Image.open(dst_path))
+                if visualizations[name].shape == (32, 32, 3):
+                    failed  = True
                 print(f'Existing {dst_path}')
             else:
                 t0 = time.time()
-                visualizations[name] = method(img)
-                if isinstance(visualizations[name], list):
-                    visualizations[name] = visualizations[name][0]
+                try:
+                    if name == "PHATE3D_BKA":
+                        visualizations[name] = np.zeros((32, 32, 3), dtype=np.uint8)
+                        failed = True
+                    else:
+                        # if name in ["PercentileRatio", "TOP3"]:
+                        #     print("Running spatial_total_ion_count")
+                        #     visualizations[name] = method(spatial_total_ion_count(img))
+                        # else:
+                        visualizations[name] = method(img)
+
+                        if isinstance(visualizations[name], list):
+                            visualizations[name] = visualizations[name][0]
+                except Exception as e:
+                    print(f"failed for {name} {e}", img.shape)
+                    failed = True
+                    visualizations[name] = np.zeros((32, 32, 3), dtype=np.uint8)
 
                 t = time.time() - t0
             random.seed(0)
 
 
-
-            metrics[name] = MSIVisualizationMetrics(
-                img, visualizations[name], num_samples=8000).get_metrics()
-            print(index, name, metrics[name])
+            if not failed:
+                metrics[name] = MSIVisualizationMetrics(
+                    img, visualizations[name], num_samples=8000).get_metrics()
+                metric_keys = list(metrics[name].keys())
+                print(identifier, name, metrics[name])
             result["method"].append(name)
             result["path"].append(path)
             if not exists:
                result["time"].append(t)
-            for m in metrics[name]:
-                result[m].append(metrics[name][m])
+            for m in metric_keys:
+                if failed:
+                    result[m].append(-1)
+                else:
+                    result[m].append(metrics[name][m])
 
             # # with equalization
             # visualizations[name + "eq"] = cv2.merge([cv2.equalizeHist(visualizations[name][:, :, i]) for i in range(3)])
@@ -167,7 +199,7 @@ if __name__ == "__main__":
             if not exists:
                 Image.fromarray(visualizations[name]).save(dst_path)
                 eq = cv2.merge([cv2.equalizeHist(visualizations[name][:, :, i]) for i in range(3)])
-                dst_path_eq = str(Path(args.dst) / f"{index}_{name}_eq.png")
+                dst_path_eq = str(Path(args.dst) / f"{identifier}_{name}_eq.png")
                 Image.fromarray(eq).save(dst_path_eq)
 
         result_csv = pd.DataFrame.from_dict(result)

@@ -82,8 +82,8 @@ class BaseMSIToNumpy(ABC):
             for mz_list in all_mzs:
                 set_of_mzs.update(mz_list)
             set_of_mzs = np.float32(list(set_of_mzs))
-            self.max_mz = np.max(set_of_mzs)
-            self.min_mz = np.min(set_of_mzs)
+            self.max_mz = np.ceil(np.max(set_of_mzs))
+            self.min_mz = np.floor(np.min(set_of_mzs))
         else:
             self.max_mz, self.min_mz = float(self.max_mz), float(self.min_mz)
         xs = xs - np.min(xs)

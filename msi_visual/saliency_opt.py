@@ -1,15 +1,42 @@
 import numpy as np
 from sklearn.metrics.pairwise import pairwise_distances
+
+from sklearn.metrics.pairwise import cosine_similarity
+
+
 import torch
 from PIL import Image
 import tqdm
 import torchsort
 import cv2
-
+import time
 from msi_visual.percentile_ratio import TOP3
 from sklearn.cluster import KMeans, kmeans_plusplus
 from msi_visual.utils import normalize
+from scipy.spatial.distance import cdist, squareform
+from sklearn.metrics.pairwise import cosine_similarity
+from scipy.spatial.distance import chebyshev as chebyshev_dist
 
+import numpy as np
+import numba
+
+@numba.njit(parallel=True, fastmath=True)
+def chebyshev_distance_matrix(X, Y):
+    """Compute the Chebyshev distance between two matrices X (m x d) and Y (n x d)."""
+    m, d = X.shape
+    n, _ = Y.shape
+    result = np.zeros((m, n), dtype=np.float32)
+
+    for i in numba.prange(m):  # Parallel loop for rows of X
+        for j in range(n):  # Loop for rows of Y
+            max_diff = 0.0
+            for k in range(d):  # Loop over features
+                diff = abs(X[i, k] - Y[j, k])
+                if diff > max_diff:
+                    max_diff = diff  # Store max difference
+            result[i, j] = max_diff
+    
+    return result
 
 class SaliencyOptimization:
     def __init__(
@@ -76,7 +103,9 @@ class SaliencyOptimization:
         self.reshaped = self.img.reshape(
             self.img.shape[0] * self.img.shape[1], -1)
         self.img_mask = self.img.max(axis=-1) > 0
+        t0 = time.time()
         self.resample(number_of_points=self.number_of_points)
+        print("resample", time.time() - t0)
 
         if isinstance(self.init, np.ndarray):
             self.visualization = torch.from_numpy(
@@ -109,19 +138,39 @@ class SaliencyOptimization:
         self.mask = torch.from_numpy(self.mask_np).float().cuda()
 
     def resample(self, number_of_points):
+        t0 = time.time()
         sampled_indices = self.get_reference_points(
             self.reshaped, number_of_points)
+        print("sample", time.time() - t0)
         self.indices = [
             i for i in sampled_indices if self.reshaped[i, :].max(axis=-1) > 0]
 
         reference_points = self.reshaped[self.indices, :]
 
-        cosine = pairwise_distances(
-            self.reshaped,
-            reference_points,
-            metric='cosine')
-        chebyshev = pairwise_distances(
-            self.reshaped, reference_points, metric='chebyshev')
+
+        # cosine = pairwise_distances(
+        #     self.reshaped,
+        #     reference_points,
+        #     metric='cosine')
+        cosine = 1 - cosine_similarity(self.reshaped, reference_points)
+        #chebyshev = np.array([[chebyshev_dist(a, b) for b in reference_points] for a in self.reshaped])
+
+        chebyshev = chebyshev_distance_matrix(self.reshaped, reference_points)
+
+
+
+        # chebyshev = pairwise_distances(
+        #     self.reshaped, reference_points, metric='chebyshev')
+
+        # cosine = cdist(self.reshaped, reference_points, "cosine")  # Condensed form
+        # cosine = squareform(cosine)  # Convert to full matrix if needed
+
+        # chebyshev = cdist(self.reshaped, reference_points, "chebyshev")  # Condensed form
+        # chebyshev = squareform(chebyshev)  # Convert to full matrix if needed
+
+
+
+        print("distances", time.time() - t0)
 
         cosine = cosine.argsort().argsort()
         chebyshev = chebyshev.argsort().argsort()
@@ -140,11 +189,14 @@ class SaliencyOptimization:
         return self.predict(img)
 
     def get_loss(self):
+        t0 = time.time()
         reference_points = self.visualization[self.indices]
         output_distances = torch.cdist(self.visualization, reference_points)
+        t1 = time.time()
         output_ranks = torchsort.soft_rank(
             output_distances,
             regularization_strength=self.regularization_strength)
+        t2 = time.time()
 
         saliency = self.loss_saliency(
             output_ranks,
@@ -153,6 +205,10 @@ class SaliencyOptimization:
         saliency = (saliency * self.mask[:,
                                          None] * self.rank_squares).sum() / (self.mask[:,
                                                                                        None] * self.rank_squares).sum()
+
+        t3 = time.time()
+
+        #print(t1-t0, t2-t1, t3-t2)
 
         if self.similarity_reg > 0:
             saliency = saliency + self.similarity_reg * \
@@ -163,7 +219,9 @@ class SaliencyOptimization:
     def optimize_embeddings(self):
         self.optim.zero_grad()
         loss = self.get_loss()
+        t0 = time.time()
         loss.backward()
+        #print("backward", time.time()-t0)
         self.optim.step()
 
     def compute_epoch(self):
