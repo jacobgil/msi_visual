@@ -5,7 +5,7 @@ mode: train
 
 # Data configuration
 data:
-  input_path: "E:\\MSImaging-data\\_msi_visual\\Extractions\\NRL4558_5um\\5bins\\2"
+  input_path: "E:\\MSImaging-data\\_msi_visual\\Extractions\\Metaspace_datasets\\Dataset5_spinalcord\\5bins\\"
   transpose: false  # Whether to transpose the image
 
 # Model hyperparameters
@@ -29,12 +29,15 @@ model:
   random_state: 42
   verbose: false
   quality_zero_top_n: 50
+  quality_highd_summary: pca1
+  quality_window_size: 9
+  quality_structure_window: 5
 
 # Inference configuration
 inference:
   model_path: null  # Path to trained model .pth file (for inference-only mode)
   #inference_folder: "E:\\MSImaging-data\\_msi_visual\\Extractions\\Metaspace_datasets\\Dataset4_kidney\\*.npy"  # Folder path or glob pattern for inference (e.g., "/path/to/folder/*.npy" or "/path/to/folder/")
-  inference_folder: "E:\\MSImaging-data\\_msi_visual\\Extractions\\NRL4558\\20bins\\2\\"
+  inference_folder: "E:\\MSImaging-data\\_msi_visual\\Extractions\\Metaspace_datasets\\Dataset5_spinalcord\\5bins\\*.npy"
   # If inference_folder is set after training, inference will run automatically using the trained model(s)
 
 # Default configuration for MSIParametricMiCSLMC training and inference

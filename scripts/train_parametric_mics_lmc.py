@@ -21,9 +21,15 @@ import torch
 import cv2
 from PIL import Image
 import matplotlib.pyplot as plt
-import tqdm
 
 from msi_visual.parametric_mics_lmc import MSIParametricMiCSLMC, create_pcc_model
+from msi_visual.quality_metrics import (
+    compute_highd_summary,
+    save_quality_score_image,
+    save_edge_quality_image,
+    save_structure_quality_image,
+    save_contrast_quality_image,
+)
 
 
 def load_and_preprocess_image(img_path, transpose=False):
@@ -38,171 +44,6 @@ def load_and_preprocess_image(img_path, transpose=False):
     if transpose:
         img = img.transpose().transpose(1, 2, 0)[::-1, :, :].copy()
     return img
-
-
-def compute_quality_score(
-    model,
-    img: np.ndarray,
-    zero_top_n: int,
-    num_rand: int = 5,
-    batch_pixels: int = 4096,
-    seed: int | None = None,
-    eps: float = 1e-6,
-    clip_negative: bool = True,
-    norm_percentiles: tuple[float, float] = (1.0, 99.0),
-    tissue_threshold: float = 0.0,
-):
-    """
-    Top-N ablation importance map, baseline-corrected by intensity-matched random dropout.
-
-    Returns:
-        rel01: (H, W) float32 in [0, 1]
-        aux: dict with optional debug outputs (raw map, scales, etc.)
-    """
-    if zero_top_n < 0:
-        raise ValueError("zero_top_n must be non-negative")
-
-    H, W, F = img.shape
-    N = min(int(zero_top_n), F)
-
-    # --- Base visualization
-    base_viz = model.predict(img).astype(np.float32)  # (H, W, C)
-    if base_viz.ndim != 3 or base_viz.shape[0] != H or base_viz.shape[1] != W:
-        raise ValueError(f"Expected base_viz shape (H,W,C) = ({H},{W},C). Got {base_viz.shape}")
-
-    # --- Tissue mask
-    # If your img values are nonnegative intensities, this works as "TIC > threshold"
-    mask = (img.sum(axis=-1) > tissue_threshold)  # (H, W) bool
-    if not mask.any():
-        return np.zeros((H, W), dtype=np.float32), {"raw": np.zeros((H, W), dtype=np.float32)}
-
-    # Fast path: no ablation
-    if N == 0:
-        return np.zeros((H, W), dtype=np.float32), {"raw": np.zeros((H, W), dtype=np.float32)}
-
-    # --- Flatten spectra for vectorized masking
-    flat = img.reshape(-1, F).astype(np.float32, copy=False)
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    flat_t = torch.from_numpy(flat).to(device)
-
-    # Top-N indices per pixel + total removed mass (per pixel)
-    top_vals, top_idx = torch.topk(flat_t, k=N, dim=1)            # (P, N)
-    top_sum = top_vals.sum(dim=1)                                 # (P,)
-
-    # Top-N ablated image
-    masked_top_t = flat_t.clone()
-    masked_top_t.scatter_(1, top_idx, 0.0)
-    masked_top_img = masked_top_t.detach().cpu().numpy().reshape(H, W, F)
-
-    # Predict once for top ablation
-    masked_top_viz = model.predict(masked_top_img).astype(np.float32)  # (H, W, C)
-
-    # --- Random baseline (intensity-matched) with K repeats
-    # We'll compute delta_rand as the average over num_rand independent random draws.
-    if seed is None:
-        # Keep deterministic if the model exposes random_state, else default 42
-        seed = int(getattr(model, "random_state", 42))
-
-    rng = torch.Generator(device=device)
-    rng.manual_seed(int(seed))
-
-    # Helper: create one intensity-matched random-masked flat array (on CPU at end)
-    def make_mass_matched_random_masked_flat():
-        masked_rand = np.empty_like(flat)  # CPU
-        total_pixels = flat_t.shape[0]
-        total_batches = (total_pixels + batch_pixels - 1) // batch_pixels
-
-        for start in tqdm.tqdm(
-            range(0, total_pixels, batch_pixels),
-            total=total_batches,
-            desc="Random baseline",
-            leave=False,
-        ):
-            end = min(start + batch_pixels, total_pixels)
-            values = flat_t[start:end]                # (B, F)
-            top_idx_b = top_idx[start:end]            # (B, N)
-            top_sum_b = top_sum[start:end]            # (B,)
-
-            # Candidate values = non-top values (top entries forced to 0)
-            non_top_vals = values.clone()
-            non_top_vals.scatter_(1, top_idx_b, 0.0)
-
-            # Random order over features, excluding top indices by giving them large scores
-            scores = torch.rand(non_top_vals.shape, generator=rng, device=device)
-            scores.scatter_(1, top_idx_b, 2.0)  # ensure tops go to the end
-            order = torch.argsort(scores, dim=1)  # (B, F), random-ish permutation
-
-            ordered_vals = torch.gather(non_top_vals, 1, order)     # values in random order
-            cumsum = ordered_vals.cumsum(dim=1)                     # cumulative mass
-
-            target = top_sum_b.unsqueeze(1)                         # (B, 1)
-            has_target = (top_sum_b > 0)                            # (B,)
-
-            # select_mask marks positions strictly before reaching target
-            select_mask = (cumsum < target) & has_target.unsqueeze(1)
-
-            # Ensure we also include the first index where cumsum >= target (if reachable)
-            reached = (cumsum[:, -1] >= top_sum_b) & has_target
-            if reached.any():
-                idx_first = torch.argmax((cumsum >= target).int(), dim=1)  # (B,)
-                rows = torch.arange(values.shape[0], device=device)
-                select_mask[rows, idx_first] |= reached
-
-            # Map selection back to original feature positions
-            drop_mask = torch.zeros_like(select_mask, dtype=torch.bool)
-            drop_mask.scatter_(1, order, select_mask)
-
-            masked_batch = values.clone()
-            masked_batch[drop_mask] = 0.0
-            masked_rand[start:end] = masked_batch.detach().cpu().numpy()
-
-        return masked_rand
-
-    # Compute delta_top once
-    diff_top = base_viz - masked_top_viz
-    delta_top = np.linalg.norm(diff_top, axis=-1).astype(np.float32)  # (H, W)
-
-    # Compute average delta_rand
-    delta_rand_acc = np.zeros((H, W), dtype=np.float32)
-    for _ in range(int(num_rand)):
-        masked_rand_flat = make_mass_matched_random_masked_flat()
-        masked_rand_img = masked_rand_flat.reshape(H, W, F)
-        masked_rand_viz = model.predict(masked_rand_img).astype(np.float32)
-
-        diff_rand = base_viz - masked_rand_viz
-        delta_rand = np.linalg.norm(diff_rand, axis=-1).astype(np.float32)  # (H, W)
-        delta_rand_acc += delta_rand
-
-    delta_rand_mean = delta_rand_acc / max(int(num_rand), 1)
-
-    # Baseline-corrected "extra effect"
-    raw = (delta_top - delta_rand_mean).astype(np.float32)
-
-    # Only show tissue; background to 0
-    raw[~mask] = 0.0
-
-    # If you want a one-sided "importance" map: clamp negatives
-    if clip_negative:
-        raw = np.maximum(raw, 0.0)
-
-    # --- 0..1 normalization WITHOUT reference quantiles yet:
-    # Use *per-image* robust percentiles over tissue pixels (better than min/max).
-    lo_p, hi_p = norm_percentiles
-    tissue_vals = raw[mask]
-    if tissue_vals.size == 0:
-        rel01 = np.zeros((H, W), dtype=np.float32)
-        return rel01, {"raw": raw, "q_lo": 0.0, "q_hi": 0.0}
-
-    q_lo = float(np.percentile(tissue_vals, lo_p))
-    q_hi = float(np.percentile(tissue_vals, hi_p))
-
-    if q_hi <= q_lo + 1e-12:
-        rel01 = np.zeros((H, W), dtype=np.float32)
-    else:
-        rel01 = (raw - q_lo) / (q_hi - q_lo + eps)
-        rel01 = np.clip(rel01, 0.0, 1.0).astype(np.float32)
-
-    return rel01
 
 
 def compute_uncertainty_map(model, img):
@@ -263,15 +104,6 @@ def save_uncertainty_image(model, img, output_path, filename):
     img_pil = Image.fromarray(equalized, mode="L")
     img_pil.save(output_path / f"{filename}_uncertainty.png")
     return equalized
-
-
-def save_quality_score_image(model, img, output_path, filename, zero_top_n):
-    quality = compute_quality_score(model, img, zero_top_n)
-    """Generate and save a normalized quality score image."""
-    quality_uint8 = np.uint8((quality * 255).clip(0, 255))
-    img_pil = Image.fromarray(quality_uint8)
-    img_pil.save(output_path / f"{filename}_quality.png")
-    return quality_uint8
 
 
 def load_trained_model(model_path, cfg):
@@ -403,26 +235,88 @@ def run_inference(cfg, model, input_files, output_dir):
             
             # Generate and save visualization
             filename = Path(file_path).stem
-            viz = save_visualization(model, img, output_dir, filename)
+            base_viz = model.predict(img)
+            save_visualization(model, img, output_dir, filename, viz=base_viz)
             viz_path = output_dir / f"{filename}_viz.png"
 
             quality_path = None
+            edge_quality_path = None
+            structure_quality_path = None
+            contrast_quality_path = None
             try:
                 zero_top_n = int(getattr(cfg.model, "quality_zero_top_n", 10))
-                save_quality_score_image(model, img, output_dir, filename, zero_top_n)
+                summary_method = getattr(cfg.model, "quality_highd_summary", "pca1")
+                window_size = int(getattr(cfg.model, "quality_window_size", 9))
+                structure_window = int(getattr(cfg.model, "quality_structure_window", 5))
+                summary = compute_highd_summary(img, method=summary_method, random_state=cfg.model.random_state)
+
+                save_quality_score_image(
+                    model,
+                    img,
+                    output_dir,
+                    filename,
+                    zero_top_n,
+                    base_viz=base_viz,
+                    show_progress=True,
+                )
                 quality_path = output_dir / f"{filename}_quality.png"
+
+                save_edge_quality_image(
+                    model,
+                    img,
+                    output_dir,
+                    filename,
+                    window_size=window_size,
+                    highd_summary=summary_method,
+                    base_viz=base_viz,
+                    summary=summary,
+                )
+                edge_quality_path = output_dir / f"{filename}_edge_quality.png"
+
+                save_structure_quality_image(
+                    model,
+                    img,
+                    output_dir,
+                    filename,
+                    window_size=structure_window,
+                    highd_summary=summary_method,
+                    base_viz=base_viz,
+                    summary=summary,
+                )
+                structure_quality_path = output_dir / f"{filename}_structure_quality.png"
+
+                save_contrast_quality_image(
+                    model,
+                    img,
+                    output_dir,
+                    filename,
+                    window_size=window_size,
+                    highd_summary=summary_method,
+                    base_viz=base_viz,
+                    summary=summary,
+                )
+                contrast_quality_path = output_dir / f"{filename}_contrast_quality.png"
             except Exception as e:
-                print(f"  ⚠ Quality image skipped for {file_path}: {e}")
+                print(f"  ⚠ Quality metrics skipped for {file_path}: {e}")
 
             results.append({
                 "input": str(file_path),
                 "viz": str(viz_path),
-                "quality": str(quality_path) if quality_path else None
+                "quality": str(quality_path) if quality_path else None,
+                "edge_quality": str(edge_quality_path) if edge_quality_path else None,
+                "structure_quality": str(structure_quality_path) if structure_quality_path else None,
+                "contrast_quality": str(contrast_quality_path) if contrast_quality_path else None,
             })
             
             print(f"  ✓ Visualization saved: {output_dir / f'{filename}_viz.png'}")
             if quality_path:
                 print(f"  ✓ Quality saved: {quality_path}")
+            if edge_quality_path:
+                print(f"  ✓ Edge quality saved: {edge_quality_path}")
+            if structure_quality_path:
+                print(f"  ✓ Structure quality saved: {structure_quality_path}")
+            if contrast_quality_path:
+                print(f"  ✓ Contrast quality saved: {contrast_quality_path}")
             
             del img
             
@@ -447,9 +341,10 @@ def run_inference(cfg, model, input_files, output_dir):
     
     return results
 
-def save_visualization(model, img, output_path, filename):
+def save_visualization(model, img, output_path, filename, viz=None):
     """Generate and save visualization for an image."""
-    viz = model.predict(img)
+    if viz is None:
+        viz = model.predict(img)
     
     # Apply histogram equalization to each channel
     viz_equalized = np.zeros_like(viz)
@@ -513,14 +408,64 @@ def train_on_file(cfg, input_path, output_dir, file_idx=0, total_files=1):
     
     # Generate and save visualization
     if cfg.save_visualizations:
-        viz = save_visualization(model, img, output_dir, Path(input_path).stem)
+        base_viz = model.predict(img)
+        save_visualization(model, img, output_dir, Path(input_path).stem, viz=base_viz)
         print(f"Visualization saved to: {output_dir / f'{Path(input_path).stem}_viz.png'}")
         try:
             zero_top_n = int(getattr(cfg.model, "quality_zero_top_n", 10))
-            save_quality_score_image(model, img, output_dir, Path(input_path).stem, zero_top_n)
+            summary_method = getattr(cfg.model, "quality_highd_summary", "pca1")
+            window_size = int(getattr(cfg.model, "quality_window_size", 9))
+            structure_window = int(getattr(cfg.model, "quality_structure_window", 5))
+            summary = compute_highd_summary(img, method=summary_method, random_state=cfg.model.random_state)
+
+            save_quality_score_image(
+                model,
+                img,
+                output_dir,
+                Path(input_path).stem,
+                zero_top_n,
+                base_viz=base_viz,
+                show_progress=True,
+            )
             print(f"Quality image saved to: {output_dir / f'{Path(input_path).stem}_quality.png'}")
+
+            save_edge_quality_image(
+                model,
+                img,
+                output_dir,
+                Path(input_path).stem,
+                window_size=window_size,
+                highd_summary=summary_method,
+                base_viz=base_viz,
+                summary=summary,
+            )
+            print(f"Edge quality image saved to: {output_dir / f'{Path(input_path).stem}_edge_quality.png'}")
+
+            save_structure_quality_image(
+                model,
+                img,
+                output_dir,
+                Path(input_path).stem,
+                window_size=structure_window,
+                highd_summary=summary_method,
+                base_viz=base_viz,
+                summary=summary,
+            )
+            print(f"Structure quality image saved to: {output_dir / f'{Path(input_path).stem}_structure_quality.png'}")
+
+            save_contrast_quality_image(
+                model,
+                img,
+                output_dir,
+                Path(input_path).stem,
+                window_size=window_size,
+                highd_summary=summary_method,
+                base_viz=base_viz,
+                summary=summary,
+            )
+            print(f"Contrast quality image saved to: {output_dir / f'{Path(input_path).stem}_contrast_quality.png'}")
         except Exception as e:
-            print(f"Warning: Quality image skipped for {input_path}: {e}")
+            print(f"Warning: Quality metrics skipped for {input_path}: {e}")
     
     return model, model_path
 
@@ -621,6 +566,12 @@ def main(cfg: DictConfig) -> None:
                 f.write(f"  {item['input']} -> {item['viz']}\n")
                 if item.get('quality'):
                     f.write(f"    quality -> {item['quality']}\n")
+                if item.get('edge_quality'):
+                    f.write(f"    edge_quality -> {item['edge_quality']}\n")
+                if item.get('structure_quality'):
+                    f.write(f"    structure_quality -> {item['structure_quality']}\n")
+                if item.get('contrast_quality'):
+                    f.write(f"    contrast_quality -> {item['contrast_quality']}\n")
         
         print(f"Summary saved to: {summary_path}")
         
@@ -732,6 +683,12 @@ def main(cfg: DictConfig) -> None:
                         f.write(f"  {item['input']} -> {item['viz']}\n")
                         if item.get('quality'):
                             f.write(f"    quality -> {item['quality']}\n")
+                        if item.get('edge_quality'):
+                            f.write(f"    edge_quality -> {item['edge_quality']}\n")
+                        if item.get('structure_quality'):
+                            f.write(f"    structure_quality -> {item['structure_quality']}\n")
+                        if item.get('contrast_quality'):
+                            f.write(f"    contrast_quality -> {item['contrast_quality']}\n")
                 
                 print(f"Inference summary saved to: {inference_summary_path}")
 

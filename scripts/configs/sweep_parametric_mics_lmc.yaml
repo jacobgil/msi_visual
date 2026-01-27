@@ -32,10 +32,10 @@ hydra:
     params:
       model.number_of_points: 1000
       model.sampling: random
-      model.num_samples: 5000
-      model.num_epochs: 30
-      model.beta: 10.0,20.0
-      model.clusters: 32-128-512,256-512-1024,1024-2048-4096,2048-4096-8192
+      model.num_samples: 10000
+      model.num_epochs: 20
+      model.beta: 0.5,1.0
+      model.clusters: 4-16-64, 32-128-512, 4-64-512
       
 # Combined sweep example (all combinations)
 # hydra:
