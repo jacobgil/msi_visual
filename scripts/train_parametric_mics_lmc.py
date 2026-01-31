@@ -136,6 +136,8 @@ def load_trained_model(model_path, cfg):
             'factor': saved_config.get('model', {}).get('factor', cfg.model.factor),
             'random_state': saved_config.get('model', {}).get('random_state', cfg.model.random_state),
             'verbose': cfg.model.verbose,
+            'cluster_loss_weight': saved_config.get('model', {}).get('cluster_loss_weight', getattr(cfg.model, 'cluster_loss_weight', 1.0)),
+            'category_loss_weight': saved_config.get('model', {}).get('category_loss_weight', getattr(cfg.model, 'category_loss_weight', 1.0)),
         }
     else:
         # Fallback to provided config
@@ -157,6 +159,8 @@ def load_trained_model(model_path, cfg):
             'factor': cfg.model.factor,
             'random_state': cfg.model.random_state,
             'verbose': cfg.model.verbose,
+            'cluster_loss_weight': getattr(cfg.model, 'cluster_loss_weight', 1.0),
+            'category_loss_weight': getattr(cfg.model, 'category_loss_weight', 1.0),
         }
 
     print(f"Model kwargs: {model_kwargs}")
@@ -386,6 +390,8 @@ def train_on_file(cfg, input_path, output_dir, file_idx=0, total_files=1):
         'factor': cfg.model.factor,
         'random_state': cfg.model.random_state,
         'verbose': cfg.model.verbose,
+        'cluster_loss_weight': getattr(cfg.model, 'cluster_loss_weight', 1.0),
+        'category_loss_weight': getattr(cfg.model, 'category_loss_weight', 1.0),
     }
 
     model = MSIParametricMiCSLMC(**model_kwargs)

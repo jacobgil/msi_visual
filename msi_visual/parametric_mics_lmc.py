@@ -3,7 +3,7 @@ from sklearn.metrics.pairwise import pairwise_distances
 import torch
 import cv2
 import tqdm
-from typing import Optional
+from typing import Optional, List, Any
 import random
 from sklearn.decomposition import PCA
 from skimage.segmentation import slic, mark_boundaries
@@ -88,7 +88,8 @@ def uniform_superpixel_sampling(X, X_raw, approx_budget=5000,
                                max_iters=8, 
                                verbose=False, 
                                visualize=False,
-                               rng_seed=42):
+                               rng_seed=42,
+                               roi_mask=None):
     """
     Uniformly sample points from superpixels with a target total sample budget.
     Will adaptively increase superpixels or points per superpixel if not enough points.
@@ -104,6 +105,7 @@ def uniform_superpixel_sampling(X, X_raw, approx_budget=5000,
         verbose: print search log
         visualize: show matplotlib overlay
         rng_seed: for random generator
+        roi_mask: optional (H, W) boolean array; if provided, sampling is restricted to ROI.
 
     Returns:
         sampled_coords: (N, 2) array of sampled coordinates (row, col)
@@ -126,6 +128,8 @@ def uniform_superpixel_sampling(X, X_raw, approx_budget=5000,
 
     mask_img = mask.reshape(height, width)
     valid_pixel_bool = mask_img.astype(bool)
+    if roi_mask is not None:
+        valid_pixel_bool = valid_pixel_bool & np.asarray(roi_mask, dtype=bool).reshape(height, width)
     sampled_coords = []
 
     n_superpixels = init_superpixels
@@ -199,6 +203,41 @@ def uniform_superpixel_sampling(X, X_raw, approx_budget=5000,
     return sampled_coords, sampled_flat_indices, mask_labels
 
 
+def _build_category_labels(
+    height: int,
+    width: int,
+    sampled_flat_indices: np.ndarray,
+    category_annotations: List[dict],
+) -> np.ndarray:
+    """
+    Assign a category to each sampled point from polygon annotations.
+    category_annotations: list of {"polygon": [[x, y], ...], "category": int}
+    with (x, y) = (col, row). Points inside no polygon get -1 (ignore).
+    First matching polygon wins.
+    """
+    n_sampled = len(sampled_flat_indices)
+    out = np.full(n_sampled, -1, dtype=np.int64)
+    if not category_annotations:
+        return out
+    # Build one mask per annotation (order matters: first match wins)
+    for ann in category_annotations:
+        poly = ann.get("polygon") or ann.get("points")
+        cat = ann.get("category", 0)
+        if not poly or len(poly) < 3:
+            continue
+        mask = np.zeros((height, width), dtype=np.uint8)
+        pts = np.array(poly, dtype=np.int32)
+        pts = pts.reshape((-1, 1, 2))
+        cv2.fillPoly(mask, [pts], 1)
+        mask_bool = mask.astype(bool)
+        rows = sampled_flat_indices // width
+        cols = sampled_flat_indices % width
+        inside = mask_bool[rows, cols]
+        # Only assign where still unlabeled
+        out[(out == -1) & inside] = cat
+    return out
+
+
 class MSIParametricMiCSLMC:
     def __init__(
             self,
@@ -219,7 +258,9 @@ class MSIParametricMiCSLMC:
             warmup_epochs=10,
             factor=1.0,
             random_state=42,
-            verbose=False):
+            verbose=False,
+            cluster_loss_weight=1.0,
+            category_loss_weight=1.0):
         self.model = model
         self.verbose = verbose
         self.factor = factor
@@ -240,6 +281,8 @@ class MSIParametricMiCSLMC:
         self.random_state = random_state
         self.step_counter = 0
         self.scheduler = None
+        self.cluster_loss_weight = float(cluster_loss_weight)
+        self.category_loss_weight = float(category_loss_weight)
         
         # Seed everything for reproducibility
         self.seed_everything()
@@ -258,6 +301,47 @@ class MSIParametricMiCSLMC:
     def __repr__(self):
         return f"Parametric PCC Optimization: num_epochs: {self.num_epochs} \
             sampling: {self.sampling} number_of_points:{self.number_of_points} cluster: {self.cluster}"
+
+    def release_resources(self):
+        """Release GPU and large tensors so the object can be collected and memory freed. Call before dropping the model reference."""
+        try:
+            if self.model is not None:
+                self.model.cpu()
+            if getattr(self, "reference_points", None) is not None:
+                del self.reference_points
+                self.reference_points = None
+            if getattr(self, "euclidean", None) is not None:
+                del self.euclidean
+                self.euclidean = None
+            if getattr(self, "mask", None) is not None:
+                del self.mask
+                self.mask = None
+            if getattr(self, "visualiation_to_cluster", None):
+                for layer in self.visualiation_to_cluster:
+                    try:
+                        layer.cpu()
+                    except Exception:
+                        pass
+                self.visualiation_to_cluster = []
+            if getattr(self, "category_head", None) is not None:
+                try:
+                    self.category_head.cpu()
+                except Exception:
+                    pass
+                self.category_head = None
+            if getattr(self, "category_labels", None) is not None:
+                self.category_labels = None
+            if getattr(self, "optim", None) is not None:
+                self.optim = None
+            if getattr(self, "scheduler", None) is not None:
+                self.scheduler = None
+            # Drop large numpy arrays so they can be collected
+            if getattr(self, "sampled_data", None) is not None:
+                self.sampled_data = None
+            if getattr(self, "sampled_flat_indices", None) is not None:
+                self.sampled_flat_indices = None
+        except Exception:
+            pass
 
     def get_reference_points(self, data, Np):
         """Reduces (NxD) data matrix from N to Np data points.
@@ -295,9 +379,9 @@ class MSIParametricMiCSLMC:
             # get sample and fill coreset
             return rng.choice(N, Np, p=q)
 
-    def set_image(self, img):
+    def set_image(self, img, roi_mask=None, category_annotations=None):
         if self.verbose:
-            print(f"[set_image] Starting image setup: shape={img.shape}")
+            print(f"[set_image] Starting image setup: shape={img.shape}, roi_mask={roi_mask is not None}, category_annotations={bool(category_annotations)}")
         self.img = img
         self.reshaped = self.img.reshape(
             self.img.shape[0] * self.img.shape[1], -1)
@@ -305,7 +389,7 @@ class MSIParametricMiCSLMC:
         if self.verbose:
             print(f"[set_image] Reshaped image: {self.reshaped.shape}")
         
-        # Always use uniform superpixel sampling to get representative subset
+        # Always use uniform superpixel sampling to get representative subset (optionally restricted to ROI)
         _, sampled_flat_indices, _ = uniform_superpixel_sampling(
             self.img, 
             self.reshaped, 
@@ -316,10 +400,12 @@ class MSIParametricMiCSLMC:
             max_iters=8,
             verbose=self.verbose,
             visualize=self.verbose,
-            rng_seed=self.random_state
+            rng_seed=self.random_state,
+            roi_mask=roi_mask
         )
         self.sampled_data = self.reshaped[sampled_flat_indices]
         self.sampled_flat_indices = sampled_flat_indices
+        self.roi_mask = roi_mask  # store for ROI-based normalization in predict
         if self.verbose:
             print(f"[set_image] Superpixel sampling completed: sampled {self.sampled_data.shape[0]} points from {self.reshaped.shape[0]} total")
         
@@ -347,6 +433,27 @@ class MSIParametricMiCSLMC:
         self.mask = torch.from_numpy(self.mask_np).float()
         if torch.cuda.is_available():
             self.mask = self.mask.cuda()
+
+        # Category annotations: assign labels from polygon masks (supervised)
+        height, width = self.img.shape[0], self.img.shape[1]
+        self.category_labels = None
+        self.category_head = None
+        if category_annotations and len(category_annotations) > 0:
+            self.category_labels = _build_category_labels(
+                height, width, self.sampled_flat_indices, category_annotations
+            )
+            num_categories = max(ann.get("category", 0) for ann in category_annotations) + 1
+            self.category_head = torch.nn.Sequential(
+                torch.nn.Linear(self.number_of_components, num_categories)
+            )
+            if torch.cuda.is_available():
+                self.category_head = self.category_head.cuda()
+            if self.verbose:
+                n_labeled = np.sum(self.category_labels >= 0)
+                print(f"[set_image] Category annotations: {len(category_annotations)} polygons, {num_categories} classes, {n_labeled}/{len(self.category_labels)} points labeled")
+        else:
+            self.category_labels = None
+            self.category_head = None
 
         # Initialize clustering classifiers if enabled
         if self.cluster and len(self.clusters) > 0:
@@ -380,6 +487,8 @@ class MSIParametricMiCSLMC:
         if self.cluster and len(self.visualiation_to_cluster) > 0:
             for layer in self.visualiation_to_cluster:
                 params.append({"params": layer.parameters(), "weight_decay": 0})
+        if self.category_head is not None:
+            params.append({"params": self.category_head.parameters(), "weight_decay": 0})
         
         self.optim = torch.optim.AdamW(params, lr=self.lr)
         self.scheduler = torch.optim.lr_scheduler.LambdaLR(
@@ -388,6 +497,62 @@ class MSIParametricMiCSLMC:
         if self.verbose:
             print(f"[set_image] Optimizer and scheduler initialized: lr={self.lr}, warmup_epochs={self.warmup_epochs}")
             print(f"[set_image] Image setup completed successfully")
+    
+    def update_roi_sampling(self, roi_mask):
+        """
+        Update sampling to ROI only: resample points, re-fit cluster labels, re-initialize cluster heads.
+        The embedding model is kept (not re-initialized) so full-image structure is preserved;
+        only the cluster heads are re-initialized to learn the new ROI cluster assignments.
+        Optimizer is recreated so it tracks the new head parameters.
+        """
+        if self.img is None or self.reshaped is None:
+            raise ValueError("Call set_image() first before update_roi_sampling()")
+        if self.verbose:
+            print(f"[update_roi_sampling] Updating sampling to ROI (keep model, resample + re-init heads)")
+        _, sampled_flat_indices, _ = uniform_superpixel_sampling(
+            self.img,
+            self.reshaped,
+            approx_budget=self.num_samples,
+            init_superpixels=512,
+            init_points_per_superpixel=8,
+            compactness=10,
+            max_iters=8,
+            verbose=self.verbose,
+            visualize=False,
+            rng_seed=self.random_state,
+            roi_mask=roi_mask,
+        )
+        self.sampled_data = self.reshaped[sampled_flat_indices]
+        self.sampled_flat_indices = sampled_flat_indices
+        max_points = min(self.number_of_points, self.sampled_data.shape[0])
+        self.indices = None  # force resample to recompute from new sampled_data
+        self.resample(number_of_points=max_points)
+        if self.cluster and len(self.clusters) > 0:
+            # Re-fit KMeans on new sampled_data
+            self.cluster_labels = []
+            for k in self.clusters:
+                kmeans = KMeans(n_clusters=k, random_state=self.random_state)
+                labels = kmeans.fit_predict(self.sampled_data)
+                self.cluster_labels.append(labels)
+            # Re-initialize cluster heads so they learn the new ROI cluster structure
+            self.visualiation_to_cluster = []
+            for k in self.clusters:
+                layer = torch.nn.Sequential(
+                    torch.nn.Linear(self.number_of_components, k)
+                )
+                if torch.cuda.is_available():
+                    layer = layer.cuda()
+                self.visualiation_to_cluster.append(layer)
+            # Recreate optimizer with same model params + new head params
+            params = [{"params": self.model.parameters(), "weight_decay": 0}]
+            for layer in self.visualiation_to_cluster:
+                params.append({"params": layer.parameters(), "weight_decay": 0})
+            self.optim = torch.optim.AdamW(params, lr=self.lr)
+            self.scheduler = torch.optim.lr_scheduler.LambdaLR(
+                self.optim, lr_lambda=self._lr_lambda
+            )
+            if self.verbose:
+                print(f"[update_roi_sampling] Cluster labels and heads re-initialized for {len(self.clusters)} levels")
     
     def _lr_lambda(self, epoch: int) -> float:
         """ Learning rate scheduler with warmup """
@@ -500,8 +665,9 @@ class MSIParametricMiCSLMC:
 
             high_d_distances = self.euclidean[batch_mask]
 
-            # Clustering loss
+            # Clustering loss (weighted)
             if self.cluster and len(self.visualiation_to_cluster) > 0:
+                cluster_loss_sum = 0.0
                 for i in range(len(self.visualiation_to_cluster)):
                     layer = self.visualiation_to_cluster[i]
                     clusters = self.cluster_labels[i]
@@ -513,8 +679,19 @@ class MSIParametricMiCSLMC:
                     cluster_loss = torch.nn.CrossEntropyLoss(ignore_index=-1)(
                         layer_output / self.temperature, batch_clusters
                     )
-                    loss = loss + cluster_loss
-                loss = loss / len(self.visualiation_to_cluster)
+                    cluster_loss_sum = cluster_loss_sum + cluster_loss
+                loss = loss + self.cluster_loss_weight * (cluster_loss_sum / len(self.visualiation_to_cluster))
+
+            # Category annotation loss / supervised loss (weighted)
+            if self.category_head is not None and self.category_labels is not None:
+                batch_cats = torch.from_numpy(self.category_labels[batch_mask]).long()
+                if torch.cuda.is_available():
+                    batch_cats = batch_cats.cuda()
+                cat_output = self.category_head(batch_outputs)
+                cat_loss = torch.nn.functional.cross_entropy(
+                    cat_output / self.temperature, batch_cats, ignore_index=-1
+                )
+                loss = loss + self.category_loss_weight * cat_loss
 
             # Correlation loss (computed every k_epoch steps)
             if self.step_counter % self.k_epoch == self.k_epoch - 1:
@@ -527,6 +704,8 @@ class MSIParametricMiCSLMC:
                 alpha = max(alpha, 1e-6)
 
                 if self.cluster and len(self.visualiation_to_cluster) > 0:
+                    loss = loss + correlation_loss * self.beta / alpha
+                elif self.category_head is not None:
                     loss = loss + correlation_loss * self.beta / alpha
                 else:
                     loss = correlation_loss
@@ -583,7 +762,11 @@ class MSIParametricMiCSLMC:
             print(f"[predict] Model inference completed: result shape={result.shape}")
 
         mask = self.img.sum(axis=-1) > 0
-        global_contrast = np.uint8(255 * normalize(result))
+        # Use ROI-based normalization when model was trained on ROI only, so color scale reflects ROI stats
+        norm_mask = None
+        if getattr(self, "roi_mask", None) is not None:
+            norm_mask = mask & self.roi_mask
+        global_contrast = np.uint8(255 * normalize(result, mask=norm_mask))
         global_contrast[mask == 0] = 0
         
         if self.lab_to_rgb and self.number_of_components == 3:

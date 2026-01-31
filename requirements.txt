@@ -18,3 +18,5 @@ tqdm
 numba
 phate
 trimap
+fastapi
+uvicorn[standard]

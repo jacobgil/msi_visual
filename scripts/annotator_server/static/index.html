@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MSI-VISUAL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #0d0d0f;
+      --bg-panel: #16161a;
+      --bg-elevated: #1c1c21;
+      --border: #2a2a32;
+      --text: #e2e2e8;
+      --text-muted: #8b8b9a;
+      --accent: #7c9ce0;
+      --accent-hover: #9ab4ed;
+      --primary: #5b8def;
+      --primary-hover: #7aa3f2;
+      --success: #6bc9a3;
+      --danger: #e07c7c;
+      --radius: 8px;
+      --radius-sm: 6px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+      background: var(--bg-deep);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ----- Left sidebar ----- */
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: var(--bg-panel);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .sidebar-brand {
+      padding: 1rem 1rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+    .sidebar-section {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-section:last-of-type { border-bottom: none; }
+    .sidebar-section-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      padding: 0 1rem 0.5rem;
+      margin: 0;
+    }
+    .sidebar-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 0 0.5rem;
+    }
+    .btn-icon {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.875rem;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-icon:hover { background: var(--bg-elevated); color: var(--text); }
+    .btn-icon:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn-icon.primary { color: var(--primary); }
+    .btn-icon.primary:hover:not(:disabled) { background: rgba(91, 141, 239, 0.15); color: var(--primary-hover); }
+    .btn-icon svg { flex-shrink: 0; width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .btn-icon .label { flex: 1; }
+
+    .category-row {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0 0.5rem 0.5rem;
+    }
+    .category-row input[type="number"] {
+      width: 3rem;
+      padding: 0.35rem 0.4rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.85rem;
+      font-family: inherit;
+    }
+    .category-row input:focus { outline: none; border-color: var(--accent); }
+    .category-count { font-size: 0.75rem; color: var(--text-muted); padding: 0 0.5rem 0.25rem; }
+    .sidebar-select {
+      width: 100%;
+      margin: 0 0.5rem 0.5rem;
+      padding: 0.5rem 0.6rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.85rem;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    .sidebar-select:focus { outline: none; border-color: var(--accent); }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      margin: 0 0.5rem 2px;
+      user-select: none;
+      font-size: 0.875rem;
+    }
+    .toggle-row:hover { background: var(--bg-elevated); }
+    .toggle-row input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary); }
+
+    /* ----- Main content ----- */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .viewer {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+      background: var(--bg-deep);
+      cursor: grab;
+    }
+    .viewer.dragging { cursor: grabbing; }
+    .viewer.draw { cursor: crosshair; }
+    .viewport {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform-origin: 0 0;
+      display: inline-flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+    .viewport > div { position: relative; display: inline-block; }
+    .viewport img { display: block; vertical-align: top; }
+    #overlay {
+      position: absolute;
+      left: 0;
+      top: 0;
+      pointer-events: none;
+    }
+    #overlay.pointer-events { pointer-events: auto; }
+    .loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.7);
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+
+    /* ----- Status bar ----- */
+    .status-bar {
+      padding: 0.4rem 1rem;
+      background: var(--bg-panel);
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .status-bar.busy { color: #c9a227; }
+    .status-bar.error { color: var(--danger); }
+
+    /* ----- Settings panel (slide-out) ----- */
+    .settings-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 380px;
+      max-width: 100%;
+      height: 100%;
+      background: var(--bg-panel);
+      border-left: 1px solid var(--border);
+      box-shadow: -8px 0 24px rgba(0,0,0,0.4);
+      transform: translateX(100%);
+      transition: transform 0.25s ease;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .settings-drawer.open { transform: translateX(0); }
+    .settings-drawer-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .settings-drawer-header h2 { margin: 0; font-size: 1rem; font-weight: 600; }
+    .settings-drawer-close {
+      padding: 0.35rem;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      line-height: 1;
+    }
+    .settings-drawer-close:hover { background: var(--bg-elevated); color: var(--text); }
+    .settings-drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.25rem;
+    }
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem 0;
+      margin-bottom: 1.25rem;
+    }
+    .settings-field {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .settings-field label { font-size: 0.875rem; color: var(--text); }
+    .settings-field input {
+      padding: 0.5rem 0.65rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 0.875rem;
+      font-family: inherit;
+      min-width: 0;
+    }
+    .settings-field input:focus { outline: none; border-color: var(--accent); }
+    .settings-field input[type="number"] { width: 7rem; justify-self: start; }
+    .settings-actions {
+      display: flex;
+      gap: 0.5rem;
+      padding-top: 0.5rem;
+    }
+    .settings-actions button {
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.875rem;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text);
+    }
+    .settings-actions button:hover { background: var(--border); }
+    .settings-actions button.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .settings-actions button.primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-brand">MSI-VISUAL</div>
+
+    <div class="sidebar-section">
+      <h3 class="sidebar-section-title">Image</h3>
+      <select id="inputFileSelect" class="sidebar-select" title="Select .npy file to load">
+        <option value="">—</option>
+      </select>
+    </div>
+
+    <div class="sidebar-section">
+      <h3 class="sidebar-section-title">Annotate</h3>
+      <div class="sidebar-actions">
+        <button type="button" id="btnComplete" class="btn-icon" title="Exit annotation mode (A)">
+          <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+          <span class="label">Exit draw (A)</span>
+        </button>
+        <button type="button" id="btnClear" class="btn-icon" title="Clear current ROI polygon">
+          <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+          <span class="label">Clear ROI</span>
+        </button>
+      </div>
+      <div class="category-row">
+        <input type="number" id="categoryId" min="0" value="0" title="Category id" />
+        <button type="button" id="btnAddCategory" class="btn-icon" style="flex:1; padding: 0.4rem 0.5rem;" title="Add current polygon as category">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/><path d="M4 6h4v4H4zM16 14h4v4h-4z"/></svg>
+          <span class="label">Add as category</span>
+        </button>
+      </div>
+      <button type="button" id="btnClearCategories" class="btn-icon" title="Clear all category polygons">
+        <svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+        <span class="label">Clear categories</span>
+      </button>
+      <div id="categoryCount" class="category-count"></div>
+    </div>
+
+    <div class="sidebar-section">
+      <h3 class="sidebar-section-title">View</h3>
+      <label class="toggle-row">
+        <input type="checkbox" id="showAnnotations" checked />
+        <span>Show annotations</span>
+      </label>
+      <label class="toggle-row">
+        <input type="checkbox" id="showSampledPoints" />
+        <span>Show sampled / ref points</span>
+      </label>
+    </div>
+
+    <div class="sidebar-section">
+      <h3 class="sidebar-section-title">Actions</h3>
+      <div class="sidebar-actions">
+        <button type="button" id="btnRecompute" class="btn-icon primary" disabled title="Recompute with ROI and categories">
+          <svg viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+          <span class="label">Recompute</span>
+        </button>
+        <button type="button" id="btnCopyClipboard" class="btn-icon" title="Copy viz to clipboard">
+          <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          <span class="label">Copy to clipboard</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="sidebar-section" style="margin-top: auto;">
+      <div class="sidebar-actions">
+        <button type="button" id="btnSettings" class="btn-icon" title="Model settings">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-1.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h1.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v1.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-1.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          <span class="label">Settings</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="viewer" id="viewer">
+      <div class="viewport" id="viewport">
+        <div>
+          <img id="img" alt="Visualization" />
+          <canvas id="overlay"></canvas>
+        </div>
+      </div>
+      <div class="loading" id="loading">Loading…</div>
+    </div>
+    <div class="status-bar" id="status">Load initial visualization…</div>
+  </main>
+
+  <div class="settings-drawer" id="settingsPanel">
+    <div class="settings-drawer-header">
+      <h2>Model config</h2>
+      <button type="button" class="settings-drawer-close" id="btnSettingsClose" title="Close">✕</button>
+    </div>
+    <div class="settings-drawer-body">
+      <p style="margin:0 0 1rem 0; font-size:0.85rem; color: var(--text-muted);">Override YAML. Apply and reload to run with new config.</p>
+      <div class="settings-grid">
+        <div class="settings-field"><label>Number of points (LMC reference)</label><input type="number" id="configNumberOfPoints" min="100" max="10000" step="100" /></div>
+        <div class="settings-field"><label>Num samples (superpixel budget)</label><input type="number" id="configNumSamples" min="500" max="50000" step="500" /></div>
+        <div class="settings-field"><label>Num epochs</label><input type="number" id="configNumEpochs" min="1" max="500" /></div>
+        <div class="settings-field"><label>Clusters (e.g. 16-32-64-128)</label><input type="text" id="configClusters" placeholder="16-32-64-128" /></div>
+        <div class="settings-field"><label>Batch size</label><input type="number" id="configBatchSize" min="64" max="4096" step="64" /></div>
+        <div class="settings-field"><label>Beta</label><input type="number" id="configBeta" min="0" step="0.1" /></div>
+        <div class="settings-field"><label>Cluster loss weight</label><input type="number" id="configClusterLossWeight" min="0" step="0.1" title="Weight for MiCS cluster loss" /></div>
+        <div class="settings-field"><label>Category loss weight</label><input type="number" id="configCategoryLossWeight" min="0" step="0.1" title="Weight for supervised loss" /></div>
+      </div>
+      <div class="settings-actions">
+        <button type="button" id="btnConfigSave">Save</button>
+        <button type="button" id="btnConfigApply" class="primary">Apply and reload viz</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

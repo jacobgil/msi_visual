@@ -18,14 +18,30 @@ def segment_visualization(visualization: np.ndarray, number_of_bins_for_comparis
     return digitized
 
 
-def normalize(visualiation, low=0.001, high=99.999):
+def normalize(visualiation, low=0.001, high=99.999, mask=None):
+    """
+    Normalize each channel to [0,1] using percentile scaling.
+    If mask is provided (2D bool), percentiles are computed only over masked pixels.
+    This avoids skewing the color scale when the model was trained on a subset (e.g. ROI).
+    """
     result = visualiation.copy()
     for i in range(result.shape[-1]):
-        result[:, :, i] = result[:, :, i] - np.percentile(result[:, :, i], low)
-        result[:, :, i][result[:, :, i] < 0] = 0
-        result[:, :, i] = result[:, :, i] / \
-            np.percentile(result[:, :, i], high)
-        result[:, :, i][result[:, :, i] > 1] = 1
+        channel = result[:, :, i]
+        if mask is not None and np.any(mask):
+            vals = channel[mask]
+            if len(vals) > 0:
+                p_low = np.percentile(vals, low)
+                p_high = np.percentile(vals, high)
+            else:
+                p_low, p_high = np.percentile(channel, low), np.percentile(channel, high)
+        else:
+            p_low = np.percentile(channel, low)
+            p_high = np.percentile(channel, high)
+        channel = channel - p_low
+        channel[channel < 0] = 0
+        channel = channel / (p_high - p_low + 1e-8)
+        channel[channel > 1] = 1
+        result[:, :, i] = channel
     return result
 
 
