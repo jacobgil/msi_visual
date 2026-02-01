@@ -25,6 +25,8 @@
   const configCategoryLossWeight = document.getElementById('configCategoryLossWeight');
   const configPixelSampling = document.getElementById('configPixelSampling');
   const configPcaFitStep = document.getElementById('configPcaFitStep');
+  const configClusterOnPca = document.getElementById('configClusterOnPca');
+  const configClusterPcaDims = document.getElementById('configClusterPcaDims');
   const btnConfigSave = document.getElementById('btnConfigSave');
   const btnConfigApply = document.getElementById('btnConfigApply');
   const btnCopyClipboard = document.getElementById('btnCopyClipboard');
@@ -351,6 +353,8 @@
       if (configCategoryLossWeight) configCategoryLossWeight.value = m.category_loss_weight ?? '';
       if (configPixelSampling) configPixelSampling.value = (m.pixel_sampling || 'superpixel').toLowerCase();
       if (configPcaFitStep) configPcaFitStep.value = m.pca_fit_step ?? '';
+      if (configClusterOnPca) configClusterOnPca.checked = !!m.cluster_on_pca;
+      if (configClusterPcaDims) configClusterPcaDims.value = m.cluster_pca_dims ?? '';
     } catch (e) { /* ignore */ }
   }
 
@@ -371,6 +375,8 @@
     if (configCategoryLossWeight && configCategoryLossWeight.value !== '') model.category_loss_weight = parseFloat(configCategoryLossWeight.value);
     if (configPixelSampling && configPixelSampling.value) model.pixel_sampling = configPixelSampling.value.trim().toLowerCase() || 'superpixel';
     if (configPcaFitStep && configPcaFitStep.value !== '') model.pca_fit_step = Math.max(1, parseInt(configPcaFitStep.value, 10));
+    if (configClusterOnPca) model.cluster_on_pca = configClusterOnPca.checked;
+    if (configClusterPcaDims && configClusterPcaDims.value !== '') model.cluster_pca_dims = Math.max(1, parseInt(configClusterPcaDims.value, 10));
     return { model: Object.keys(model).length ? model : null };
   }
 

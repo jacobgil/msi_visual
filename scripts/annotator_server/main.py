@@ -123,6 +123,8 @@ class ModelOverridesBody(BaseModel):
     num_samples: Optional[int] = None
     pixel_sampling: Optional[str] = None  # "superpixel" or "random"
     pca_fit_step: Optional[int] = None  # subsample step for PCA fit (1 = all pixels)
+    cluster_on_pca: Optional[bool] = None  # if true, KMeans on PCA-reduced data
+    cluster_pca_dims: Optional[int] = None  # PCA dims when cluster_on_pca is true
     num_epochs: Optional[int] = None
     clusters: Optional[str] = None  # e.g. "16-32-64-128"
     batch_size: Optional[int] = None
@@ -315,6 +317,8 @@ def _effective_model_config(cfg: Any, overrides: dict) -> dict:
         "category_loss_weight": float(getattr(cfg.model, "category_loss_weight", 1.0)),
         "pixel_sampling": str(getattr(cfg.model, "pixel_sampling", "superpixel")),
         "pca_fit_step": int(getattr(cfg.model, "pca_fit_step", 4)),
+        "cluster_on_pca": bool(getattr(cfg.model, "cluster_on_pca", False)),
+        "cluster_pca_dims": int(getattr(cfg.model, "cluster_pca_dims", 50)),
     }
     if overrides and isinstance(overrides.get("model"), dict):
         for k in base:
@@ -347,6 +351,8 @@ def _model_kwargs_from_config(cfg, overrides: Optional[dict] = None):
         "category_loss_weight": float(getattr(cfg.model, "category_loss_weight", 1.0)),
         "pixel_sampling": str(getattr(cfg.model, "pixel_sampling", "superpixel")),
         "pca_fit_step": int(getattr(cfg.model, "pca_fit_step", 4)),
+        "cluster_on_pca": bool(getattr(cfg.model, "cluster_on_pca", False)),
+        "cluster_pca_dims": int(getattr(cfg.model, "cluster_pca_dims", 50)),
     }
     if overrides and isinstance(overrides.get("model"), dict):
         m = overrides["model"]
@@ -371,6 +377,10 @@ def _model_kwargs_from_config(cfg, overrides: Optional[dict] = None):
             kwargs["pixel_sampling"] = str(m["pixel_sampling"]).strip().lower() or "superpixel"
         if m.get("pca_fit_step") is not None:
             kwargs["pca_fit_step"] = max(1, int(m["pca_fit_step"]))
+        if m.get("cluster_on_pca") is not None:
+            kwargs["cluster_on_pca"] = bool(m["cluster_on_pca"])
+        if m.get("cluster_pca_dims") is not None:
+            kwargs["cluster_pca_dims"] = max(1, int(m["cluster_pca_dims"]))
     return kwargs
 
 
@@ -508,6 +518,10 @@ async def api_patch_config(body: ConfigOverridesBody):
             overrides["model"]["pixel_sampling"] = body.model.pixel_sampling.strip().lower() or "superpixel"
         if body.model.pca_fit_step is not None:
             overrides["model"]["pca_fit_step"] = max(1, body.model.pca_fit_step)
+        if body.model.cluster_on_pca is not None:
+            overrides["model"]["cluster_on_pca"] = body.model.cluster_on_pca
+        if body.model.cluster_pca_dims is not None:
+            overrides["model"]["cluster_pca_dims"] = max(1, body.model.cluster_pca_dims)
     state.config_overrides = overrides
     model_config = _effective_model_config(state.config, state.config_overrides)
     return JSONResponse({

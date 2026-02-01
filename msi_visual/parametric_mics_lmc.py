@@ -295,7 +295,9 @@ class MSIParametricMiCSLMC:
             cluster_loss_weight=1.0,
             category_loss_weight=1.0,
             pixel_sampling="superpixel",
-            pca_fit_step=4):
+            pca_fit_step=4,
+            cluster_on_pca=False,
+            cluster_pca_dims=50):
         self.model = model
         self.verbose = verbose
         self.factor = factor
@@ -320,6 +322,8 @@ class MSIParametricMiCSLMC:
         self.category_loss_weight = float(category_loss_weight)
         self.pixel_sampling = str(pixel_sampling).lower() if pixel_sampling else "superpixel"
         self.pca_fit_step = max(1, int(pca_fit_step))
+        self.cluster_on_pca = bool(cluster_on_pca)
+        self.cluster_pca_dims = max(1, int(cluster_pca_dims))
         
         # Seed everything for reproducibility
         self.seed_everything()
@@ -513,12 +517,22 @@ class MSIParametricMiCSLMC:
                     layer = layer.cuda()
                 self.visualiation_to_cluster.append(layer)
             
-            # Create cluster labels using the sampled data
-            # Sample once and reuse for all cluster levels
+            # Create cluster labels: KMeans on raw data or on PCA-reduced data
+            data_for_cluster = self.sampled_data
+            if getattr(self, "cluster_on_pca", False):
+                n_comp = min(
+                    self.cluster_pca_dims,
+                    self.sampled_data.shape[1],
+                    max(1, self.sampled_data.shape[0] - 1),
+                )
+                pca_cluster = PCA(n_components=n_comp, random_state=self.random_state)
+                data_for_cluster = pca_cluster.fit_transform(self.sampled_data)
+                if self.verbose:
+                    print(f"[set_image] Clustering on PCA-reduced data: {self.sampled_data.shape[1]} -> {n_comp} dims")
             self.cluster_labels = []
             for k in self.clusters:
                 kmeans = KMeans(n_clusters=k, random_state=self.random_state)
-                labels = kmeans.fit_predict(self.sampled_data)
+                labels = kmeans.fit_predict(data_for_cluster)
                 self.cluster_labels.append(labels)
             if self.verbose:
                 print(f"[set_image] Clustering initialization completed")
@@ -581,11 +595,19 @@ class MSIParametricMiCSLMC:
         self.indices = None  # force resample to recompute from new sampled_data
         self.resample(number_of_points=max_points)
         if self.cluster and len(self.clusters) > 0:
-            # Re-fit KMeans on new sampled_data
+            data_for_cluster = self.sampled_data
+            if getattr(self, "cluster_on_pca", False):
+                n_comp = min(
+                    self.cluster_pca_dims,
+                    self.sampled_data.shape[1],
+                    max(1, self.sampled_data.shape[0] - 1),
+                )
+                pca_cluster = PCA(n_components=n_comp, random_state=self.random_state)
+                data_for_cluster = pca_cluster.fit_transform(self.sampled_data)
             self.cluster_labels = []
             for k in self.clusters:
                 kmeans = KMeans(n_clusters=k, random_state=self.random_state)
-                labels = kmeans.fit_predict(self.sampled_data)
+                labels = kmeans.fit_predict(data_for_cluster)
                 self.cluster_labels.append(labels)
             # Re-initialize cluster heads so they learn the new ROI cluster structure
             self.visualiation_to_cluster = []
