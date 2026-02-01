@@ -5,6 +5,7 @@ import cv2
 import tqdm
 from typing import Optional, List, Any
 import random
+import time
 from sklearn.decomposition import PCA
 from skimage.segmentation import slic, mark_boundaries
 import matplotlib.pyplot as plt
@@ -81,6 +82,27 @@ def correlation(
         return (pred * target).sum(dim=dim).mean()
 
 
+def random_pixel_sampling(X_raw, approx_budget, height, width, roi_mask=None, rng_seed=42):
+    """
+    Fast path: sample random valid pixel indices (no PCA/SLIC). Use when superpixel is too slow.
+    Returns (sampled_coords, sampled_flat_indices, None) for API compatibility.
+    """
+    mask = X_raw.max(axis=-1) > 0
+    valid_flat = np.where(mask.ravel())[0]
+    if roi_mask is not None:
+        roi_flat = np.asarray(roi_mask, dtype=bool).reshape(height, width).ravel()
+        valid_flat = valid_flat[roi_flat[valid_flat]]
+    n = len(valid_flat)
+    if n == 0:
+        return np.empty((0, 2), dtype=np.int64), np.empty(0, dtype=np.int64), None
+    rng = np.random.default_rng(rng_seed)
+    k = min(approx_budget, n)
+    chosen_flat = rng.choice(valid_flat, size=k, replace=False)
+    rows, cols = np.unravel_index(chosen_flat, (height, width))
+    sampled_coords = np.column_stack((rows, cols))
+    return sampled_coords, chosen_flat, None
+
+
 def uniform_superpixel_sampling(X, X_raw, approx_budget=5000, 
                                init_superpixels=256, 
                                init_points_per_superpixel=8, 
@@ -89,7 +111,8 @@ def uniform_superpixel_sampling(X, X_raw, approx_budget=5000,
                                verbose=False, 
                                visualize=False,
                                rng_seed=42,
-                               roi_mask=None):
+                               roi_mask=None,
+                               pca_fit_step=4):
     """
     Uniformly sample points from superpixels with a target total sample budget.
     Will adaptively increase superpixels or points per superpixel if not enough points.
@@ -106,6 +129,7 @@ def uniform_superpixel_sampling(X, X_raw, approx_budget=5000,
         visualize: show matplotlib overlay
         rng_seed: for random generator
         roi_mask: optional (H, W) boolean array; if provided, sampling is restricted to ROI.
+        pca_fit_step: int, subsample step for PCA fit (X_raw[::pca_fit_step, :]); 1 = use all pixels.
 
     Returns:
         sampled_coords: (N, 2) array of sampled coordinates (row, col)
@@ -114,17 +138,20 @@ def uniform_superpixel_sampling(X, X_raw, approx_budget=5000,
     """
     mask = X.sum(axis=-1) > 0
     height, width = X.shape[:2]
+    pca_fit_step = max(1, int(pca_fit_step))
 
     # 1. PCA for RGB mapping for visualization and SLIC basis
+    t0 = time.perf_counter()
     pca = PCA(n_components=3)
-    pca.fit(X_raw[::4, :])
+    pca.fit(X_raw[::pca_fit_step, :])
     X_pca = pca.transform(X_raw)
-    #X_pca = pca.fit_transform(X_raw)
     X_rgb = X_pca - X_pca.min(axis=0)
     X_rgb = X_rgb / (X_rgb.max(axis=0) + 1e-8)
     X_rgb = (X_rgb * 255).clip(0, 255).astype(np.uint8)
     X_rgb_img = X_rgb.reshape(height, width, 3)
     X_rgb_float = img_as_float(X_rgb_img)
+    t_pca = time.perf_counter() - t0
+    print(f"[Superpixel] PCA (fit step={pca_fit_step}): {t_pca:.2f}s")
 
     mask_img = mask.reshape(height, width)
     valid_pixel_bool = mask_img.astype(bool)
@@ -141,17 +168,23 @@ def uniform_superpixel_sampling(X, X_raw, approx_budget=5000,
             print(f"[Superpixel Select] Attempt {attempt+1}, n_segments={n_superpixels}, pts_per_superpixel={points_per_superpixel}")
         
         # 2. Superpixel segmentation
+        t0 = time.perf_counter()
         mask_labels = slic(X_rgb_float, n_segments=n_superpixels, compactness=compactness, channel_axis=2, start_label=0)
+        t_slic = time.perf_counter() - t0
+        print(f"[Superpixel] SLIC (n_segments={n_superpixels}): {t_slic:.2f}s")
         unique_labels = np.unique(mask_labels)
+        # Vectorized: one pass over valid pixels and their labels (avoids N_superpixels full-image argwhere)
+        valid_flat = np.where(valid_pixel_bool.ravel())[0]
+        labels_valid = mask_labels.ravel()[valid_flat]
+        rows, cols = np.unravel_index(valid_flat, (height, width))
         result_coords = []
         rng = np.random.default_rng(rng_seed)
-
         for lbl in unique_labels:
-            coords = np.argwhere(mask_labels == lbl)
-            coords_valid = np.array([coord for coord in coords if valid_pixel_bool[coord[0], coord[1]]])
-            n = coords_valid.shape[0]
+            idx = labels_valid == lbl
+            n = idx.sum()
             if n == 0:
                 continue
+            coords_valid = np.column_stack((rows[idx], cols[idx]))
             if n <= points_per_superpixel:
                 chosen = coords_valid
             else:
@@ -260,7 +293,9 @@ class MSIParametricMiCSLMC:
             random_state=42,
             verbose=False,
             cluster_loss_weight=1.0,
-            category_loss_weight=1.0):
+            category_loss_weight=1.0,
+            pixel_sampling="superpixel",
+            pca_fit_step=4):
         self.model = model
         self.verbose = verbose
         self.factor = factor
@@ -283,6 +318,8 @@ class MSIParametricMiCSLMC:
         self.scheduler = None
         self.cluster_loss_weight = float(cluster_loss_weight)
         self.category_loss_weight = float(category_loss_weight)
+        self.pixel_sampling = str(pixel_sampling).lower() if pixel_sampling else "superpixel"
+        self.pca_fit_step = max(1, int(pca_fit_step))
         
         # Seed everything for reproducibility
         self.seed_everything()
@@ -389,20 +426,28 @@ class MSIParametricMiCSLMC:
         if self.verbose:
             print(f"[set_image] Reshaped image: {self.reshaped.shape}")
         
-        # Always use uniform superpixel sampling to get representative subset (optionally restricted to ROI)
-        _, sampled_flat_indices, _ = uniform_superpixel_sampling(
-            self.img, 
-            self.reshaped, 
-            approx_budget=self.num_samples,
-            init_superpixels=512,
-            init_points_per_superpixel=8,
-            compactness=10,
-            max_iters=8,
-            verbose=self.verbose,
-            visualize=self.verbose,
-            rng_seed=self.random_state,
-            roi_mask=roi_mask
-        )
+        # Pixel sampling: "superpixel" (slower, spread over segments) or "random" (fast)
+        H, W = self.img.shape[0], self.img.shape[1]
+        if self.pixel_sampling == "random":
+            _, sampled_flat_indices, _ = random_pixel_sampling(
+                self.reshaped, self.num_samples, H, W,
+                roi_mask=roi_mask, rng_seed=self.random_state
+            )
+        else:
+            _, sampled_flat_indices, _ = uniform_superpixel_sampling(
+                self.img,
+                self.reshaped,
+                approx_budget=self.num_samples,
+                init_superpixels=512,
+                init_points_per_superpixel=8,
+                compactness=10,
+                max_iters=8,
+                verbose=self.verbose,
+                visualize=self.verbose,
+                rng_seed=self.random_state,
+                roi_mask=roi_mask,
+                pca_fit_step=getattr(self, "pca_fit_step", 4),
+            )
         self.sampled_data = self.reshaped[sampled_flat_indices]
         self.sampled_flat_indices = sampled_flat_indices
         self.roi_mask = roi_mask  # store for ROI-based normalization in predict
@@ -509,19 +554,27 @@ class MSIParametricMiCSLMC:
             raise ValueError("Call set_image() first before update_roi_sampling()")
         if self.verbose:
             print(f"[update_roi_sampling] Updating sampling to ROI (keep model, resample + re-init heads)")
-        _, sampled_flat_indices, _ = uniform_superpixel_sampling(
-            self.img,
-            self.reshaped,
-            approx_budget=self.num_samples,
-            init_superpixels=512,
-            init_points_per_superpixel=8,
-            compactness=10,
-            max_iters=8,
-            verbose=self.verbose,
-            visualize=False,
-            rng_seed=self.random_state,
-            roi_mask=roi_mask,
-        )
+        H, W = self.img.shape[0], self.img.shape[1]
+        if getattr(self, "pixel_sampling", "superpixel") == "random":
+            _, sampled_flat_indices, _ = random_pixel_sampling(
+                self.reshaped, self.num_samples, H, W,
+                roi_mask=roi_mask, rng_seed=self.random_state
+            )
+        else:
+            _, sampled_flat_indices, _ = uniform_superpixel_sampling(
+                self.img,
+                self.reshaped,
+                approx_budget=self.num_samples,
+                init_superpixels=512,
+                init_points_per_superpixel=8,
+                compactness=10,
+                max_iters=8,
+                verbose=self.verbose,
+                visualize=False,
+                rng_seed=self.random_state,
+                roi_mask=roi_mask,
+                pca_fit_step=getattr(self, "pca_fit_step", 4),
+            )
         self.sampled_data = self.reshaped[sampled_flat_indices]
         self.sampled_flat_indices = sampled_flat_indices
         max_points = min(self.number_of_points, self.sampled_data.shape[0])

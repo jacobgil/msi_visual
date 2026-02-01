@@ -23,6 +23,8 @@
   const configBeta = document.getElementById('configBeta');
   const configClusterLossWeight = document.getElementById('configClusterLossWeight');
   const configCategoryLossWeight = document.getElementById('configCategoryLossWeight');
+  const configPixelSampling = document.getElementById('configPixelSampling');
+  const configPcaFitStep = document.getElementById('configPcaFitStep');
   const btnConfigSave = document.getElementById('btnConfigSave');
   const btnConfigApply = document.getElementById('btnConfigApply');
   const btnCopyClipboard = document.getElementById('btnCopyClipboard');
@@ -347,6 +349,8 @@
       if (configBeta) configBeta.value = m.beta ?? '';
       if (configClusterLossWeight) configClusterLossWeight.value = m.cluster_loss_weight ?? '';
       if (configCategoryLossWeight) configCategoryLossWeight.value = m.category_loss_weight ?? '';
+      if (configPixelSampling) configPixelSampling.value = (m.pixel_sampling || 'superpixel').toLowerCase();
+      if (configPcaFitStep) configPcaFitStep.value = m.pca_fit_step ?? '';
     } catch (e) { /* ignore */ }
   }
 
@@ -365,6 +369,8 @@
     if (configBeta && configBeta.value !== '') model.beta = parseFloat(configBeta.value);
     if (configClusterLossWeight && configClusterLossWeight.value !== '') model.cluster_loss_weight = parseFloat(configClusterLossWeight.value);
     if (configCategoryLossWeight && configCategoryLossWeight.value !== '') model.category_loss_weight = parseFloat(configCategoryLossWeight.value);
+    if (configPixelSampling && configPixelSampling.value) model.pixel_sampling = configPixelSampling.value.trim().toLowerCase() || 'superpixel';
+    if (configPcaFitStep && configPcaFitStep.value !== '') model.pca_fit_step = Math.max(1, parseInt(configPcaFitStep.value, 10));
     return { model: Object.keys(model).length ? model : null };
   }
 

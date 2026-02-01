@@ -18,6 +18,8 @@ model:
   cluster: true #use MiCS clustering
   clusters: 16-32-64-128
   num_samples: 5000
+  pixel_sampling: superpixel  # "superpixel" (spread over segments, slower) or "random" (fast)
+  pca_fit_step: 4  # subsample step for PCA fit (X_raw[::pca_fit_step, :]); 1 = use all pixels
   beta: 1.0
   k_epoch: 20 #use for MiCS
   #k_epoch: 1 #use for LMC only

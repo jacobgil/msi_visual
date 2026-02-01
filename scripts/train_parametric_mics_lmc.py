@@ -138,6 +138,8 @@ def load_trained_model(model_path, cfg):
             'verbose': cfg.model.verbose,
             'cluster_loss_weight': saved_config.get('model', {}).get('cluster_loss_weight', getattr(cfg.model, 'cluster_loss_weight', 1.0)),
             'category_loss_weight': saved_config.get('model', {}).get('category_loss_weight', getattr(cfg.model, 'category_loss_weight', 1.0)),
+            'pixel_sampling': saved_config.get('model', {}).get('pixel_sampling', getattr(cfg.model, 'pixel_sampling', 'superpixel')),
+            'pca_fit_step': saved_config.get('model', {}).get('pca_fit_step', getattr(cfg.model, 'pca_fit_step', 4)),
         }
     else:
         # Fallback to provided config
@@ -161,6 +163,8 @@ def load_trained_model(model_path, cfg):
             'verbose': cfg.model.verbose,
             'cluster_loss_weight': getattr(cfg.model, 'cluster_loss_weight', 1.0),
             'category_loss_weight': getattr(cfg.model, 'category_loss_weight', 1.0),
+            'pixel_sampling': getattr(cfg.model, 'pixel_sampling', 'superpixel'),
+            'pca_fit_step': getattr(cfg.model, 'pca_fit_step', 4),
         }
 
     print(f"Model kwargs: {model_kwargs}")
@@ -392,6 +396,8 @@ def train_on_file(cfg, input_path, output_dir, file_idx=0, total_files=1):
         'verbose': cfg.model.verbose,
         'cluster_loss_weight': getattr(cfg.model, 'cluster_loss_weight', 1.0),
         'category_loss_weight': getattr(cfg.model, 'category_loss_weight', 1.0),
+        'pixel_sampling': getattr(cfg.model, 'pixel_sampling', 'superpixel'),
+        'pca_fit_step': getattr(cfg.model, 'pca_fit_step', 4),
     }
 
     model = MSIParametricMiCSLMC(**model_kwargs)
