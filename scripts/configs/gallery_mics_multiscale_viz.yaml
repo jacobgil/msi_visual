@@ -1,0 +1,113 @@
+# Continuous MiCS multi-scale gallery (NOT palette segmentation).
+#
+# stage1.mode:
+#   per_k   — separate MiCS model per k (recommended; panels actually differ)
+#   shared  — one multi-cluster MiCS + stage2 display refinement (legacy)
+#
+# Run:
+#   python scripts/gallery_mics_multiscale_viz.py
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/gallery_mics_multiscale_viz/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+model:
+  num_layers: 2
+  num_epochs: 100
+  num_samples: 20000
+  temperature: 300.0
+  cluster: true
+  clusters: 8-32-128
+  cluster_on_pca: false
+  cluster_loss_weight: 1.0
+  pixel_sampling: superpixel
+  sampling: random
+  number_of_points: 1000
+  pca_fit_step: 4
+  lr: 1.0
+  lab_to_rgb: true
+  predict_spatial_smooth_sigma: 0.0
+  beta: 0.0
+  k_epoch: 20
+
+stage1:
+  mode: per_k
+  num_epochs: 100
+  # k_ladder: 8-32-128   # default: parse from model.clusters
+
+# Only used when stage1.mode=shared (legacy shared encoder + stage-2 display).
+stage2:
+  enabled: false
+  mode: parallel_display
+  display_composition: field_residual
+  num_epochs: 0
+  lr: 0.008
+  batch_size: 1024
+  embed_clamp: 80.0
+  anchor_level_idx: 0
+  anchor_weight: 0.0
+  level_cluster_weights: 0.5-1.0-1.5
+  level_blend_alphas: 0.40-0.55-0.70
+  field_coarse_scales: 0.0-1.0-1.8
+  level_residual_scales: 0.20-0.45-0.75
+  diversity_weight: 0.0
+  diversity_margin: 0.08
+  separation_weight: 0.0
+  predict_spatial_smooth_sigma: 0.0
+
+# Locally weighted blend of per-k embeddings.
+# mode:
+#   conv       — learned conv mix head, global soft Dice (default)
+#   edge_local — per-pixel weights from local soft-edge agreement with HD (no training)
+blend:
+  enabled: true
+  mode: conv
+  num_epochs: 80
+  lr: 0.03
+  mix_temperature: 1.0
+  mix_spatial_kernel: 1
+  mix_input: emb_edge
+  mix_init_level_idx: -1
+  dice_loss_weight: 1.0
+  dice_global_weight: 1.0
+  dice_patch_weight: 0.5
+  dice_patches_per_step: 8
+  dice_patch_size: 48
+  preserve_weight: 0.0
+  preserve_level_idx: 0
+  edge_loss_ramp_epochs: 8
+  center_mode: mixed
+  local_edge_window: 15
+  local_edge_temperature: 0.08
+  hd_edge_power: 1.0
+  predict_spatial_smooth_sigma: 0.0
+  dice_edge_color_space: rgb_max
+  dice_edge_percentile_norm: true
+  eval_refine: true
+  eval_grid_steps: 41
+  eval_logit_steps: 120
+
+gallery:
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy"
+  transpose_msi: false
+  tic_normalize: true
+  num_layers: null
+  seed: 42
+  k_ladder: null
+  center_k: null
+  share_pixel_sampling: true
+  pixel_sampling_cache_path: null
+  layout: hub
+  arrow_color: white
+  include_stage1_mics_panel: true
+  include_mixed_panel: false
+  save_mix_weights: false
+  ncols: 3
+  figure_size_inches: 14
+  dpi: 300
+  panel_title_fontsize: 10
+  edge_target: rank_config

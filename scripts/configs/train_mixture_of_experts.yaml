@@ -1,0 +1,11 @@
+# Example: mixture of PCC experts (MiCS+LMC) — no U-Net.
+#
+# Run:  python scripts/train_parametric_mics_lmc.py --config-name train_mixture_of_experts
+#
+defaults:
+  - train_parametric_mics_lmc
+
+model:
+  model_type: mixture_of_experts
+  dice_loss_weight: 0.0
+  contrast_loss_weight: 0.0

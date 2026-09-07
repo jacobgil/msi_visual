@@ -76,11 +76,17 @@ with region_tab:
         point_with_point_comparisons(stats_method)
         
 with ion_tab:
+    ion_colormap = st.selectbox(
+        "Ion image colormap",
+        ["brown", "cividis"],
+        index=["brown", "cividis"].index(st.session_state.get("ion_colormap", "brown")),
+    )
+    st.session_state["ion_colormap"] = ion_colormap
     mzs_scores = st.text_input("mz values (comma separated)")
     if mzs_scores:
         try:
             mzs = [float(mz) for mz in list(mzs_scores.replace(' ', '').split(','))]
-            show_ion_images(mzs)
+            show_ion_images(mzs, colormap=ion_colormap)
         except Exception as e:
             st.write(e)
             pass

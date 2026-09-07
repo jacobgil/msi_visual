@@ -1,0 +1,102 @@
+# Cross-inference gallery: train on one serial section, infer on all (rows/cols by hemisphere).
+# Optional side-by-side pMiCS | pUMAP | PCA comparison blocks.
+#
+# Run (repo root):
+#   python scripts/mics_cross_infer_gallery.py
+# For pUMAP on GPU (native Windows): use conda env maldi-pumap-gpu
+#   conda activate maldi-pumap-gpu
+#   python scripts/mics_cross_infer_gallery.py
+# Enable PCA + pUMAP:
+#   python scripts/mics_cross_infer_gallery.py gallery.compare_methods.pca=true gallery.compare_methods.parametric_umap=true
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+# benchmark parametric_mics_lmc__mics2 / generate_visualization_panel mics_model
+model:
+  sampling: coreset
+  number_of_points: 1000
+  num_epochs: 30
+  number_of_components: 3
+  num_layers: 3
+  lab_to_rgb: true
+  cluster: true
+  clusters: 128-256-512-1024
+  cluster_on_pca: true
+  cluster_pca_dims: 100
+  pca_fit_step: 16
+  beta: 20.0
+  k_epoch: 20
+  temperature: 100.0
+  lr: 1.0
+  batch_size: 1024
+  warmup_epochs: 10
+  factor: 1.0
+  cluster_loss_weight: 1.0
+  category_loss_weight: 0.0
+
+# Used when gallery.compare_methods.parametric_umap is true
+benchmark:
+  num_samples: 5000
+  sampling_mode: random
+  shared_sampling:
+    enforce_same_pca_fit_step: true
+    pca_fit_step: 4
+    enforce_same_sampling_seed: true
+
+pca:
+  max_iter: 2000
+
+parametric_umap:
+  n_components: 3
+  n_neighbors: 50
+  n_training_epochs: 2
+  # UMAP graph layout epochs (not Keras). Match benchmark / fast gallery runs.
+  n_epochs: 2
+  pca_fit_step: 4
+  random_state: 42
+
+hydra:
+  run:
+    dir: outputs/mics_cross_infer_gallery/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+gallery:
+  npy_paths:
+    - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/2.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/3.npy"
+  # Sort rows/columns by serial position along the section series (umap_annotations paths).
+  slice_order: hemisphere  # index | hemisphere
+  hemisphere_ids: [1, 2, 0, 3]  # parallel to npy_paths: stems 0,1,2,3
+  # Flip L/R so all panels show the same hemisphere facing (midline on the left).
+  canonical_laterality: right  # none | right | left
+  # Optional manual override per stem, e.g. {1: true, 3: true}
+  laterality_flip: null
+  transpose_msi: false
+  transpose_spatial_mode: chain_flip
+  tic_normalize: true
+  channel_align: pad_max
+  channel_pad_side: end
+  seed: 42
+  equalize_visualization: false
+  pad_value: 0
+  pad_align: top_left
+  cell_gap: 2
+  mosaic_margin: 2
+  method_block_gap: 12
+  # vertical = one row per method (pMiCS / pUMAP / PCA stacked); horizontal = side-by-side
+  method_layout: horizontal  # vertical | horizontal
+  row_label_width: 22
+  show_row_labels: true
+  show_cell_caption: false
+  dpi: 400
+  mosaic_max_panel_width: null  # null = native panel resolution (no downscale)
+  compare_methods:
+    pca: true
+    parametric_umap: true
+  timing:
+    enabled: true
+    dpi: 300
+    save_pdf: true

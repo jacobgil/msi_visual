@@ -1,3 +1,5 @@
+import cv2
+import torch
 import streamlit as st
 import glob
 import os

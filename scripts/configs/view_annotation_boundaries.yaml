@@ -1,0 +1,67 @@
+# VIA annotation boundary viewer — same fields as CLI, run via Hydra.
+#
+# From repo root:
+#   python scripts/view_annotation_boundaries.py annotation_json=C:/path/ann.json npy=C:/path/0.npy out=boundaries.png
+# Default paths match notebooks/umap_annotations.ipynb (slide picks the row; npy = column 0).
+# List keys only:
+#   python scripts/view_annotation_boundaries.py annotation_json=C:/path/ann.json list_keys=true
+# Benchmark-style RGB per method + same annotations (see scripts/configs/view_annotations_on_methods.yaml):
+#   python scripts/view_annotations_on_methods.py annotation.annotation_json=C:/path/ann.json
+
+defaults:
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/view_annotation_boundaries/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  job:
+    chdir: false
+
+# Required path to VIA JSON (use ??? to force override if you prefer no default)
+annotation_json: "C:/Users/PahnkeLab/Desktop/maldi_msi/scripts/NRL4485-s2_reannotation_23-12-24_PAHJ.json"
+
+# VIA key prefix: key.startswith(index + "_"). If null, defaults to stem(npy) (same as
+# get_dataset: annotation_index = basename of .npy without extension).
+index: null
+
+# If true, print VIA image keys and exit
+list_keys: false
+
+# Same layout as notebooks/umap_annotations.ipynb: list of [npy_path, label]. The label
+# is ignored here (only used in UMAP notebooks); VIA index is always stem(first element).
+# If set, npy defaults to paths[slide][0] unless npy= is given explicitly.
+paths:
+  - - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/0.npy
+    - 1
+  - - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/2.npy
+    - 0
+  - - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy
+    - 2
+  - - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/3.npy
+    - 3
+slide: 0
+
+# MSI cube for canvas H×W (mmap); used as underlay if background omitted.
+# Leave null to use paths[slide][0]; override to pick a different .npy without changing slide.
+npy: null
+
+# Optional PNG/JPG/npy underlay (overrides npy for display when both set)
+background: null
+
+height: null
+width: null
+
+# Category strings to skip (exact match after join), same as get_annotations ignore=
+ignore: []
+
+# If set, only keep these categories (otherwise all non-ignored)
+keep: null
+
+out: null
+show: false
+boundary_width: 2
+
+category_keys:
+  - main_cat1
+  - Allen_name
+  - sub_cat2

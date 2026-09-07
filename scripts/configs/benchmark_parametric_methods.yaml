@@ -1,0 +1,566 @@
+defaults:
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+data:
+  # Explicit list of MSI .npy files to benchmark.
+  npy_paths:
+
+    
+    - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset5_spinalcord/5bins/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset4_kidney/5bins/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/NRL4506-5um/Intelli-slide/5_bins/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/NRL4558_5um/5bins/2/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/2.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/3.npy"
+
+    # - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset10_spinalcord-8um/0.npy"
+    # - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset11_kidney-nedc/0.npy"
+    # - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset13_TMA-pancreas/0.npy"
+    # - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset1_bactvesicles/0.npy"
+    # - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset2_braintumor/0.npy"
+    # - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset3_ovary/0.npy"
+    # - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset6_lung/0.npy"
+    # - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset7_plantroot/0.npy"
+    # - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset8_plantleaf/0.npy"
+    # - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset9_kidney2/0.npy"
+    # - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset12_lung/5bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s6-r2/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-pep/S7-PA-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s6-r1/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-pep/S6-SAD-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s1-r6/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-pep/S6-PA-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s1-r5/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-pep/S5-SAD-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-pep/S5-PA-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s1-r4/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-pep/S3-SAD-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-pep/S3-PA-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-pep/S2-SAD-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-pep/S2-PA-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s1-r3/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-pep/S1-SAD-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-pep/S1-PA-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s1-r2/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-lip/S2-PA-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s1-r1/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-lip/S1-SAD-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-lip/S2-SAD-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-lip/S1-PA-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-lip/S3-PA-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-lip/S5-PA-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-lip/S5-SAD-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-lip/S3-SAD-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-lip/S4-PA-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-lip/S6-PA-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-lip/S6-SAD-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-lip/S7-PA-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-lip/S16-PA-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-lip/S7-SAD-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-lip/S15-PA-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-lip/S15-SAD-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset12_lung/5bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset5_spinalcord/5bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4558_5um/5bins/2/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4558_5um/5bins/1/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4555/s1-r2/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4555/s1-r1/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/Daphnia_datasets/5_bins/s13-sample4/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/Daphnia_datasets/5_bins/s13-sample7/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/Daphnia_datasets/5_bins/s19-sample12/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/Daphnia_datasets/5_bins/s13-sample1/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/Daphnia_datasets/5_bins/s9-sample9/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/Daphnia_datasets/5_bins/s19-sample8/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/Daphnia_datasets/5_bins/s19-sample3/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/Daphnia_datasets/5_bins/s10-sample10/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/Daphnia_datasets/5_bins/s10-sample7/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/Daphnia_datasets/5_bins/s10-sample4/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/Daphnia_datasets/5_bins/s10-sample1/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/Daphnia_datasets/5_bins/s7-sample11/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/Daphnia_datasets/5_bins/s7-sample9/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/Daphnia_datasets/5_bins/s7-sample5/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset4_kidney/5bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4506/Intelli-slide/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4506/ITO/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s16-r3/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s16-r2/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s16-r1/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s13-r4/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s13-r3/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s13-r2/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s13-r1/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s11-r3/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s11-r2/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s16-r4-5um/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s11-r1/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s11-r5-5um/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4537-multiorgan/s1-r1/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4537-multiorgan/s1-r3/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4537-multiorgan/s1-r2/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s8-r3/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s8-r2/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s8-r1/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s6-5um/4/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4506-5um/ITO/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4511-neoflex-test in Bremen/pos/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/MouseKidney/5/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/MouseKidney/4/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/MouseKidney/2/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4511-neoflex-test in Bremen/neg/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/MouseKidney/3/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s6-5um/3/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/MouseKidney/1/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s6-5um/2/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s6-5um/1/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4506-5um/Intelli-slide/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-pep/S16-PA-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/PXD049325-pep/S15-SAD-5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s6-r8/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s6-r4/5_bins/0.npy"
+  # - "E:/MSImaging-data/_msi_visual/Extractions/NRL4509/s6-r3/5_bins/0.npy"
+
+  transpose_msi: false
+  tic_normalize: true
+
+benchmark:
+  # Compare both pixel sampling strategies.
+  sampling_modes:
+    - random
+    - superpixel
+  num_samples: 5000
+  # 10 different seeds for seed sweep
+  repeats: 10
+  seed_start: 42
+  seed_step: 1
+  # Resume behavior: if CSV exists, skip already completed rows.
+  resume_from_existing_csv: false
+  # Fairness controls shared between MiCS-LMC and Parametric UMAP sampling.
+  shared_sampling:
+    enforce_same_pca_fit_step: true
+    pca_fit_step: 4
+    enforce_same_sampling_seed: true
+  metric_mask:
+    enabled: false
+    # Drop bottom TIC percentile (computed on raw TIC over nonzero-TIC pixels).
+    drop_bottom_tic_percentile: 30.0
+  # Apply LAB->RGB conversion to selected method outputs before metrics/saving.
+  # MiCS-LMC already handles this internally via its own lab_to_rgb flag.
+  lab_to_rgb_methods:
+    - parametric_umap
+    - pca
+    - nmf_3d
+  continue_on_error: true
+  # Fast path: load existing results CSV + viz PNGs; add edge_evaluation metrics only
+  # (continuous_dice or F1 per edge_evaluation.metric). HD edges computed once per MSI in memory.
+  backfill_edge_metrics_only: false
+  # Omit parametric_umap / pca / top3 / nmf_3d (set each method block enabled: false) to benchmark MiCS-only.
+  backfill_edge_columns:
+    - edge_agreement_continuous_dice
+    - luminance_rms_contrast
+    - lab_chroma_entropy
+    - edge_agreement_soft_precision
+    - edge_agreement_soft_recall
+    - edge_agreement_gradient_alignment
+
+mics_lmc:
+  # Reuse defaults from the main training yaml.
+  defaults_yaml: "scripts/configs/train_parametric_mics_lmc.yaml"
+  # Optional: benchmark multiple MiCS parameter groups in one run.
+  # If parameter_groups is set, each group is run as its own method label:
+  #   parametric_mics_lmc__<group_name>
+  parameter_groups:
+    # - name: mics1
+    #   overrides:
+    #     # Fixed cluster ladder (do not inherit clusters_auto_tune from defaults_yaml).
+    #     clusters_auto_tune: null
+    #     model_type: mics_lmc
+    #     number_of_points: 1000
+    #     num_epochs: 100
+    #     number_of_components: 3
+    #     lab_to_rgb: true
+    #     cluster: true
+    #     clusters: 32-64-128-256-512
+    #     num_samples: 20000
+    #     beta: 1.0
+    #     k_epoch: 20
+    #     temperature: 100.0
+    #     lr: 1.0
+    #     batch_size: 1024
+    #     warmup_epochs: 10
+    #     factor: 1.0
+    #     random_state: 42
+    #     verbose: false        
+    # - name: mics2
+    #   overrides:
+    #     clusters_auto_tune: null
+    #     cluster_on_pca: false
+    #     model_type: mics_lmc
+    #     number_of_points: 1000
+    #     num_epochs: 30
+    #     number_of_components: 3
+    #     lab_to_rgb: true
+    #     cluster: true
+    #     clusters: 1024-2048-4096
+    #     num_samples: 5000
+    #     beta: 20.0
+    #     k_epoch: 20
+    #     temperature: 100.0
+    #     lr: 1.0
+    #     batch_size: 1024
+    #     warmup_epochs: 10
+    #     factor: 1.0
+    #     random_state: 42
+    # - name: mics3
+    #   overrides:
+    #     clusters_auto_tune: null
+    #     cluster_on_pca: true
+    #     model_type: mics_lmc
+    #     number_of_points: 1000
+    #     num_epochs: 100
+    #     number_of_components: 3
+    #     lab_to_rgb: true
+    #     cluster: true
+    #     clusters: 256-512-1024
+    #     num_samples: 5000
+    #     beta: 0.0
+    #     k_epoch: 20
+    #     temperature: 100.0
+    #     lr: 1.0
+    #     batch_size: 1024
+    #     warmup_epochs: 10
+    #     factor: 1.0
+    #     random_state: 42
+    #     verbose: false
+
+    # Silhouette-tuned MiCS ladder (k₀, 2k₀, 4k₀, 8k₀); PCA cluster features; coreset reference points.
+    - name: mics4
+      overrides:
+        model_type: mics_lmc
+        sampling: coreset
+        number_of_points: 1000
+        num_epochs: 100
+        number_of_components: 3
+        lab_to_rgb: true
+        cluster: true
+        clusters: null
+        clusters_auto_tune: silhouette
+        clusters_auto_tune_k_min: 8
+        clusters_auto_tune_k_step: 4
+        cluster_on_pca: true
+        cluster_pca_dims: 128
+        beta: 20.0
+        k_epoch: 20
+        temperature: 100.0
+        lr: 1.0
+        batch_size: 1024
+        warmup_epochs: 10
+        factor: 1.0
+        random_state: 42
+        verbose: false
+
+  # Backward-compatible single group.
+  overrides:
+    model_type: mics_lmc
+    clusters_auto_tune: null
+    number_of_components: 3
+    num_epochs: 100
+    verbose: false
+    
+
+parametric_umap:
+  enabled: false
+  n_components: 3
+  n_neighbors: 50
+  n_training_epochs: 2
+  # null = do not set base-UMAP graph ``n_epochs`` (avoids Keras ``steps_per_epoch``=0 with ParametricUMAP)
+  n_epochs: null
+  pca_fit_step: 4
+  random_state: 42
+
+pca:
+  enabled: false
+  random_state: 42
+
+top3:
+  enabled: false
+
+nmf_3d:
+  enabled: false
+  n_components: 3
+  init: nndsvda
+  max_iter: 200
+  random_state: 42
+
+# Needed only when metrics.compute enables nmf_lr, nmf_kl_linear, mi_knn,
+# edge_stratification, or component_roi_metrics (see debug_visualization_metrics.py).
+nmf_prediction:
+  k_components: 64
+  max_iter: 300
+  tol: 0.0001
+  init: nndsvda
+  random_state: 42
+  target_normalization: minmax_per_component
+  target_norm_low_percentile: 1.0
+  target_norm_high_percentile: 99.0
+  target_scope: all_valid
+  sampling_method: random
+  sampling_num_samples: 5000
+  superpixel_init_segments: 256
+  superpixel_points_per_segment: 8
+  superpixel_compactness: 10.0
+  superpixel_max_iters: 6
+  superpixel_pca_fit_step: 4
+  superpixel_verbose: false
+  cv_n_splits: 5
+  cv_shuffle: true
+  cv_random_state: 42
+  cv_max_samples: 300000
+  xgb_n_estimators: 300
+  xgb_learning_rate: 0.05
+  xgb_max_depth: 6
+  xgb_min_child_weight: 2.0
+  xgb_subsample: 0.8
+  xgb_colsample_bytree: 0.8
+  xgb_reg_lambda: 1.0
+  xgb_reg_alpha: 0.0
+  xgb_tree_method: hist
+  xgb_n_jobs: -1
+
+# Bin computation (edge_stratification / frequency_bins) disabled.
+# To enable: add "edge_stratification" to metrics.compute and uncomment edge_stratification below.
+# edge_stratification:
+#   n_quantiles: 4
+#   n_bins: 10
+
+metrics:
+  # Objective trio (printed on ok rows): continuous_dice (mirror of edge_agreement_continuous_dice
+  # when edge_evaluation.metric is continuous_dice; needs edge_agreement in compute), plus
+  # luminance_rms_contrast and lab_chroma_entropy from the viz RGB — no MSI→NMF path required.
+  # f1 edge metrics, msi-visual metrics (correlation/trustworthiness), zadu metrics
+  # Omit nmf_lr, nmf_kl_linear, mi_knn, edge_stratification, component_roi_metrics to skip MSI NMF
+  # decomposition + supervised heads (heavy). Edge agreement + correlation-only runs stay lightweight.
+  compute: [edge_agreement, correlation]
+
+block_cv:
+  enabled: false
+  block_size: 64
+  n_folds: 5
+  random_state: 42
+
+component_roi_metrics:
+  enabled: false
+  top_fraction: 0.20
+  num_samples: 4000
+  min_pixels: 64
+
+zadu_bins:
+  enabled: false
+  top_fraction: 0.20
+  pairwise_num_samples: 4000
+  min_pixels: 64
+
+spatial_normalization:
+  low_percentile: 1.0
+  high_percentile: 99.0
+
+edge_agreement:
+  auc_positive_percentile: 85.0
+  auc_min_positive_pixels: 64
+  multi_scale:
+    enabled: false
+    sigmas: [0.0, 1.0, 2.0, 4.0]
+    # mean | max
+    aggregation: mean
+  multi_percentile:
+    # Compute edge AUC over multiple high-D edge percentiles.
+    percentiles: [70, 80, 85, 90, 95]
+    # uniform | tail_linear | tail_power
+    weight_mode: tail_power
+    tail_power: 2.0
+
+edge_detection:
+  # gradient | canny | gmm_kl | distance_multi | landmark_knn | soft_landmark_contrast | ensemble_cluster | nmf_component_edges
+  hd_method: soft_landmark_contrast
+  # gradient | canny
+  rgb_method: gradient
+  rgb_color_space: lab  # gray | lab
+  canny:
+    low_threshold: 40.0
+    high_threshold: 120.0
+    # 3 | 5 | 7
+    aperture_size: 3
+    l2gradient: true
+    # 0 => auto CPU count
+    n_jobs: 0
+    # For rgb_method=canny: gray | max_channel | mean_channel | any_channel
+    rgb_mode: max_channel
+  # Used when hd_method: gmm_kl (same defaults as scripts/configs/rank_visualizations_by_f1.yaml).
+  gmm:
+    n_components: 32
+    covariance_type: diag
+    reg_covar: 1.0e-6
+    max_iter: 1000
+    random_state: 42
+    max_samples: 2000
+    pca_enabled: true
+    pca_n_components: 64
+    pca_random_state: 42
+  landmark_knn:
+    k: 50
+    n_landmarks: 1000
+    spatial_radii: [1]
+    spatial_connectivity: "4"
+    aggregation: max
+    pca_enabled: true
+    pca_n_components: 64
+  # Same soft-landmark defaults used by rank_visualizations_by_f1 / hd_methods_gallery.
+  soft_landmark_contrast:
+    score_mode: soft_patch_contrast
+    soft_topk: 80
+    soft_temperature: 0.06
+    soft_patch_radius: 1
+    soft_scale_aggregation: max
+    soft_chunk_size: 64
+    contrast_texture_weight: 0.22
+    contrast_aggregation: max
+    contrast_batch_size: 8192
+    k: [40, 80, 140]
+    n_landmarks: 1000
+    spatial_radii: [1]
+    spatial_connectivity: "4"
+    aggregation: mean
+    percentile: 100.0
+    spatial_weight: uniform
+    spatial_weight_sigma: 2.0
+    landmark_sampling: random
+    similarity: dice
+    post_process: none
+    pca_enabled: true
+    pca_n_components: 64
+    pca_random_state: 42
+    random_state: 42
+    min_edge_percentile: 2.0
+    spectral_weight: false
+    hysteresis_low_percentile: 70.0
+    hysteresis_high_percentile: 95.0
+
+edge_evaluation:
+  enabled: true
+  # f1 (binarized Otsu PR/F1) | continuous_dice (2*sum(h*v)/(sum(h)+sum(v)); no binarization)
+  # Same options as scripts/configs/rank_visualizations_by_f1.yaml evaluation.
+  metric: continuous_dice
+  # Zero viz edges below this percentile before Otsu / continuous Dice (0=disabled).
+  min_viz_edge_percentile: 0
+  # percentile | value | otsu
+  threshold_mode: otsu
+  f_beta: 1.0
+  otsu_pre_equalize: false
+  # hist | clahe
+  otsu_equalize_method: hist
+  otsu_clahe_clip_limit: 2.0
+  otsu_clahe_tile_grid_size: 8
+  threshold_percentile: 90.0
+  threshold_value: 0.5
+  include_linf: true
+  # If true, clip edges to nonnegative then square element-wise before continuous Dice / soft P/R.
+  square_before_continuous_metrics: false
+  equalize_edges_before_metric: false
+  # Weighted cosine alignment of (gx,gy) gradients of HD vs viz edge maps (experimental).
+  compute_gradient_alignment: true
+
+hd_edges:
+  # Pre-normalize each m/z channel before Sobel.
+  normalize_channels: true
+  channel_low_percentile: 1.0
+  channel_high_percentile: 99.0
+  # Stabilize dynamic range before channel normalization.
+  log1p: false
+  # distance_multi: list of distance functions; each map is z-scored then mean-aggregated.
+  distance_functions: [l2, cosine, chebyshev, manhattan]
+  save_individual_distance_maps: true
+  pca:
+    enabled: false
+    n_components: 32
+    random_state: 42
+  # mean | max | topk_mean
+  aggregation: mean
+  topk: 5
+  neighborhood:
+    enabled: true
+    radius: 1
+    sigma: 1.0
+  edge_power: 1.0
+  # Used when edge_detection.hd_method: ensemble_cluster (PCA + KMeans on subsamples; mean boundary map).
+  # If hd_edges.pca is enabled, spectra are projected twice; set pca.enabled: false to avoid double PCA.
+  ensemble_cluster:
+    n_experiments: 50
+    subsample_fraction: 0.2
+    pca_n_components: 32
+    n_clusters_list: [8, 16, 32, 64, 128, 256]
+    kmeans_n_init: 8
+    random_state: 42
+    output_gamma: 1.0
+    suppress_below_percentile: null
+    per_run_normalize_by_sum: false
+    per_run_normalize_epsilon: 1.0e-8
+  # When hd_method: nmf_component_edges — same defaults as rank_visualizations_by_f1.yaml.
+  nmf_component_edges:
+    k_list: [3, 4, 5, 6, 8, 12, 18, 24, 36]
+    fit_fraction: 0.1
+    random_state: 42
+    init: nndsvda
+    max_iter: 500
+    tol: 1.0e-4
+    aggregate: mean
+    channel_low_percentile: 1.0
+    channel_high_percentile: 99.0
+    smooth_sigma: 1.0
+    hist_equalize: true
+
+clahe:
+  enabled: false
+  # clahe | hist (must match debug_visualization_metrics.yaml for merged edge-metrics runs)
+  method: clahe
+  clip_limit: 2.0
+  tile_grid_size: 8
+  apply_to:
+    # Apply CLAHE to RGB image before NMF prediction from RGB.
+    nmf_rgb_features: false
+    # Apply CLAHE to normalized NMF component maps before component-edge metrics.
+    nmf_component_maps: false
+    # Apply CLAHE to RGB branch used for edge-agreement maps.
+    edge_viz: false
+    # Apply CLAHE to HD edge maps before edge-agreement comparisons.
+    edge_hd: false
+
+mi:
+  n_neighbors: 5
+  random_state: 42
+
+correlation:
+  # Uses MSIVisualizationMetrics (includes ZADU + trustworthiness + correlations).
+  pairwise_num_samples: 8000
+  # Exclude saliency/smoothness metrics from MSIVisualizationMetrics
+  skip_saliency_smoothness: true
+
+output:
+  # Save to timestamped run folder. Set to null to use Hydra's run dir at runtime.
+  out_dir: null
+  visualizations_subdir: visualizations
+  reuse_existing_visualizations: true
+  equalize_visualizations: false
+  save_tic_image: true
+  tic_subdir: tic
+  save_nmf_component_visualizations: false
+  nmf_components_subdir: nmf_components
+  save_edge_maps_visualizations: true
+  edge_maps_subdir: edges
+  results_csv: benchmark_parametric_methods.csv
+  aggregate_csv: benchmark_parametric_methods_aggregate.csv

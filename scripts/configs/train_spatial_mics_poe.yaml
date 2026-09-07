@@ -1,0 +1,54 @@
+# Spatial MiCS product-of-experts: coarse (context) + fine (bandpass) α fusion.
+#
+# Run from repo root:
+#   python scripts/train_spatial_mics_poe.py
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/train_spatial_mics_poe/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+data:
+  input_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy"
+  transpose: false
+
+model:
+  num_epochs: 30
+  num_layers: 3
+  clusters: 8-32-128-256
+  sampling: coreset
+  num_samples: 5000
+  batch_size: 1024
+  pixel_sampling: superpixel
+  predict_percentile_low: 1.0
+  predict_percentile_high: 99.0
+  beta: 20.0
+  k_epoch: 20
+  temperature: 100.0
+  lr: 1.0
+  warmup_epochs: 10
+
+spatial_mics:
+  sigma_regional: 3.0
+  sigma_fine: 0.7
+  detail_mode: abs
+  block_normalize: true
+  block_low_pct: 1.0
+  block_high_pct: 99.0
+  block_gains: [1.0, 1.0, 1.25]
+
+poe:
+  coarse_block_mode: context     # [X, blur_reg, fine_detail] — coarse domains
+  fine_block_mode: bandpass      # [X, |X-blur_reg|, |X-blur_fine|] — sharp detail
+  w_coarse: 0.45
+  w_fine: 0.55
+  cluster_level_idx: -1          # finest cluster head (256)
+  equalize_viz: true
+
+pipeline:
+  seed: 42
+  share_pixel_sampling: true
+  pixel_sampling_cache_path: null

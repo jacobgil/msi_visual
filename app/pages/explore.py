@@ -201,7 +201,7 @@ if st.button("Run"):
                 t3 = time.time()
                 st.write("Percentile ratio metrics")
                 st.write(pr_metrics)
-                st.write("TOP-3 metrics")
+                st.write("TOP3 metrics")
                 st.write(max_intensity_metrics)
 
                 outlier = get_outlier_image(img)

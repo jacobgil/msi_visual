@@ -1,0 +1,64 @@
+defaults:
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+input:
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/0.npy"
+  visualization_paths:
+    - "C:/Users/PahnkeLab/Desktop/maldi_msi/++benchmarking++/visualizations3_only-8-slides/Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r0__random__parametric_mics_lmc__mics1.png"
+    - "C:/Users/PahnkeLab/Desktop/maldi_msi/++benchmarking++/visualizations3_only-8-slides/Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r0__random__parametric_umap.png"
+  allow_resize: false
+
+data:
+  transpose_msi: false
+
+model:
+  # segformer | felzenszwalb
+  type: segformer
+  # HuggingFace SegFormer model id
+  # Examples: nvidia/mit-b0, nvidia/mit-b1
+  name: nvidia/mit-b0
+  # Choose encoder stage feature map: 0 (highest-res) .. 3 (lowest-res).
+  feature_stage: 1
+  # Input alignment multiple for SegFormer encoder.
+  align_to: 32
+  # Upscale RGB before SegFormer features to get a denser spatial grid.
+  # 1.0 keeps original size. Try 1.5 or 2.0 for finer segmentation.
+  pre_upscale: 2.0
+  # linear | cubic | nearest
+  pre_upscale_interpolation: linear
+
+felzenszwalb:
+  scale: 50.0
+  sigma: 0.8
+  min_size: 50
+
+kmeans:
+  n_clusters: 32
+  random_state: 42
+  # Higher => softer posteriors before CRF.
+  temperature: 0.5
+
+crf:
+  # auto | densecrf | fallback | none
+  # auto: use DenseCRF if installed, else fallback refinement
+  method: auto
+  iterations: 10
+  sxy_gaussian: 3
+  compat_gaussian: 3
+  sxy_bilateral: 3
+  srgb_bilateral: 10
+  compat_bilateral: 10
+  fallback_iterations: 3
+  fallback_sigma_space: 2.0
+  fallback_sigma_color: 0.1
+
+logging:
+  level: INFO
+
+output:
+  out_dir: null
+

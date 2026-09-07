@@ -1,0 +1,96 @@
+# Diagnostic panels from a bayes_tune_mics_lmc run.
+#
+# 6×2 mosaic: H&E overview (letterbox) | SoLaCE | 10 top MiCS.
+# Default: no MSI registration — set he.display_mode=register to warp H&E into MSI space.
+#
+# Run from repo root:
+#   python scripts/bayes_tune_diagnostic_panels.py \\
+#     tune_run_dir="C:/Users/PahnkeLab/Desktop/maldi_msi/outputs/bayes_tune_mics_lmc_carstenhopf/2026-06-19/18-10-42"
+
+hydra:
+  run:
+    dir: outputs/bayes_tune_diagnostic_panels/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+tune_run_dir: "C:/Users/PahnkeLab/Desktop/maldi_msi/outputs/bayes_tune_mics_lmc_carstenhopf/2026-06-19/18-10-42"
+
+top_k: null
+
+compute_hd_edges: true
+
+he:
+  enabled: true
+  # letterbox = fit whole slide in tile (no registration); register = warp to MSI grid
+  display_mode: letterbox
+  # H&E source: wsi (OpenSlide) | thumbnail (cached PNG) | auto (WSI then thumbnail)
+  source: wsi
+  root: "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/HEStaining"
+  folder_suffix: "_HEstaining"
+  filename: he_thumbnail.png
+  # Whole-slide path for OpenSlide reads (registration.json stays beside thumbnail folder)
+  wsi_root: "E:/MSI+SpatialTrans-datasets/CarstenHopf-Mannheim/datasets/datasets/HEstaining"
+  wsi_recursive: true
+  target_dpi: 400          # floor; raised automatically when match_export_resolution is true
+  match_export_resolution: true   # read WSI large enough for hires letterbox (no upscale blur)
+  resolution_margin: 1.05
+  max_dpi: 3200             # safety cap on auto-raised DPI
+  wsi_max_size: 16384       # cap longest WSI-read edge in pixels
+  save_wsi_read: true       # write he_wsi_read.png (full WSI overview used for panels)
+
+registration:
+  enabled: false
+  registration_filename: registration.json
+  auto_register: true
+  reregister_if_stale: true
+  fallback_letterbox: true
+  mask_to_msi_tissue: true
+  strategy: mask_only
+  init_method: mask_similarity
+  rotation_search: [0, 90, 180, 270]
+  refine:
+    enabled: true
+    max_side: 384
+    angle_deg_range: [-35, 35]
+    angle_deg_step: 5
+    scale_range: [0.82, 1.18]
+    scale_step: 0.04
+    shift_frac: 0.12
+    shift_step: 0.04
+  reference: tic
+  rank_config: ${hydra:runtime.cwd}/scripts/configs/hd_methods_gallery.yaml
+  motion: affine
+  ecc_iterations: 5000
+  ecc_epsilon: 1.0e-6
+  gauss_filt_size: 5
+  mics:
+    enabled: false
+    tune_run_dir: null
+    viz_glob: "viz/*mics*.png"
+    png_path: null
+    channel: l
+  stages: []
+
+output:
+  dir: null
+  panel_filename: diagnostic_panel.png
+  equalized_panel_filename: diagnostic_panel_equalized.png
+  save_equalized_panel: true
+  panel_columns: 6
+  panel_rows: 2
+  grid_gap_px: 5
+  background_rgb: [14, 14, 16]
+  show_ref_labels: true
+  ref_label_he: "H&E"
+  ref_label_he_registered: "H&E (reg.)"
+  ref_label_solace: "SoLaCE"
+  ref_caption_height: 26
+  ref_font_size: 15
+  dpi: 400
+  # Publication export: upscale cells vs native MSI grid (Lanczos; H&E re-letterboxed)
+  export_scale: 4
+  cell_min_side: null     # optional: e.g. 512 -> scale = max(export_scale, 512/min(h,w))
+  save_native_panel: true
+  save_hires_panel: true
+  save_hires_tiles: true
+  hires_tiles_subdir: tiles_hires
+  hires_panel_filename: diagnostic_panel_hires.png
+  hires_equalized_panel_filename: diagnostic_panel_equalized_hires.png

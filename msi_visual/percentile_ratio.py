@@ -11,10 +11,13 @@ class TOP3:
         self.norm_percentile = norm_percentile
 
     def __repr__(self):
-        return f"TOP-3 Intensities. low={self.low}"
+        return f"TOP3 Intensities. low={self.low}"
 
 
     def __call__(self, img: np.ndarray, power=1, to_lab=True):
+        # Numba reshape() requires C-contiguous arrays; transpose / views are not contiguous.
+        img = np.ascontiguousarray(np.asarray(img, dtype=np.float32))
+
         @numba.njit(parallel=True, fastmath=True)
         def get_p0p1p2(img):
             H, W, C = img.shape

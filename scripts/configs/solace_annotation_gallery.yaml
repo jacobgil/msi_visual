@@ -1,0 +1,70 @@
+# Overlay VIA brain-region annotations on SoLaCE (soft landmark contrast).
+#
+# Run (repo root):
+#   python scripts/solace_annotation_gallery.py
+#
+# Prefer precomputed SoLaCE grayscale from an hd_methods solace_baselines run
+# (then apply chain_flip to match VIA). Set solace.source=compute to recompute.
+
+defaults:
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/solace_annotation_gallery/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  job:
+    chdir: false
+
+annotation:
+  annotation_json: "E:/MSI-papers_data/MSI-ATLAS/MSI-atlas_annotations_expAI/NRL4485-s2_annotations-only-updatedV2_of-V20.json"
+  index: null
+  paths:
+    - - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/0.npy
+      - 1
+    - - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/2.npy
+      - 0
+    - - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy
+      - 2
+    - - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/3.npy
+      - 3
+  slide: all
+  # Align MSI / SoLaCE with VIA coordinates (same as view_annotations_on_methods).
+  transpose_spatial: true
+  transpose_spatial_mode: chain_flip
+  # Drop background polygons (main_cat1=BG).
+  ignore:
+    - BG
+  keep: null
+  category_keys:
+    - main_cat1
+    - Allen_name
+    - sub_cat2
+  # Uniform region style (paper figure): one fill color + thin outlines.
+  fill_alpha: 0.22
+  fill_rgb: [255, 180, 40]
+  boundary_rgb: [255, 245, 220]
+  boundary_width: 1
+  boundary_halo: 0
+  save_legend: false
+
+solace:
+  # cached = load soft_landmark_contrast.png from solace_raw_root; compute = run SoLaCE
+  source: cached
+  solace_raw_root: "outputs/hd_methods_gallery_solace_baselines/2026-07-16/17-01-37/solace_baselines/raw_grayscale"
+  method_key: soft_landmark_contrast
+  colormap: PuBu
+  # If cached PNG missing for a slide, fall back to compute (true) or skip (false).
+  fallback_compute: true
+  # Used when source=compute (or fallback): MSI load flags matching hd_methods_gallery.
+  transpose_msi: false
+  normalization: tic
+
+gallery:
+  columns: 4
+  cell_gap: 12
+  margin: 8
+  show_titles: true
+  title_font_size: 22
+  dpi: 200
+  save_solace_only: true
+  save_legend: false

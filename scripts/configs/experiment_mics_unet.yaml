@@ -1,0 +1,42 @@
+# MiCS-U-Net vs per-pixel MiCS PCC on one MSI slice (spatial encoder + edge Dice).
+#
+# Run (repo root):
+#   python scripts/experiment_mics_unet.py
+# Skip baseline training if checkpoint exists:
+#   python scripts/experiment_mics_unet.py pipeline.mics_baseline_checkpoint="outputs/.../stage1_mics.pt"
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/experiment_mics_unet/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+data:
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy"
+  transpose_msi: false
+  tic_normalize: true
+
+pipeline:
+  seed: 42
+  share_pixel_sampling: true
+  pixel_sampling_cache_path: null
+  mics_baseline_checkpoint: null
+  save_comparison: true
+  save_edge_panel: true
+
+# Per-pixel MiCS PCC baseline (comparison only)
+baseline:
+  num_epochs: 30
+
+# Spatial U-Net: full H×W×C cube + MiCS batch losses + HD edge Dice / contrast
+# lr/k_epoch tuned for conv encoder (parent model.lr=1.0 is for per-pixel PCC only).
+unet:
+  num_epochs: 60
+  unet_base_channels: 32
+  lr: 0.05
+  k_epoch: 5
+  dice_loss_weight: 0.005
+  contrast_loss_weight: 0.005
+  predict_spatial_smooth_sigma: 0.0

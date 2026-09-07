@@ -1,0 +1,42 @@
+# Progressive MiCS cluster-ladder gallery: train + predict separately for cumulative ladders
+#   8, then 8,16, then 8,16,32, … then stitch a mosaic PNG.
+#
+# Reuses Hyperparameters under ``model:`` / ``data:`` from train_parametric_mics_lmc defaults.
+#
+# Run (repo root):
+#   python scripts/gallery_mics_cluster_ladder.py
+# Override:
+#   python scripts/gallery_mics_cluster_ladder.py gallery.npy_path="D:/data/slice.npy" gallery.seed=123
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/gallery_mics_cluster_ladder/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+gallery:
+  # Single MSI cube (HxWxC, non-negative float). Same convention as benchmark: TIC normalization optional.
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset4_kidney/5bins/0.npy"
+  #npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4506-5um/Intelli-slide/5_bins/0.npy"
+  transpose_msi: false
+  tic_normalize: true
+  # Monotonic ladder: panels are cumulative prefixes (k0; k0,k1; …)
+  ladder: [32, 64, 128, 256, 512, 1024, 2048]
+  # Truncate panels (null / omitted = full ladder prefixes)
+  max_panels: null
+  seed: 42
+  # Optional PIL hist-eq per panel PNG (saved + mosaic); MiCS internals unchanged.
+  equalize_visualization: false
+  # Figure layout & export
+  ncols: 3
+  figure_size_inches: 14
+  dpi: 300
+  panel_title_fontsize: 11
+  # Per-panel metrics (matches bayes_tune_objective trio: edge continuous Dice vs HD + two viz color stats).
+  metrics:
+    enabled: true
+    # Same convention as bayes_tune_mics_lmc / rank_visualizations_by_f1 (soft_landmark_contrast locked in code).
+    rank_config: ${hydra:runtime.cwd}/scripts/configs/hd_methods_gallery.yaml
+    square_before_continuous_dice: false

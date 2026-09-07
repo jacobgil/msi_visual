@@ -1,0 +1,67 @@
+# Within- vs between-region EMD of per-pixel top-N intensities vs N.
+#
+# Motivation for TOP3: top intensities are stable inside atlas regions and
+# change between regions. This script plots that separation as a function of N.
+#
+# Run (repo root):
+#   python scripts/topn_region_emd.py
+
+defaults:
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/topn_region_emd/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  job:
+    chdir: false
+
+annotation:
+  annotation_json: "E:/MSI-papers_data/MSI-ATLAS/MSI-atlas_annotations_expAI/NRL4485-s2_annotations-only-updatedV2_of-V20.json"
+  index: null
+  paths:
+    - - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/0.npy
+      - 1
+    - - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/2.npy
+      - 0
+    - - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy
+      - 2
+    - - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/3.npy
+      - 3
+  slide: all
+  transpose_spatial: true
+  transpose_spatial_mode: chain_flip
+  ignore:
+    - BG
+  keep: null
+  category_keys:
+    - main_cat1
+    - Allen_name
+    - sub_cat2
+
+analysis:
+  # Top-N values to evaluate (graph x-axis). Paper default: short range.
+  ns: [1, 2, 3, 5, 8, 10]
+  # MSI intensity normalization before top-N (none | tic | spatial_tic).
+  normalization: tic
+  # Erode polygon fill by this many pixels so interiors avoid borders.
+  interior_erode: 2
+  # Min / max pixels per polygon instance.
+  min_pixels: 80
+  max_pixels: 1500
+  # Cap pairwise between-region comparisons (random subset).
+  max_between_pairs: 200
+  # Random seed for pixel / pair sampling.
+  seed: 0
+  # Compute same/diff main_cat1 splits for CSV (not shown in paper figure).
+  by_main_cat: true
+
+plot:
+  dpi: 300
+  save_pdf: true
+  # paper: within vs between only; annotate between/within at annotate_n.
+  # full: also same/diff main_cat1 + ratio twin axis (supplement).
+  style: paper
+  annotate_n: 3
+  title: ""
+  xlabel: "N (top intensities per pixel)"
+  ylabel: "Mean Wasserstein distance"

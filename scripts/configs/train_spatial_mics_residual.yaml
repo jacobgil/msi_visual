@@ -1,0 +1,56 @@
+# Spatial MiCS base + embedding residual (fine spatial block).
+#
+# Run from repo root:
+#   python scripts/train_spatial_mics_residual.py
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/train_spatial_mics_residual/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+data:
+  input_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy"
+  transpose: false
+
+model:
+  num_epochs: 30
+  num_layers: 3
+  clusters: 8-32-128-256
+  sampling: coreset
+  num_samples: 5000
+  batch_size: 1024
+  pixel_sampling: superpixel
+  predict_percentile_low: 1.0
+  predict_percentile_high: 99.0
+  beta: 20.0
+  k_epoch: 20
+  temperature: 100.0
+  lr: 1.0
+  warmup_epochs: 10
+
+spatial_mics:
+  sigma_regional: 3.0
+  sigma_fine: 0.7
+  detail_mode: abs
+  block_normalize: true
+  block_low_pct: 1.0
+  block_high_pct: 99.0
+  block_gains: [1.0, 1.0, 1.25]
+
+residual:
+  base_block_mode: context         # [X, blur_reg, fine_detail] — coarse blur base
+  residual_block: fine_contrast    # 1× |X − blur_fine| for ΔE stage
+  residual_block_gain: 1.35
+  residual_epochs: 24
+  residual_beta: 16.0
+  delta_heatmap_gain: 1.15
+  equalize_viz: true
+  gallery_target_h: 520
+
+pipeline:
+  seed: 42
+  share_pixel_sampling: true
+  pixel_sampling_cache_path: null

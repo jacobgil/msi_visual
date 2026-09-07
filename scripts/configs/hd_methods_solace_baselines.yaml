@@ -1,0 +1,80 @@
+# SoLaCE vs Difference magnitude vs TIC Sobel — per-image galleries + edge metrics.
+#
+# Run:
+#   python scripts/hd_methods_gallery.py --config-name=hd_methods_solace_baselines
+#
+defaults:
+  - hd_methods_gallery
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/hd_methods_gallery_solace_baselines/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+input:
+  npy_paths:
+    - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/2.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/3.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/NRL4506-5um/Intelli-slide/5_bins/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/NRL4558_5um/5bins/2/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset4_kidney/5bins/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset5_spinalcord/5bins/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset6_lung/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset2_braintumor/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset3_ovary/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset9_kidney2/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/MSimaging/positive/ID5a_MSimaging_pos_RMS/5_bins/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/MSimaging/positive/ID7b_MSimaging_pos_RMS/5_bins/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/MSimaging/positive/ID9_MSimaging_pos_RMS/5_bins/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/MSimaging/positive/ID10_MSimaging_pos_RMS/5_bins/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/MSimaging/positive/ID18a_MSimaging_pos_RMS/5_bins/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/MSimaging/positive/ID19_MSimaging_pos_RMS/5_bins/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/MSimaging/positive/ID21_MSimaging_pos_RMS/5_bins/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/MSimaging/positive/ID25_MSimaging_pos_RMS/5_bins/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/MSimaging/positive/ID27_MSimaging_pos_RMS/5_bins/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/MSimaging/positive/ID30_MSimaging_pos_RMS/5_bins/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/MSimaging/positive/ID31_MSimaging_pos_RMS/5_bins/0.npy"
+    - "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/MSimaging/positive/ID32_MSimaging_pos_RMS/5_bins/0.npy"
+
+hd_edges:
+  distance_functions: [l2]
+
+gallery:
+  hd_methods:
+    - soft_landmark_contrast
+    - distance_multi
+    - tic_sobel
+  columns: 3
+  method_labels:
+    soft_landmark_contrast: SoLaCE
+    distance_multi: Difference magnitude
+    tic_sobel: TIC Sobel
+  compare_across_images: false
+  all_images_mosaic: false
+  styled_panels: true
+  # Max title size; auto-shrinks per panel so boxes never overlap neighbors.
+  panel_title_font_size: 18
+  panel_metric_font_size: 13
+  panel_bg: [255, 255, 255]
+  metrics:
+    enabled: false
+    # Path-Edge Spectral Consistency (PESC) — optional; leave off for pure galleries.
+    pca_components: 64
+    n_pairs: 12000
+    dist_min: 5.0
+    dist_max: 40.0
+    high_frac: 0.20
+    low_frac: 0.20
+    random_state: 42
+
+edge_detection:
+  rgb_color_space: gray
+
+output:
+  edge_colormap_list:
+    - PuBu
+  png_suffix: _solace_baselines.png
+  gallery_subdir: solace_baselines
+  save_raw_grayscale: true

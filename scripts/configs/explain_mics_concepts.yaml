@@ -1,0 +1,134 @@
+# Frozen MiCS teacher + sparse concept weights (backprop) + explanation figures.
+#
+# Default slide: NRL4485-s2 brain (5 Da bins).
+#   python scripts/explain_mics_concepts.py --config-name=explain_mics_concepts
+#
+# Alternatives:
+#   gallery.npy_path="E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset4_kidney/5bins/0.npy"
+#   gallery.npy_path="E:/MSImaging-data/_msi_visual/Extractions/NRL4558_5um/5bins/2/0.npy"
+#
+# Retrain teacher after changing mics.group or gallery.npy_path:
+#   python scripts/explain_mics_concepts.py --config-name=explain_mics_concepts \
+#     mics.group=mics_std gallery.cache_teacher=false
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/explain_mics_concepts/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+seed: 17
+
+data:
+  transpose_msi: false
+  # Clockwise spatial rotation after load (0 / 90 / 180 / 270). Does not change on-disk .npy.
+  rotate_clockwise_deg: 0
+  normalization: tic
+
+# Selected preset: mics_multiscale (see batch_extract_mics_groups.yaml)
+#   clusters 8-32-128-256 | beta 20 | coreset | 3-layer MLP | 30 epochs
+mics:
+  group: mics_multiscale
+  parameter_groups_config: ${hydra:runtime.cwd}/scripts/configs/batch_extract_mics_groups.yaml
+  defaults_yaml: ${hydra:runtime.cwd}/scripts/configs/train_parametric_mics_lmc.yaml
+  overrides: {}
+
+concepts:
+  n_concepts: 128
+  top_k: 8
+  nmf_init_pixels: 12000
+  nmf_max_iter: 500
+  ridge_lambda: 0.01
+  fit_method: mics_input
+  weight_mode: sparse_softmax
+  softmax_temperature: 0.3
+  train_epochs: 300
+  train_lr: 0.01
+  sparsity_weight: 0.0
+  mics_input_batch_size: 2048
+  mics_input_tic_normalize: true
+  hard_concrete_l0_weight: 0.0
+  hard_concrete_temperature: 0.6666667
+  hard_concrete_gamma: -0.1
+  hard_concrete_zeta: 1.1
+  hard_concrete_init_prob: 0.1
+  active_threshold: 0.0001
+  diagnostic_sparse_top_k: 4
+  diagnostic_cosine_percentile_low: 15
+  diagnostic_cosine_percentile_high: 90
+  diagnostic_cosine_gamma: 2.0
+  log_every: 50
+  top_peaks: 5
+
+explain:
+  n_regions: 6
+  n_clusters: 12
+  min_pixels: 600
+  max_emb_std: 0.35
+  crop_size: 72
+  top_concepts: 5
+  min_concept_weight: 0.04
+  concept_color_cols: 8
+
+viz:
+  enabled: true
+  n_example_pixels: 5
+  dpi: 200
+  concept_node_style: heatmap
+  concept_thumb_px: 360
+  map_fig_width: 26
+  map_fig_height: 24
+  map_marker_fontsize: 18
+  map_marker_size: 14
+  equalize_map_display: true
+  equalize_thumb_activation: false
+  save_both_display_variants: true
+  export_interpretability: true
+  interpretability_subdir: interpretability
+  export_dpi: 300
+  export_thumb_px: 480
+  example_pixel_spatial_weight: 2.5
+  example_pixel_interior_min_px: 28
+  example_pixel_interior_weight: 5.0
+  grid_offset_px: 170   # unused with corner layout; kept for API compat
+  grid_spacing_px: null   # unused with corner layout
+  activation_percentile: 98.0
+  activation_gamma: 0.85
+  activation_colormap: magma   # magma | assigned (concept readout tint)
+  # Rank concepts per pixel vs tissue mean (relative) or by raw weight (absolute)
+  concept_rank_mode: relative
+  top_terms: 4
+  min_concept_weight: 0.04
+  overview_gallery:
+    enabled: true
+    rank_config: ${hydra:runtime.cwd}/scripts/configs/hd_methods_gallery.yaml
+    edge_colormap: PuBu
+    gap_px: 0
+    cosine_map: sparse   # sparse | dense (stretched cosine distance vs NMF projection)
+
+concepts_viz:
+  enabled: true
+  max_concepts: 16
+  spectrum_top_peaks: 25
+  cols: 4
+  dpi: 200
+  gap_px: 1
+  activation_percentile: 98.0
+  activation_gamma: 0.85
+  activation_colormap: magma
+  dedupe: true
+  dedupe_min_color_dist: 35.0
+  dedupe_max_spatial_corr: 0.88
+  dedupe_max_mz_cosine: 0.92
+
+gallery:
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy"
+  num_samples: 5000
+  sampling_mode: superpixel
+  share_pixel_sampling: true
+  cache_teacher: true
+  persistent_cache_dir: outputs/gallery_mics_concept_distill/_caches
+  teacher_cache_dir: outputs/gallery_mics_concept_distill/_teacher_cache
+  mosaic_gap_px: 2

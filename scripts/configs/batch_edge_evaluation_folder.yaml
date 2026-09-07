@@ -1,0 +1,33 @@
+# Batch-compute edge_evaluation metrics (default: continuous Dice) for existing benchmark-style PNGs.
+#
+# Hydra merges ``benchmark_parametric_methods`` then this file — so ``edge_detection``, ``hd_edges``,
+# ``edge_agreement``, ``spatial_normalization``, and ``edge_evaluation`` (except overrides below)
+# are identical to `scripts/configs/benchmark_parametric_methods.yaml` without duplicating YAML.
+#
+# Run (from repo root):
+#   python scripts/batch_edge_evaluation_folder.py batch.visualization_folder="C:/path/to/visualizations"
+#
+defaults:
+  - benchmark_parametric_methods
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/batch_edge_eval/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+# Match benchmark PNG names: {file_id}__r{repeat}__s{seed}__{sampling}__{method}.png
+# file_id is built from data.npy_paths via scripts.benchmark_parametric_methods._path_identifier
+batch:
+  visualization_folder: visualizations
+  output_csv: edge_agreement_folder_new.csv
+  recursive: false
+  extensions: [".png", ".jpg", ".jpeg", ".webp"]
+  # If true, parse method token from filename and apply benchmark.lab_to_rgb_methods when applicable
+  apply_lab_to_rgb_from_filename: true
+  # If true, exit non-zero when any image does not match a configured MSI file_id.
+  # Keep false for mixed folders that also contain adaptive outputs like iter_000.png.
+  fail_on_unmatched: false
+
+# Default this batch job to continuous Dice (override in CLI if you want F1)
+edge_evaluation:
+  metric: continuous_dice

@@ -1,0 +1,84 @@
+# Two-stage MiCS → U-Net edge refinement (subtle edge-only residual).
+#
+# Run:
+#   python scripts/gallery_mics_edge_refine.py
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/gallery_mics_edge_refine/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+model:
+  num_layers: 2
+  num_epochs: 100
+  num_samples: 20000
+  temperature: 100.0
+  cluster: true
+  clusters: 8-32-128
+  cluster_on_pca: false
+  cluster_loss_weight: 1.0
+  pixel_sampling: superpixel
+  sampling: random
+  number_of_points: 1000
+  pca_fit_step: 4
+  lr: 1.0
+  lab_to_rgb: true
+  predict_spatial_smooth_sigma: 0.0
+  beta: 20.0
+  k_epoch: 20
+
+stage1:
+  num_epochs: 100
+
+# Subtle stage 2: zero-init U-Net, Δ only on strong HD edges, heavy flat-region fidelity.
+stage2:
+  num_epochs: 40
+  lr: 0.008
+  unet_base_channels: 32
+  unet_input: embedding_plus_pca
+  unet_pca_dims: 48
+  unet_pca_fit_step: 16
+  unet_hd_edge_channel: true
+  delta_space: display
+  delta_scale: 0.08
+  delta_max_rel: 0.08
+  delta_highpass: false
+  delta_l2_weight: 0.08
+  edge_delta_mask_only: true
+  edge_delta_gate_strength: 1.0
+  edge_delta_gate_power: 2.5
+  edge_loss_ramp_epochs: 15
+  dice_loss_weight: 1.5
+  dice_patch_size: 24
+  dice_patches_per_step: 32
+  dice_patch_sampling: edge_stratified
+  dice_edge_uniform_mix: 0.08
+  dice_edge_power: 3.0
+  dice_global_weight: 0.35
+  dice_patch_weight: 0.65
+  edge_mag_loss_weight: 0.25
+  edge_mag_hd_power: 2.0
+  edge_corr_loss_weight: 0.4
+  contrast_loss_weight: 0.0
+  mics_loss_weight: 0.0
+  non_edge_l1_weight: 0.65
+  adv_loss_weight: 0.0
+  predict_anchor_base_percentiles: true
+  predict_spatial_smooth_sigma: 0.0
+
+gallery:
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset4_kidney/5bins/0.npy"
+  transpose_msi: false
+  tic_normalize: true
+  seed: 42
+  ncols: 3
+  figure_size_inches: 16
+  dpi: 300
+  panel_title_fontsize: 10
+  diff_gain: 8.0
+  share_pixel_sampling: true
+  pixel_sampling_cache_path: null
+  edge_target: rank_config

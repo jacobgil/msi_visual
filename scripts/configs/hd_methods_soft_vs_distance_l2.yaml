@@ -1,0 +1,26 @@
+# Entry: ``python scripts/hd_methods_gallery.py --config-name=hd_methods_soft_vs_distance_l2``
+# Two-panel HD edge gallery: soft landmark contrast vs distance_multi (L2 only).
+defaults:
+  - hd_methods_gallery
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/hd_methods_gallery_soft_vs_distance_l2/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+# distance_multi reads ``hd_edges.distance_functions``; restrict to Euclidean only.
+hd_edges:
+  distance_functions: [l2]
+
+gallery:
+  hd_methods:
+    - soft_landmark_contrast
+    - distance_multi
+  columns: 2
+  method_labels:
+    soft_landmark_contrast: SoLaCE
+    distance_multi: Difference magnitude
+
+output:
+  png_suffix: _soft_vs_distance_multi_l2.png
+  gallery_subdir: hd_method_galleries_soft_vs_distance_l2

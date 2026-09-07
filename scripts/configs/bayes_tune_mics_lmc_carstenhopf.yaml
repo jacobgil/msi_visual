@@ -1,0 +1,50 @@
+# MiCS hyperparameter tuning on all CarstenHopf Mannheim extractions (positive + negative).
+#
+# Run from repo root:
+#   python scripts/bayes_tune_mics_lmc.py --config-name=bayes_tune_mics_lmc_carstenhopf
+#
+# Positive only:
+#   python scripts/bayes_tune_mics_lmc.py --config-name=bayes_tune_mics_lmc_carstenhopf input.npy_dir="E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/MSimaging/positive"
+#
+# Budget (this config): ~8 OFAT + up to 30 hill trials, capped at 40 total iterations.
+# Override on CLI, e.g. tuning.n_iterations=60 tuning.hill_climbing.max_trials=45
+
+defaults:
+  - bayes_tune_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/bayes_tune_mics_lmc_carstenhopf/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+input:
+  npy_path: null
+  npy_paths: []
+  npy_dir: "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/MSimaging"
+  npy_glob: "**/5_bins/0.npy"
+
+tuning:
+  n_iterations: 40
+  hill_climbing:
+    max_trials: 30
+  ofat_then_bayesian:
+    # Try at most 2 levels per axis during OFAT (full grid still available to hill climbing).
+    category_max_levels: 2
+
+search_space:
+  temperature:
+    type: categorical
+    choices: [1, 10.0]
+  clusters:
+    type: categorical
+    choices:
+      - "8-32-128"
+      - "8-16-32-64"
+      - "16-32-64-128"
+      - "8-16-32-64-2048"
+  cluster_pca_dims:
+    type: categorical
+    choices: [32, 512]
+  cluster_on_pca:
+    type: categorical
+    choices: [false, true]

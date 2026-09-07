@@ -1,0 +1,79 @@
+# Two-stage MiCS → residual refine (GNN or U-Net).
+#
+# Checkerboard fix: SmallUNet uses bilinear upsample+conv (not ConvTranspose).
+# Color fidelity: non_edge L1 + edge gate + moderate delta budget.
+# Mid ID9 recipe (~+0.01 Dice, much less recolor than sig2).
+#
+# Run (repo root):
+#   python scripts/experiment_mics_gnn.py
+# Skip stage 1 if checkpoint exists:
+#   python scripts/experiment_mics_gnn.py pipeline.stage1_checkpoint="outputs/.../stage1_mics.pt"
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/experiment_mics_gnn/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+data:
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy"
+  transpose_msi: false
+  tic_normalize: true
+
+pipeline:
+  seed: 42
+  share_pixel_sampling: true
+  pixel_sampling_cache_path: null
+  stage1_checkpoint: null
+  refiner: unet
+  save_comparison: true
+  save_delta_panel: true
+  save_edge_panel: true
+  preview_delta_gain: 4.0
+
+stage1:
+  num_epochs: 30
+
+stage2:
+  num_epochs: 90
+  lr: 0.025
+  unet_base_channels: 32
+  gnn_hidden_dim: 128
+  gnn_layers: 2
+  gnn_neighbor_radius: 9
+  gnn_input: embedding_plus_pca
+  gnn_pca_dims: 48
+  gnn_pca_fit_step: 16
+  gnn_hd_edge_channel: true
+  dice_loss_weight: 5.5
+  dice_patch_size: 24
+  dice_patches_per_step: 48
+  dice_patch_sampling: edge_stratified
+  dice_edge_uniform_mix: 0.08
+  dice_edge_power: 3.0
+  dice_global_weight: 0.75
+  dice_patch_weight: 0.25
+  dice_min_valid_fraction: 0.25
+  dice_edge_color_space: rgb_max
+  dice_edge_percentile_norm: true
+  edge_mag_hd_power: 2.5
+  edge_mag_loss_weight: 0.6
+  edge_corr_loss_weight: 1.2
+  edge_loss_ramp_epochs: 10
+  mics_loss_weight: 0.15
+  non_edge_l1_weight: 0.35
+  adv_loss_weight: 0.0
+  edge_delta_mask_only: false
+  delta_space: display
+  delta_scale: 0.45
+  delta_highpass: false
+  delta_max_rel: 0.45
+  edge_delta_gate_strength: 0.7
+  edge_delta_gate_power: 1.5
+  delta_l2_weight: 0.03
+  contrast_loss_weight: 0.005
+  predict_anchor_base_percentiles: true
+  batch_size: 1024
+  predict_spatial_smooth_sigma: 0.5

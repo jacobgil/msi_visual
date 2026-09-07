@@ -1,0 +1,59 @@
+# MiCS with edge-preservation loss on the visualization.
+#
+# Run:
+#   python scripts/gallery_mics_edge.py
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/gallery_mics_edge/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+model:
+  num_layers: 2
+  num_epochs: 100
+  num_samples: 20000
+  temperature: 100.0
+  cluster: true
+  clusters: 8-32-128
+  cluster_on_pca: false
+  cluster_loss_weight: 2.5
+  pixel_sampling: superpixel
+  sampling: random
+  number_of_points: 1000
+  pca_fit_step: 4
+  lr: 1.0
+  lab_to_rgb: true
+  predict_spatial_smooth_sigma: 0.0
+  beta: 20.0
+  k_epoch: 20
+  # sampled: edge head on each MiCS sample (fast) | spatial: full-image Sobel (slow)
+  edge_loss_mode: sampled
+  # null = soft strength targets; set e.g. 0.35 for legacy binary labels
+  edge_binary_threshold: null
+  edge_label_smoothing: 0.05
+  # none | strength (weight by edge strength) | emphasis (1 + alpha * strength)
+  edge_sample_weight_mode: none
+  edge_sample_weight_alpha: 1.0
+  edge_sample_weight_floor: 0.25
+  edge_loss_weight: 0.4
+  edge_mse_weight: 0.0
+  edge_loss_every_n_steps: 5
+  edge_spatial_stride: 4
+  hd_edge_map_path: null
+
+gallery:
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset4_kidney/5bins/0.npy"
+  transpose_msi: false
+  tic_normalize: true
+  seed: 42
+  ncols: 3
+  figure_size_inches: 14
+  dpi: 300
+  panel_title_fontsize: 10
+  share_pixel_sampling: true
+  pixel_sampling_cache_path: null
+  # edge_target: msi_simple | rank_config (soft_landmark_contrast via rank_config) | hd_path (model.hd_edge_map_path)
+  edge_target: rank_config

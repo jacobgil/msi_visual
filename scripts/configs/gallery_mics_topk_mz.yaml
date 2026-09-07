@@ -1,0 +1,47 @@
+# MiCS m/z interpretability: train once, gallery of top-k m/z ablation panels.
+#
+# Run:
+#   python scripts/gallery_mics_topk_mz.py
+#   python scripts/gallery_mics_topk_mz.py gallery.npy_path=path/to/slice.npy
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/gallery_mics_topk_mz/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+gallery:
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy"
+  transpose_msi: false
+  tic_normalize: true
+  num_layers: null           # null → model.num_layers (7 = mics2 benchmark)
+  seed: 42
+  # plain_pcc=true: standard MiCS/mics2 PCC (recommended for this gallery).
+  plain_pcc: true
+  learn_input_mask: false    # only used when plain_pcc=false
+  input_mask_l1_weight: 0.0
+  input_mask_logits_init: 4.0
+  # gradient (default for plain PCC) | effective_mask (learned mask only) | mean_intensity
+  rank_by: mean_intensity
+  # global: one top-k list for the slice. per_pixel: each pixel keeps its own top-k.
+  gradient_rank_scope: per_pixel
+  gradient_rank_n_pixels: 2048   # global gradient subsample only
+  gradient_rank_batch_size: 512  # per-pixel gradient batch size
+  include_full_panel: true   # first panel = all m/z (no ablation)
+  topk_ladder: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 40, 50, 100]
+  share_pixel_sampling: true
+  pixel_sampling_cache_path: null
+  # per_panel: each panel stretched to its own percentiles (shows structure).
+  # shared: same stretch as full panel (fair colors, often looks blank on ablations).
+  # both: save two mosaics.
+  normalization: per_panel
+  shared_normalization: false  # legacy alias when normalization unset
+  display_intensity_match: true   # only used with normalization=shared
+  display_intensity_gain: 1.0
+  mask_plot_top_k: 48
+  ncols: 3
+  figure_size_inches: 14
+  dpi: 300
+  panel_title_fontsize: 10

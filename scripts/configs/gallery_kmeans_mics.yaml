@@ -1,0 +1,150 @@
+defaults:
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/gallery_kmeans_mics/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+logging:
+  level: INFO
+
+# MSI cube (same pattern as gallery_top3_nmf_edges).
+input:
+  #npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/2.npy"
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset4_kidney/5bins/0.npy"
+  args_txt_path: null
+
+data:
+  transpose_msi: false
+  normalization: tic
+
+seed: 42
+
+# Row 1 + 2 (see mics.pairing):
+# - per_k (default): For each k, one MiCS fit with cluster level k only; top = MiCS K-means raster,
+#   bottom = MiCS predict for that same model.
+# - legacy: Row 1 = kmeans.source (standalone sklearn K-means viz, or mics_kmeans multi-fit rasters);
+#   row 2 = separate MiCS with number_of_components = each k and cluster: false.
+kmeans:
+  source: standalone
+  # When top row comes from MiCS (pairing: per_k or mics_kmeans): dense = cluster-head argmax on
+  # all pixels after training; sparse = init K-means labels on sampled pixels only (holes/black).
+  mics_cluster_viz: dense
+  # k_list: [8, 16, 32, 64]   # only if mics.cluster_levels is omitted
+  title_fmt: "K-means k={k}"
+  title_fmt_mics: "MiCS K-means k={k}"
+
+# Single list for column ks, per-k MiCS, and sweep ``clusters`` strings.
+# Match ``mics_lmc.parameter_groups.mics2`` → ``clusters: 1024-2048-4096`` (same order).
+# When set, kmeans.k_list / mics.k_list / mics.combined.clusters are ignored (no duplicate).
+mics:
+  cluster_levels: [1024, 2048, 4096]
+  # per_k | legacy
+  pairing: per_k
+  # PCC output dim for paired single-k runs (LAB→RGB when 3). Overrides optional.
+  per_k:
+    number_of_components: 3
+    mics_model: {}
+  benchmark_config: scripts/configs/benchmark_parametric_methods.yaml
+  mics_parameter_group: mics2
+  # k_list: [8, 16, 32, 64]   # only if mics.cluster_levels is omitted
+  title_fmt: "MiCS n={n}"
+  title_fmt_pair: "MiCS k={k}"
+  # Display-only LAB L equalization (same helper as gallery_top3_nmf_edges); does not change MiCS training.
+  equalize_display:
+    enabled: true
+    method: hist # hist | clahe
+    clahe_clip_limit: 2.0
+    clahe_tile_grid_size: 8
+    # If true, also equalize top-row MiCS cluster / K-means rasters; if false, only predict + combined rows.
+    cluster_panels: false
+  benchmark:
+    num_samples: 20000
+    sampling_mode: superpixel
+    shared_sampling:
+      enforce_same_pca_fit_step: true
+      pca_fit_step: 4
+      enforce_same_sampling_seed: true
+  mics_model:
+    model_type: mics_lmc
+    sampling: coreset
+    number_of_points: 1000
+    num_epochs: 100
+    num_layers: 3
+    lab_to_rgb: true
+    cluster_on_pca: false
+    cluster_pca_dims: 100
+    pca_fit_step: 16
+    beta: 20.0
+    k_epoch: 20
+    temperature: 100.0
+    lr: 1.0
+    batch_size: 1024
+    warmup_epochs: 10
+    factor: 1.0
+    random_state: 42
+    verbose: false
+    cluster_loss_weight: 1.0
+    category_loss_weight: 0.0
+  mics_model_overrides: {}
+  combined:
+    # ``enabled`` only affects legacy ``kmeans.source=mics_kmeans`` (needs true). Sweep rows ignore it.
+    enabled: true
+    # Hyperparameters for ``sweep_rows`` / legacy ``mics_kmeans`` (no standalone single-row panel).
+    number_of_components: 3
+    # clusters: "8-16-32-64"   # only if mics.cluster_levels is omitted; else derived from cluster_levels
+    # Default ``embedding``: PCC LAB→RGB from ``predict()`` — does not draw cluster heads (can resemble one column).
+    # ``cluster_argmax``: show one head’s argmax map; ``cluster_argmax_level_idx``: last|first|0..(n-1).
+    predict_viz: embedding
+    cluster_argmax_level_idx: last
+    mics_model: {}
+  # Extra full-width rows: ``combined``-style multi-cluster, one train per column.
+  # Requires ``mics.combined:`` (hyperparameters); ``combined.enabled`` does not turn sweeps off.
+  # Keys: ``num_layers`` | ``beta`` (+ ``values``), or ``clusters_cumulative`` (prefixes of ``cluster_levels``).
+  sweep_rows:
+    num_layers:
+      enabled: true
+      values: [1, 2, 3, 4]
+      row_title: "MiCS multi-cluster · num_layers"
+      cell_title_fmt: "num_layers={value}"
+    beta:
+      enabled: true
+      values: [0, 1, 20, 100]
+      row_title: "MiCS multi-cluster · beta"
+      cell_title_fmt: "beta={value}"
+    clusters_cumulative:
+      enabled: true
+      # No ``values``: columns are clusters=k1, k1-k2, k1-k2-k3, … using ``mics.cluster_levels`` (or k_list).
+      row_title: "MiCS multi-cluster · clusters (cumulative)"
+      cell_title_fmt: "clusters={value}"
+
+# Optional: load precomputed RGB maps instead of fitting (same geometry as MSI; resized if needed).
+# Priority per k: ``external.kmeans."8"`` (or int key) → ``external.kmeans_dir/kmeans_k{k}.npy`` → ``.png``.
+# MiCS row: ``external.mics."8"`` → ``external.mics_dir/mics_n{k}.npy`` (also tries mics_k{k}).
+# ``external.mics_multi_path`` is not used for a gallery row (reserved / legacy checks only).
+external:
+  kmeans_dir: null
+  kmeans:
+    "1024": null
+    "2048": null
+    "4096": null
+  mics_dir: null
+  mics:
+    "1024": null
+    "2048": null
+    "4096": null
+  mics_multi_path: null
+
+output:
+  out_dir: null
+  use_slide_name_from_args_txt: true
+  gallery_png: gallery_kmeans_mics.png
+  gallery_columns: 4
+  cell_max_size: null
+  column_padding: 8
+  cell_gap: 8
+  row_gap: 12
+  row_label_height: 34
+  split_gallery_gap: 24
+  save_individual_panels: false
+  panels_dir: panels

@@ -1,0 +1,58 @@
+# Publication heatmaps: sparse explanation weights (α) vs NMF abundances
+# + NMF mixture-complexity (entropy / effective # concepts).
+#
+# Uses an existing explain_mics_concepts run (alpha_hwk.npy + concepts.npy).
+#
+#   python scripts/paper_alpha_nmf_heatmaps.py
+#   python scripts/paper_alpha_nmf_heatmaps.py \
+#     data.interpretability_dir=outputs/interpretability/CarstenHopf_ID9_neg
+
+hydra:
+  run:
+    dir: outputs/paper_alpha_nmf_heatmaps/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+data:
+  interpretability_dir: outputs/interpretability/CarstenHopf_ID9_neg
+  # If null, read npy_path from the interpretability manifest.
+  npy_path: null
+  transpose_msi: false
+  normalization: tic
+
+metrics:
+  # Which maps to render (order = full panel left→right).
+  names:
+    - weighted_l1_nmf
+    - nmf_entropy
+    - nmf_eff_concepts
+    - alpha_entropy
+    - weighted_l1_joint
+    - jensen_shannon
+    - sparse_topk_cosine
+    - cosine
+    - topk_set_distance
+  # Compact main-text panel: explanation↔spectrum disagreement + mixture complexity.
+  paper_panel:
+    - jensen_shannon
+    - nmf_entropy
+  sparse_top_k: 4
+  # Percentile stretch on tissue (per metric). Keeps rare outliers from washing out the map.
+  percentile_low: 2.0
+  percentile_high: 98.0
+
+style:
+  # paper_teal | paper_indigo | paper_magma | paper_cividis | paper_grayred
+  colormap: paper_magma
+  # Also export every metric under these schemes (for picking a favorite).
+  also_export_schemes: []
+  dpi: 300
+  panel_dpi: 300
+  figsize_single: [4.2, 4.0]
+  colorbar: true
+  # Paper figures usually omit in-image titles (caption handles it).
+  show_title: false
+  show_colorbar_label: true
+  off_tissue: white   # white | lightgray | black
+  save_pdf: true
+  save_png: true
+  save_npy: true
+  panel: true

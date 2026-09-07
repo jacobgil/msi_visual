@@ -1,0 +1,23 @@
+# Fast distill preset (~40s with cached MiCS teacher).
+#   python scripts/gallery_mics_concept_distill.py --config-name=gallery_mics_concept_distill_fast
+
+defaults:
+  - gallery_mics_concept_distill
+  - _self_
+
+distill:
+  n_concepts: 64
+  top_k: 8
+  epochs: 40
+  steps_per_epoch: 1
+  sparsity_weight: 0.002
+  recon_weight: 0.0
+  readout_epochs: 0
+  readout_ridge_pixels: 15000
+  readout_refine_pixels: 15000
+  max_fit_pixels: 15000
+  nmf_init_pixels: 5000
+  nmf_max_iter: 80
+
+gallery:
+  distill_column_label: distilled MiCS (fast)

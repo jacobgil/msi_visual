@@ -1,0 +1,60 @@
+defaults:
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/adaptive_mics_lmc_quality_sampling/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+# Reuse HD/viz edge settings and composite weights from the ranking config.
+rank_config: scripts/configs/rank_visualizations_by_f1.yaml
+
+input:
+  # MSI .npy (HxWxC). Must match the HD edge settings in rank_config.
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset4_kidney/5bins/0.npy"
+
+mics:
+  # Starts from benchmark_parametric_methods.yaml:mics_lmc.parameter_groups.mics2.
+  benchmark_config: scripts/configs/benchmark_parametric_methods.yaml
+  parameter_group: mics2
+  # Optional overrides after mics2. Keep num_epochs low for smoke tests.
+  overrides: {}
+
+bayes:
+  # Reuse the same search_space as bayes_tune_mics_lmc.yaml. Each adaptive iteration is one Bayesian trial.
+  config: scripts/configs/bayes_tune_mics_lmc.yaml
+  random_state: 42
+  n_initial_random: 6
+  n_candidates: 16
+
+adaptive:
+  iterations: 8
+  seed: 42
+
+  # Local quality map: overlapping patches.
+  patch_size: 48
+  patch_stride: 16
+  min_valid_fraction: 0.2
+
+  # Convert low quality into next-iteration sampling weights:
+  # sampling_weight = floor + (1 - local_quality)^gamma on valid pixels.
+  low_quality_gamma: 2.0
+  sampling_floor: 0.02
+  # Mixed into weighted sampling inside MiCS so every run still keeps global coverage.
+  uniform_sampling_mix: 0.25
+
+  # Combined metric used locally and globally. Matches the focused ranking config defaults.
+  weights:
+    continuous_dice: 1.0
+    luminance_rms_contrast: 1.0
+
+  # Greedy coverage gallery: first global-best, then marginal max of max(selected quality maps).
+  gallery_size: 8
+
+output:
+  out_dir: null
+  csv_name: adaptive_mics_lmc_trials.csv
+  map_colormap: viridis
+  gallery_columns: 4
+
+logging:
+  level: INFO

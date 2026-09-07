@@ -1,0 +1,4 @@
+# Alias entrypoint for ``python scripts/hd_methods_gallery.py`` (Hydra defaults).
+defaults:
+  - hd_methods_gallery
+  - _self_

@@ -1,0 +1,118 @@
+# Overlay for scripts/png_dir_edge_continuous_dice.py
+#
+# Merged ON TOP OF scripts/configs/rank_visualizations_by_f1.yaml (--base-config).
+# Everything below is visible here; unspecified keys still come from the base merge.
+
+paths:
+  npy_dir: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins"
+  png_dir: "E:/MSImaging-data/_msi_visual/Benchmarking/mouse_brain_comprehensive_benchmark_large"
+  out_dir: edge_dice
+
+run:
+  viz_ext: png,jpg,jpeg,tif,tiff,webp,bmp,npy
+  skip_eq: false
+  n_jobs: 1
+
+# Viz loading (affects RGB edge pipeline when divide_by_255 is true).
+input:
+  skip_eq: false
+  #divide_by_255: true
+  allow_resize: false
+
+# MSI cube orientation and intensity normalization before HD edges.
+data:
+  transpose_msi: false
+  normalization: tic
+
+# Percentile stretch of HD and viz edge maps to [0, 1] (disabled when input.divide_by_255 is true for viz path).
+spatial_normalization:
+  enabled: false
+  low_percentile: 1
+  high_percentile: 99
+
+# Gaussian scales for multi-scale edge maps (HD and RGB).
+edge_maps:
+  multi_scale:
+    enabled: false
+    sigmas: [0.0, 1.0]
+    aggregation: mean
+
+# HD edge method (distance_multi) vs RGB edge method (gradient / canny / ...).
+edge_detection:
+  hd_method: distance_multi
+  rgb_method: gradient
+  rgb_color_space: lab
+
+# High-dimensional (MSI) edge maps: distance aggregation across channels.
+hd_edges:
+  normalize_channels: false
+  channel_low_percentile: 1
+  channel_high_percentile: 99
+  log1p: false
+  distance_functions: [l2, cosine, chebyshev, manhattan]
+  #distance_functions: [chebyshev]
+  save_individual_distance_maps: false
+  pca:
+    enabled: false
+  aggregation: mean
+  neighborhood:
+    enabled: false
+    radius: 1
+    sigma: 1.0
+
+# Scoring / continuous Dice (and F1 / gradient SSIM if you change metric).
+evaluation:
+  metric: continuous_dice
+  square_before_continuous_metrics: false
+  # If true: histogram/CLAHE-equalize HD and viz edge maps (uses otsu_equalize_* below) immediately
+  # before continuous Dice and soft P/R. Triple PNGs and dice_sorted_gallery match this path.
+  # Avoid enabling together with otsu_pre_equalize unless you want viz edges equalized twice.
+  equalize_edges_before_metric: true
+  threshold_mode: otsu
+  threshold_percentile: 85.0
+  threshold_value: 0.5
+  otsu_pre_equalize: false
+  otsu_equalize_method: hist
+  otsu_clahe_clip_limit: 2.0
+  otsu_clahe_tile_grid_size: 8
+  min_viz_edge_percentile: 25
+
+# Triple PNGs, optional NPY, and display gamma for edge panels (when divide_by_255).
+debug:
+  save_viz_edges: true
+  save_viz_edges_binary: false
+  save_agreement_overlay: false
+  save_npy: false
+  save_edge_equalized: true
+  display_gamma: 0.5
+  save_individual_hd_edges: false
+  # See base rank_visualizations_by_f1.yaml: fourth __triple.png panel when > 0.
+  local_dice_window: 0
+
+# Passed to _compute_viz_f1_worker for optional edge equalization on saved debug PNGs.
+worker:
+  save_edge_equalize_method: hist
+  save_edge_clahe_clip_limit: 2.0
+  save_edge_clahe_tile_grid_size: 8
+
+output:
+  csv_name: continuous_dice_by_viz.csv
+  gallery_top_n: 0
+  gallery_bottom_n: 0
+  gallery_columns: 5
+
+gallery:
+  enabled: true
+  max_cell_width: 320
+  max_row_height: 220
+  column_gap: 14
+  row_gap: 10
+  hd_max_width: 420
+  hd_separator_width: 4
+  header_bar_height: 48
+  caption_height: 26
+  background: "#1a1d26"
+  separator: "#3d4450"
+
+logging:
+  level: INFO

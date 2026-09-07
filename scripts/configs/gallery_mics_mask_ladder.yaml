@@ -1,0 +1,46 @@
+# MiCS mask ladder: fixed 3-layer PCC; each stage learns sigmoid(m/z mask) with stronger L1.
+# Cumulative: stage k+1 fixed_mask = product of prior stage masks.
+#
+# Run:
+#   python scripts/gallery_mics_mask_ladder.py
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/gallery_mics_mask_ladder/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+gallery:
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset4_kidney/5bins/0.npy"
+  transpose_msi: false
+  tic_normalize: true
+  num_layers: 3              # masked PCC depth for stages 2+
+  baseline_stage_plain_pcc: true   # stage 1 = unmasked PCC (matches residual ladder base)
+  baseline_num_layers: 1
+  baseline_temperature: 200        # match gallery_mics_residual_ladder temperature_ladder[0]
+  max_stages: 10
+  # Explicit L1 weights per stage (overrides l1_start/l1_end), e.g. [0, 1e-4, 3e-4, 1e-3, ...]
+  l1_ladder: null
+  l1_start: 0.0              # stage 1 (no sparsity pressure)
+  l1_end: 1.0               # stage max_stages
+  l1_schedule: linear        # linear | geometric
+  cumulative_mask: true      # multiply masks across stages
+  # Learned mask logits before σ; large positive → all-pass (σ(6)≈0.998). Negative → σ≈0.
+  input_mask_logits_init: 6.0
+  use_residuals: true      # stage k>1 predicts embedding delta on cumulative E_{k-1}
+  residual_lr_multiplier: 1.5  # lr boost for residual stages when use_residuals=true
+  seed: 42
+  share_pixel_sampling: true
+  pixel_sampling_cache_path: null
+  equalize_visualization: false
+  shared_normalization: true
+  # L1 shrinks masked embeddings; match stage-1 per-channel std before shared percentile stretch.
+  display_intensity_match: true
+  display_intensity_gain: 1.0
+  mask_plot_top_k: 48        # top m/z bars in mask diagnostic panel
+  ncols: 3
+  figure_size_inches: 14
+  dpi: 300
+  panel_title_fontsize: 10

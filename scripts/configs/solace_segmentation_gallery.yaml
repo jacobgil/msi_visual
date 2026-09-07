@@ -1,0 +1,152 @@
+# Gallery: TOP3 | SoLaCE | SoLaCE-driven segmentation.
+#
+#   python scripts/solace_segmentation_gallery.py
+#   python scripts/solace_segmentation_gallery.py data.npy_path=D:/data/0.npy
+#   python scripts/solace_segmentation_gallery.py segmentation.method=mgac
+#   python scripts/solace_segmentation_gallery.py gallery.fill_mode=overlay
+
+hydra:
+  run:
+    dir: outputs/solace_segmentation_gallery/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+seed: 17
+
+data:
+  # Single cube (used when npy_paths is null/empty).
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy"
+  # Optional list; if set, overrides npy_path.
+  npy_paths: null
+  transpose_msi: false
+  normalization: tic   # tic | none
+
+top3:
+  low: 99.9
+  norm_percentile: 99.9
+  to_lab: true
+
+# SoLaCE (soft_landmark_contrast). Reuses hd_methods gallery knobs
+# (contrast_texture_weight: 0.22, etc.).
+solace:
+  rank_config: ${hydra:runtime.cwd}/scripts/configs/hd_methods_gallery.yaml
+  hd_method: soft_landmark_contrast
+  edge_colormap: PuBu
+  # Equalize edge strengths before segmentation (and show eq map in gallery).
+  # Makes weak anatomical ridges compete with locally strong texture ridges.
+  equalize: true
+  equalize_method: clahe   # clahe | hist | rank
+  clahe_clip: 2.5
+  clahe_grid: 8
+
+# Segmentation driven by the SoLaCE edge field / landmark signatures.
+#   landmark_graphcut — soft landmark α(x) + k-means + graph optimizer (default)
+#   graph_twostage    — SoLaCE Felzenszwalb leaves + TOP3 RAG merge
+#   graph             — Felzenszwalb pixel graph with SoLaCE weights only
+#   hierarchical      — SoLaCE watershed leaves + waterfall merges
+#   mgac              — morphological geodesic active contours
+#   watershed         — single-scale marker-controlled watershed
+#
+# Landmark graph-cut:
+#   1) same soft landmark signatures as SoLaCE
+#   2) k-means on α → tissue types (unary)
+#   3) optimize Potts on 4-connected graph with landmark affinities
+#      (+ optional SoLaCE ridge barrier so cuts follow anatomy)
+#   4) spatial cleanup (modal filter, drop tiny islands, trim rim class)
+#        lgc_optimizer: alpha_expansion (Boykov s-t cuts) | random_walker | kmeans
+segmentation:
+  method: landmark_graphcut
+  # Shared: suppress weak SoLaCE texture before seeding / stopping.
+  edge_smooth_sigma: 0.5
+  # landmark_graphcut
+  lgc_n_clusters: [40, 18, 8]
+  lgc_level_names: [fine, medium, coarse]
+  lgc_primary: medium
+  lgc_optimizer: alpha_expansion  # alpha_expansion | random_walker | kmeans
+  lgc_pca_dims: 32              # feature dims (PCA on α)
+  lgc_beta: 90.0                # RW affinity sharpness (random_walker only)
+  lgc_pairwise_beta: 2.0        # milder affinity for Potts (alpha_expansion)
+  lgc_pairwise_scale: 100.0     # Potts strength vs normalized unary
+  lgc_use_edge_barrier: true    # lower Potts weight across SoLaCE ridges
+  lgc_edge_gamma: 1.5
+  lgc_alpha_iterations: 4
+  lgc_cleanup: true
+  lgc_majority_radius: 3        # modal filter radius (px)
+  lgc_min_region_area: 250      # absorb smaller connected islands
+  lgc_trim_rim_px: 3            # reassign thin outer rim to nearest interior
+  lgc_cleanup_passes: 2         # repeat modal+absorb
+  lgc_seed_frac: 0.12           # RW only: interior seed fraction
+  lgc_seed_min_distance: 3
+  lgc_kmeans_sample: 20000
+  lgc_skip_random_walker: false
+  # Stage-1 Felzenszwalb (first scale used as leaf k for twostage).
+  graph_scales: [5, 30, 150]
+  graph_level_names: [fine, medium, coarse]
+  graph_primary: medium
+  graph_min_size: 3
+  graph_connectivity: 4
+  graph_weight: max
+  graph_color_weight: 0.0
+  # Stage-2 RAG (twostage only). 0 = keep all stage-1 leaves at that level.
+  graph_rag_n_regions: [0, 350, 90]
+  # 1.0 = soft prior only (always reachable targets). <1 hard-excludes strong walls.
+  graph_rag_barrier_max: 1.0
+  graph_rag_barrier_weight: 2.5    # cost = color_dist + weight * barrier (SoLaCE [0,1])
+  graph_rag_barrier_agg: mean      # mean | max | min | p90 on shared boundary
+  edge_percentile: 55.0          # ridge threshold for seeds / markers
+  min_seed_distance: 18          # pixels between automatic seeds (mgac / watershed)
+  # mgac
+  mgac_iterations: 120
+  mgac_smoothing: 1
+  mgac_balloon: 1.0              # >0 expands from seeds until SoLaCE barriers; <0 contracts
+  mgac_threshold: 0.3            # soft threshold inside morphological GAC
+  mgac_edge_scale: 0.2           # g = 1/(1+(solace/scale)^2); smaller = harder stops
+  mgac_seed_radius: 3
+  # watershed (single-scale)
+  watershed_compactness: 0.01
+  watershed_min_distance: 18
+  # hierarchical
+  # leaf_mode:
+  #   watershed    — SoLaCE catchment basins (boundaries = ridges; default)
+  #   slic         — TOP3 superpixels, then SoLaCE-guided merges
+  #   closed_edges — hysteresis ridges → basins (fails when ridges are open)
+  hierarchical_leaf_mode: watershed
+  hierarchical_slic_segments: 240
+  hierarchical_slic_compactness: 6.0
+  hierarchical_slic_sigma: 0.0
+  hierarchical_ridge_low: 82.0
+  hierarchical_ridge_high: 94.0
+  hierarchical_close_radius: 2
+  hierarchical_dilate_radius: 1
+  hierarchical_min_area: 80
+  # min/saddle = waterfall (merge lowest pass first). Also: mean | max | p90
+  hierarchical_boundary_agg: min
+  hierarchical_min_distance: 4
+  hierarchical_compactness: 0.0
+  hierarchical_edge_percentile: 60.0
+  hierarchical_n_regions: [160, 50, 18]
+  hierarchical_level_names: [fine, medium, coarse]
+  hierarchical_primary: medium
+
+gallery:
+  gap_px: 8
+  title_h: 48
+  labels:
+    top3: TOP3
+    solace: SoLaCE
+    segmentation: Segmentation
+  # solid = unique flat fill per region (easiest to verify). overlay = blend on TOP3.
+  fill_mode: solid
+  overlay_on_top3: false
+  # Boundaries only drawn in overlay mode (solid fills already show region identity).
+  draw_boundaries: true
+  boundary_color: [20, 20, 20]
+  region_alpha: 0.55
+  # Optional binary ridge panel (mainly for leaf_mode=closed_edges).
+  show_ridges: false
+  # When solace.equalize=true, also show the raw SoLaCE panel for comparison.
+  show_raw_solace: true
+
+output:
+  save_individual: true
+  save_labels_npy: true
+  panel: true
+  dpi: 160

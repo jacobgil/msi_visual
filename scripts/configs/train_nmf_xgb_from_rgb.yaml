@@ -1,0 +1,119 @@
+defaults:
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+data:
+  # Single visualization RGB image path (png/jpg/tif).
+  rgb_path: "C:\\Users\\PahnkeLab\\Desktop\\maldi_msi\\output-MiCS-app\\viz_20260212_2255.png"
+  # Optional list of visualization RGB image paths. If non-empty, these are compared/ranked.
+  rgb_paths: []
+  # Optional glob for RGB images (e.g. "output-MiCS-app/*.png").
+  rgb_glob: "output-MiCS-app/*.png"
+  # Path to corresponding MSI extraction (.npy), expected shape HxWxC (or CxHxW if transpose_msi=true).
+  msi_npy_path: "E:\\MSImaging-data\\_msi_visual\\Extractions\\NRL4558_5um\\5bins\\2\\0.npy"
+  # If true, interpret MSI tensor as CxHxW and transpose to HxWxC.
+  transpose_msi: false
+  # If true, resize RGB to MSI spatial size.
+  resize_rgb_to_msi: false
+  # Optional mask controls.
+  use_msi_nonzero_mask: true
+  use_rgb_nonzero_mask: false
+
+nmf:
+  k_components: 32
+  max_iter: 300
+  tol: 0.0001
+  init: nndsvda
+  random_state: 42
+  # Normalize each pixel spectrum by TIC before NMF.
+  tic_normalize: true
+  # Fit NMF on only a spatial subsample for speed.
+  sampling:
+    # Options: all, random, superpixel
+    method: random
+    # Budget of valid pixels used to fit NMF.
+    num_samples: 10000
+    random_state: 42
+    # Superpixel options (used only when method=superpixel).
+    superpixel_init_segments: 256
+    superpixel_points_per_segment: 8
+    superpixel_compactness: 10.0
+    superpixel_max_iters: 6
+    superpixel_pca_fit_step: 4
+    superpixel_verbose: false
+  # Where to compute NMF component intensities:
+  # - sampled: only on the NMF sampled pixels (fastest)
+  # - all_valid: all valid pixels (slower, denser targets/maps)
+  target_scope: sampled
+  # Which NMF target scope to use for visualization outputs (maps/debug images):
+  # - target_scope: same scope as training/correlation targets
+  # - all_valid: always transform all valid pixels for dense target maps
+  visualization_target_scope: all_valid
+  # Target normalization applied to each NMF component map before regression.
+  target_normalization: minmax_per_component
+
+cv:
+  n_splits: 5
+  shuffle: true
+  random_state: 42
+  # Limits sample count for fast training on large images.
+  max_samples: 300000
+
+comparison:
+  # Metric used for best->worst ranking.
+  # Options include: mean_spearman, mean_pearson, mean_r2, mean_rmse, mean_mae
+  rank_by: mean_spearman
+  # Metrics where larger value means better.
+  higher_is_better_metrics:
+    - mean_r2
+    - mean_pearson
+    - mean_spearman
+
+xgb:
+  n_estimators: 300
+  learning_rate: 0.05
+  max_depth: 6
+  min_child_weight: 2.0
+  subsample: 0.8
+  colsample_bytree: 0.8
+  reg_lambda: 1.0
+  reg_alpha: 0.0
+  objective: reg:squarederror
+  tree_method: hist
+  # Use -1 to consume all CPU cores.
+  n_jobs: -1
+
+output:
+  out_dir: null
+  # Keep false to avoid large .npy outputs unless explicitly needed.
+  save_component_maps: false
+  save_metrics_json: true
+  save_ranking_csv: true
+  save_ranking_csv_incremental: true
+  save_summary_txt: true
+  top_n_in_summary: 10
+  save_debug_component_images: true
+  save_debug_sum_abs_error_image: true
+  debug_dirname: debug
+  # <= 0 means save all components.
+  debug_first_n_components: -1
+  # Fixed display scale for sum(abs error) debug image.
+  debug_error_vmax: 1.0
+  # Multiply mean-abs-error map by this factor before display mapping.
+  debug_error_display_gain: 5.0
+  # Save final collage: top best row + top worst row.
+  save_best_worst_collage: true
+  best_worst_count: 5
+  best_worst_thumb_size: 256
+  # Track a best panel of visualizations during processing.
+  track_best_panel: true
+  best_panel_size: 8
+  # Options: min, mean
+  best_panel_objective: min
+  best_panel_columns: 4
+  best_panel_tracking_dirname: panel_tracking
+  # Keep false to avoid unnecessary full-model map exports.
+  train_full_models: false

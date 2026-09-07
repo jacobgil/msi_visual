@@ -1,0 +1,50 @@
+# MiCS visualization gallery: one trained model per cluster scale (K=8, 32, 128).
+# Mosaic shows only the main MiCS RGB panel (no cluster-head maps).
+#
+# cumulative (default): clusters [8], then [8,32], then [8,32,128]
+# single: independent models with clusters [8], [32], [128]
+#
+# Run:
+#   python scripts/gallery_mics_k_viz.py
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/gallery_mics_k_viz/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+# Kidney MiCS base (3rd-best bayes tune: 2026-06-02/01-15-03, clusters 8-32-128).
+model:
+  num_layers: 2
+  num_epochs: 100
+  num_samples: 20000
+  temperature: 100.0
+  cluster_on_pca: false
+  cluster_pca_dims: 8
+  beta: 20.0
+  pixel_sampling: superpixel
+  sampling: random
+  number_of_points: 1000
+  pca_fit_step: 4
+  lr: 1.0
+  lab_to_rgb: true
+  predict_spatial_smooth_sigma: 0.0
+  cluster: true
+
+gallery:
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset4_kidney/5bins/0.npy"
+  transpose_msi: false
+  tic_normalize: true
+  seed: 42
+  # Panel labels use the max K in each trained model.
+  k_ladder: [8, 32, 128]
+  # cumulative: [8], [8,32], [8,32,128]  |  single: [8], [32], [128]
+  cluster_ladder_mode: cumulative
+  share_pixel_sampling: true
+  pixel_sampling_cache_path: null
+  ncols: 3
+  figure_size_inches: 14
+  dpi: 300
+  panel_title_fontsize: 10

@@ -52,7 +52,10 @@ class PCA3D:
         #transformed_vector = (vector - self.mean) / (1e-6 + self.std)
         result = self.pca_transform(vector)
         result = result.reshape(img.shape[0], img.shape[1], result.shape[-1])
-        return np.uint8(255 * normalize(result))
+        mask = img.sum(axis=-1) > 0
+        out = np.uint8(255 * normalize(result, mask=mask))
+        out[~mask] = 0
+        return out
 
     def __call__(self, img):
         if not self._trained:

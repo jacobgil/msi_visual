@@ -1,0 +1,164 @@
+defaults:
+  - _self_
+
+# Shared sections below align with scripts/configs/rank_visualizations_by_f1.yaml (edge maps, HD, eval).
+# Input/output paths and `evaluation.enabled` / `include_linf` stay specific to this script.
+
+hydra:
+  run:
+    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+input:
+  # MSI .npy for explicit visualization_paths or by_shape. Ignored when visualization_pairing is matched_dirs.
+  npy_path: null
+  # List of viz files when not using directory pairing.
+  visualization_paths: null
+  # null | by_shape | matched_dirs (alias: one_to_many)
+  # matched_dirs: enumerate *.npy in visualization_npy_dir and match to many images in visualization_png_dir
+  # by (rows,cols); same rules as scripts/list_dir_shapes.py (1 cube : N exports; stem_ prefix if multiple cubes/share size).
+  visualization_pairing: null
+  visualization_npy_dir: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins"
+  visualization_png_dir: "E:/MSImaging-data/_msi_visual/Benchmarking/mouse_brain_comprehensive_benchmark_large"
+
+  #visualization_npy_dir: "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset4_kidney/5bins"
+  #visualization_png_dir: "C:/Users/PahnkeLab/Desktop/maldi_msi/A_collect-all-images-for-benchmarking/5µm-Kidney"
+  
+
+
+
+  # For matched_dirs only: which files to scan under visualization_png_dir (comma-separated).
+  visualization_viz_ext: "png,jpg,jpeg,tif,tiff,bmp,webp"
+  allow_resize: false
+
+data:
+  # true: MSI .npy on disk is C x H x W (must match shape pairing / matched_dirs spatial grouping).
+  transpose_msi: false
+  # none | tic | spatial_tic
+  normalization: tic
+
+spatial_normalization:
+  enabled: true  # false = min-max only (no percentile stretch); rank script supports this; debug_edge_maps always uses percentiles below.
+  low_percentile: 1.0
+  high_percentile: 99.0
+
+edge_maps:
+  multi_scale:
+    enabled: false
+    # Good values for sigmas depend on the spatial scale(s) of edges you expect to detect.
+    # Single-scale: [1.0] (default). Typical for sharp/local edges.
+    # Multi-scale: try [0.0, 1.0, 2.0, 4.0] for both fine and broad edges.
+    # 0.0 = no blur (original), 1–2 = moderate Gaussian blur, >2 = more blurred/robust to noise.
+    sigmas: [0.0, 1.0, 2.0, 4.0]
+    # mean | max
+    aggregation: mean
+
+edge_detection:
+  # gradient | canny | gmm_kl | distance_multi | landmark_knn | ensemble_cluster
+  hd_method: ensemble_cluster
+  # gradient | canny
+  rgb_method: gradient
+  # gray | lab - gray=Luminance, lab=LAB L channel (perceptually uniform)
+  rgb_color_space: lab
+  canny:
+    low_threshold: 40.0
+    high_threshold: 120.0
+    # 3 | 5 | 7
+    aperture_size: 3
+    l2gradient: true
+    # 0 => auto CPU count
+    n_jobs: 0
+    # For rgb_method=canny: gray | max_channel | mean_channel | any_channel
+    rgb_mode: max_channel
+  gmm:
+    n_components: 32
+    covariance_type: diag
+    reg_covar: 1.0e-6
+    max_iter: 300
+    random_state: 42
+    # 0 disables subsampling; otherwise cap fitting set for speed.
+    max_samples: 200000
+  landmark_knn:
+    k: 50
+    n_landmarks: 1000
+    spatial_radii: [1]
+    spatial_connectivity: "4"
+    aggregation: max
+    pca_enabled: true
+    pca_n_components: 64
+
+hd_edges:
+  normalize_channels: true
+  channel_low_percentile: 1.0
+  channel_high_percentile: 99.0
+  log1p: false
+  distance_functions: [l2, cosine, chebyshev, manhattan]
+  save_individual_distance_maps: true
+  pca:
+    enabled: false
+    n_components: 64
+    random_state: 42
+  aggregation: mean
+  topk: 5
+  neighborhood:
+    enabled: true
+    radius: 1
+    sigma: 1.0
+  ensemble_cluster:
+    n_experiments: 20
+    subsample_fraction: 0.1
+    pca_n_components: 32
+    n_clusters_list: [4, 8, 16, 32, 64, 128, 256]
+    kmeans_n_init: 8
+    random_state: 42
+
+# Match benchmark / rank (not all keys read by debug_edge_maps.py).
+clahe:
+  enabled: false
+  clip_limit: 2.0
+  tile_grid_size: 8
+  apply_to:
+    nmf_rgb_features: false
+    nmf_component_maps: false
+    edge_viz: false
+    edge_hd: false
+
+# Fallback for edge_colormap when output.edge_colormap is null (see debug_edge_maps.py).
+debug:
+  edge_colormap: magma
+  local_dice_window: 4
+
+output:
+  out_dir: null
+  flatten_outputs: false
+  hd_subdir: hd_edges
+  viz_subdir: viz_edges
+  save_npy: true
+  save_linf: true
+  equalize_png: false
+  equalize_method: clahe
+  clahe_clip_limit: 2.0
+  clahe_tile_grid_size: 8
+  # Matplotlib colormap for saved edge PNGs (e.g. magma, viridis). null = grayscale; debug.edge_colormap used if null.
+  edge_colormap: null
+
+evaluation:
+  # Set true for PR/F1 table (edge_prf1_table.csv) — typical for matched_dirs batch metrics.
+  enabled: false
+  # Align with rank_visualizations_by_f1 `evaluation` (debug script uses threshold_*; metric/min_viz_* etc. for parity).
+  metric: continuous_dice
+  min_viz_edge_percentile: 0
+  threshold_mode: otsu
+  f_beta: 1.0
+  threshold_percentile: 90.0
+  threshold_value: 0.5
+  include_linf: true
+  otsu_pre_equalize: false
+  otsu_equalize_method: hist
+  otsu_clahe_clip_limit: 2.0
+  otsu_clahe_tile_grid_size: 8
+  square_before_continuous_metrics: false
+  equalize_edges_before_metric: false
+  save_agreement_overlay: false
+
+logging:
+  level: INFO

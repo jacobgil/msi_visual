@@ -1,0 +1,141 @@
+defaults:
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/generate_visualization_panel/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+# Default MSI cube (override on CLI: data.npy_path=...)
+data:
+  #npy_path: "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset4_kidney/5bins/0.npy"
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/2.npy"
+  transpose_msi: false
+  tic_normalize: true
+
+# Where to write per-method PNGs and the growing panel
+output:
+  dir: outputs/viz_panel_run
+  stem: slide
+  panel_png: panel.png
+  save_panel: true
+  columns: 6
+  cell_max_size: 420
+  dpi: 120
+  figsize_scale: 2.2
+  # true: black panel, native image size (no cell_max_size shrink). false: letterbox + figsize_scale
+  panel_full_size: true
+  # LAB L-channel equalized copies: <dir>/<equalized_subdir>/slide__*.png and panel.png
+  save_equalized: true
+  equalized_subdir: eq
+
+# Which methods to run, and order: first item = first panel cell, then row-wise (see ``output.columns``).
+# Subset/reorder freely; CLI e.g. ``methods="[top3,pca,parametric_umap]"``.
+# Keys: parametric_mics_lmc | mics_lmc | top3 | nmf_3d | pr3d | top3_nmf | pca | soft_edges | parametric_umap | nonparametric_umap
+methods:
+  - top3
+  - pr3d
+  - pca
+  - parametric_mics_lmc
+  - top3_nmf
+  - nmf_3d
+  - parametric_umap
+  #- nonparametric_umap
+
+# Extra MiCS+LMC runs from ``mics_benchmark_config`` parameter_groups (appended after ``methods``).
+# Example: mics_groups=[mics_multiscale,mics_std,mics_beta0]
+mics_groups: null
+
+seed: 42
+
+# --- MiCS+LMC ---
+# Merge order: train_parametric_mics_lmc.yaml (via benchmark) → mics_parameter_group →
+# mics_model → mics_model_overrides (CLI). Pixel budget is always benchmark.num_samples.
+mics_benchmark_config: scripts/configs/benchmark_parametric_methods.yaml
+# Benchmark ``mics_lmc.parameter_groups`` name, or null to skip (use train + mics_model only)
+mics_parameter_group: mics2
+
+# Default MiCS hyperparameters for this script (edit here). Same keys as train ``model:``.
+# Values below match benchmark **mics2**; they apply after the group unless you set
+# mics_parameter_group: null and rely only on this block + train defaults.
+mics_model:
+  model_type: mics_lmc
+  sampling: coreset
+  number_of_points: 1000
+  num_epochs: 30
+  number_of_components: 3
+  num_layers: 3
+  lab_to_rgb: true
+  cluster: true
+  clusters: 128-256-512-1024
+  cluster_on_pca: true
+  cluster_pca_dims: 100
+  pca_fit_step: 16
+  beta: 20.0
+  k_epoch: 20
+  temperature: 100.0
+  lr: 1.0
+  batch_size: 1024
+  warmup_epochs: 10
+  factor: 1.0
+  random_state: 42
+  verbose: false
+  cluster_loss_weight: 1.0
+  category_loss_weight: 0.0
+
+# Last-wins overrides (e.g. CLI: mics_model_overrides.beta=15)
+mics_model_overrides: {}
+
+# Match ``scripts/configs/benchmark_parametric_methods.yaml`` ``benchmark:`` so ``_umap_kwargs`` / MiCS sampling match the benchmark (num_samples, shared_sampling).
+benchmark:
+  num_samples: 5000
+  sampling_mode: random
+  shared_sampling:
+    enforce_same_pca_fit_step: true
+    pca_fit_step: 4
+    enforce_same_sampling_seed: true
+
+# Same keys as ``benchmark_parametric_methods.yaml`` ``parametric_umap`` (passed through ``_umap_kwargs``). Parametric UMAP is heavy (TF + graph + many Keras steps); lower ``benchmark.num_samples`` or ``n_training_epochs`` for quicker previews.
+parametric_umap:
+  n_components: 3
+  n_neighbors: 50
+  n_training_epochs: 2
+  n_epochs: null
+  pca_fit_step: 4
+  random_state: 42
+
+top3:
+  low: 99.9
+  norm_percentile: 99.9
+  to_lab: true
+
+nmf_3d:
+  n_components: 3
+  init: nndsvda
+  max_iter: 200
+  random_state: 42
+
+# PercentileRatio (PR3D): six percentiles [p0,p1,p2,p3,p4,p5] for the three ratios
+pr3d:
+  percentiles: [99.99, 99.9, 99.9, 99, 98, 85]
+
+# NMF then TOP3 on coefficients. ``k_list``: several ranks (same idea as ``gallery_top3_nmf_edges`` ``nmf.k_list``). Null / omit = single ``nmf_3d.n_components`` only.
+top3_nmf:
+  use_top3_cfg: true
+  k_list: [3, 5, 7, 9, 11, 13, 15]
+  #k_list: null
+
+pca:
+  max_iter: 2000
+
+# HD soft landmark-contrast edge map (rank_config pipeline; used for MiCS edge metrics / stratified sampling).
+soft_edges:
+  rank_config: scripts/configs/hd_methods_gallery.yaml
+  hd_method: soft_landmark_contrast
+  colormap: PuBu
+  label: SoftEdges
+
+nonparametric_umap:
+  n_components: 3
+  min_dist: 0.5
+  n_neighbors: 100
+  metric: euclidean

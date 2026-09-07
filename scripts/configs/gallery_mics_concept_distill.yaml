@@ -1,0 +1,94 @@
+# Single-slide MiCS vs sparse-concept distilled MiCS gallery.
+#
+# Quality defaults (all tissue pixels, top-k 16, light embedding smooth):
+#   python scripts/gallery_mics_concept_distill.py --config-name=gallery_mics_concept_distill
+#
+# Spatial local router: distill.router_mode=spatial_conv
+# Fast preset (~40s distill with cached teacher):
+#   python scripts/gallery_mics_concept_distill.py --config-name=gallery_mics_concept_distill_fast
+#
+# MiCS correlation objective (no teacher distillation):
+#   python scripts/gallery_mics_concept_distill.py --config-name=gallery_mics_concept_mics
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/gallery_mics_concept_distill/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+seed: 42
+
+data:
+  transpose_msi: false
+  normalization: tic
+
+mics:
+  group: mics_multiscale
+  parameter_groups_config: ${hydra:runtime.cwd}/scripts/configs/batch_extract_mics_groups.yaml
+  defaults_yaml: ${hydra:runtime.cwd}/scripts/configs/train_parametric_mics_lmc.yaml
+  overrides: {}
+
+distill:
+  n_concepts: 128
+  top_k: 16
+  epochs: 120
+  steps_per_epoch: 4
+  lr: 0.01
+  batch_size: 16384
+  sparsity_weight: 0.005
+  recon_weight: 0.01
+  concept_l1_weight: 0.00001
+  embed_w_lr: 0.05
+  display_bounds: teacher
+  readout_ridge_fit: true
+  readout_ridge_lambda: 0.001
+  readout_ridge_pixels: 40000
+  readout_epochs: 60
+  readout_steps_per_epoch: 4
+  readout_refine_pixels: 40000
+  readout_lr: 0.05
+  max_fit_pixels: null
+  nmf_init_pixels: 12000
+  top_peaks: 5
+  nmf_max_iter: 200
+  router_mode: linear
+  router_conv_kernel: 3
+  spatial_crop_size: 224
+  predict_embedding_smooth_sigma: 0.25
+  train_objective: distill   # distill | mics | hybrid
+  mics_k_epoch: 1
+  mics_teacher_blend: 0.0
+  embed_diversity_weight: 0.001
+  concept_diversity_weight: 0.0001
+
+concepts_viz:
+  enabled: true
+  max_concepts: 16
+  spectrum_top_peaks: 25
+  cols: 4
+  dpi: 200
+  gap_px: 0
+  activation_percentile: 98.0
+  activation_gamma: 0.85
+  activation_colormap: assigned   # assigned | heat
+  dedupe: true
+  dedupe_min_color_dist: 35.0
+  dedupe_max_spatial_corr: 0.88
+  dedupe_max_mz_cosine: 0.92
+
+gallery:
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy"
+  num_samples: 5000
+  sampling_mode: superpixel
+  share_pixel_sampling: true
+  cache_teacher: true
+  persistent_cache_dir: outputs/gallery_mics_concept_distill/_caches
+  teacher_cache_dir: outputs/gallery_mics_concept_distill/_teacher_cache
+  mics_column_label: MiCS (multiscale)
+  distill_column_label: distilled MiCS
+  output_filename: gallery_mics_concept_distill.png
+  mosaic_gap_px: 0
+  figure_size_inches: [12, 5]
+  dpi: 200

@@ -1,0 +1,60 @@
+# H&E → MSI registration (CarstenHopf and similar layouts).
+#
+# Default: mask-only — align outer MSI tissue footprint to H&E tissue outline
+# (90° rotation search + bbox scale/translate + fine rotation/scale/shift grid).
+#
+# Re-run with fresh transforms:
+#   python scripts/register_he_msi.py output.skip_existing=false
+
+hydra:
+  run:
+    dir: outputs/register_he_msi/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+input:
+  npy_path: null
+  npy_paths: []
+  npy_dir: "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/MSimaging"
+  npy_glob: "**/5_bins/0.npy"
+
+data:
+  transpose_msi: false
+  normalization: tic
+
+he:
+  enabled: true
+  root: "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/HEStaining"
+  folder_suffix: "_HEstaining"
+  filename: he_thumbnail.png
+
+registration:
+  strategy: mask_only   # mask_only | multistage (legacy ECC on TIC/MiCS/SoLACE)
+  init_method: mask_similarity
+  rotation_search: [0, 90, 180, 270]
+  refine:
+    enabled: true
+    max_side: 384
+    angle_deg_range: [-35, 35]
+    angle_deg_step: 5
+    scale_range: [0.82, 1.18]
+    scale_step: 0.04
+    shift_frac: 0.12
+    shift_step: 0.04
+  # Legacy multistage ECC settings (used only when strategy=multistage)
+  reference: tic
+  rank_config: ${hydra:runtime.cwd}/scripts/configs/hd_methods_gallery.yaml
+  motion: affine
+  ecc_iterations: 5000
+  ecc_epsilon: 1.0e-6
+  gauss_filt_size: 5
+  mics:
+    enabled: false
+    tune_run_dir: null
+    viz_glob: "viz/*mics*.png"
+    png_path: null
+    channel: l
+  stages: []
+
+output:
+  skip_existing: false
+  registration_filename: registration.json
+  registered_he_filename: he_registered.png

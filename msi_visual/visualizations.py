@@ -135,44 +135,33 @@ def create_ion_img(img, mz_index):
     ion[ion > 1] = 1
     return ion
 
-def create_ion_heatmap(img, mz_index):
+
+def colorize_ion_uint8(ion, mask=None, colormap="brown"):
+    """Colorize a uint8 intensity map. colormap: 'brown' (default) or 'cividis'."""
+    ion = np.asarray(ion)
+    if ion.dtype != np.uint8:
+        ion = np.uint8(np.clip(ion, 0, 255))
+
+    mode = str(colormap).lower().strip()
+    if mode == "cividis":
+        rgb = cv2.applyColorMap(ion, cmapy.cmap("cividis"))[:, :, ::-1].copy()
+    else:
+        # White -> brown (IHC-like)
+        white = np.array([255, 255, 255], dtype=np.float32)
+        brown = np.array([139, 69, 19], dtype=np.float32)
+        norm_ion = ion.astype(np.float32) / 255.0
+        rgb = np.uint8(white + (brown - white) * norm_ion[..., None])
+
+    if mask is not None:
+        rgb[mask == 0] = 0
+    return rgb
+
+
+def create_ion_heatmap(img, mz_index, colormap="brown"):
     ion = create_ion_img(img, mz_index)
     ion = np.uint8(255 * ion)
-    # ion = np.uint8(255 * raw_ion)
-    # ion = cv2.applyColorMap(ion, cmapy.cmap('viridis'))[:, :, ::-1].copy()
-    
     mask = img.max(axis=-1) > 0
-    # Convert grayscale to RGB IHC-like coloring
-    # Create RGB image with brown for high values and light pink for low values
-    rgb = np.zeros((ion.shape[0], ion.shape[1], 3), dtype=np.uint8)
-    
-    # Brown color (RGB: 139, 69, 19) for high values
-    # Light pink (RGB: 255, 228, 225) for low values
-    rgb[:,:,0] = np.uint8(255 - ion * 0.45)  # R channel 
-    rgb[:,:,1] = np.uint8(228 - ion * 0.62)  # G channel
-    rgb[:,:,2] = np.uint8(225 - ion * 0.81)  # B channel
-
-
-    # Create a colormap from white to brown
-    white = np.array([255, 255, 255])
-    brown = np.array([139, 69, 19]) 
-    
-    # Create normalized intensity values between 0 and 1
-    norm_ion = ion.astype(float) / 255
-    
-    # For each pixel, interpolate between white and brown based on intensity
-    for i in range(3):  # RGB channels
-        rgb[:,:,i] = np.uint8(white[i] + (brown[i] - white[i]) * norm_ion)
-
-    rgb[mask == 0] = 0
-
-
-
-    #mz_img = visualizations.create_ion_image(img, mz_index) * 1
-    ion = rgb
-
-
-    return ion
+    return colorize_ion_uint8(ion, mask=mask, colormap=colormap)
 
 def get_mask(visualization, segmentation_mask, x, y):
     label = segmentation_mask[y, x]

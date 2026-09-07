@@ -1,0 +1,21 @@
+# Negative-ion mode batch extraction (CarstenHopf Mannheim MSimaging).
+# Inherits visualizations / MiCS presets from batch_extract_pymzml.yaml.
+#
+# Run from repo root:
+#   python scripts/batch_extract_pymzml.py --config-name=batch_extract_pymzml_negative
+#
+# Dry-run:
+#   python scripts/batch_extract_pymzml.py --config-name=batch_extract_pymzml_negative extract.dry_run=true
+
+defaults:
+  - batch_extract_pymzml
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/batch_extract_pymzml_negative/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+extract:
+  input_root: "E:/MSI+SpatialTrans-datasets/CarstenHopf-Mannheim/datasets/datasets/MSimaging/negative"
+  output_root: "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/MSimaging/negative"
+  id: "CarstenHopf-Mannheim_MSimaging_negative"

@@ -4,3 +4,8 @@
 app/*.cache
 .vscode/settings.json
 *.cache
+scripts/annotator_server/paths.json
+scripts/cache_dir/
+*.pth
+*.pt
+*.joblib

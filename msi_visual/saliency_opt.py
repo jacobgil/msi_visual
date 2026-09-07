@@ -1,14 +1,15 @@
+import cv2
 import numpy as np
+import torch
+
 from sklearn.metrics.pairwise import pairwise_distances
 
 from sklearn.metrics.pairwise import cosine_similarity
-
-
-import torch
 from PIL import Image
 import tqdm
-import torchsort
 import cv2
+
+from msi_visual.soft_rank import soft_rank
 import time
 from msi_visual.percentile_ratio import TOP3
 from sklearn.cluster import KMeans, kmeans_plusplus
@@ -193,7 +194,7 @@ class SaliencyOptimization:
         reference_points = self.visualization[self.indices]
         output_distances = torch.cdist(self.visualization, reference_points)
         t1 = time.time()
-        output_ranks = torchsort.soft_rank(
+        output_ranks = soft_rank(
             output_distances,
             regularization_strength=self.regularization_strength)
         t2 = time.time()

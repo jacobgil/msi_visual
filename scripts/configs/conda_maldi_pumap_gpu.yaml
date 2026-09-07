@@ -1,0 +1,35 @@
+# Conda env for pUMAP (TensorFlow) GPU on native Windows.
+# PyTorch GPU also works in this env for pMiCS.
+#
+# Create:
+#   conda env create -f scripts/configs/conda_maldi_pumap_gpu.yaml
+# Activate:
+#   conda activate maldi-pumap-gpu
+# Run gallery:
+#   python scripts/mics_cross_infer_gallery.py
+#
+# Notes:
+# - Native Windows TensorFlow GPU requires TF 2.10 + CUDA 11.2 (not tensorflow-intel).
+# - The main `maldi` env (Python 3.11 + tensorflow-intel) is CPU-only for pUMAP.
+
+name: maldi-pumap-gpu
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - cudatoolkit=11.2
+  - cudnn=8.1.0
+  - pip
+  - pip:
+      - "numpy<2"
+      - tensorflow==2.10.1
+      - umap-learn==0.5.5
+      - scikit-learn
+      - pillow
+      - joblib
+      - opencv-python
+      - hydra-core
+      - omegaconf
+      - torch
+      - torchvision

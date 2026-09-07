@@ -1,0 +1,279 @@
+# Per-MSI gallery of HD edge methods — see scripts/hd_methods_gallery.py
+# Run: ``python scripts/hd_methods_gallery.py`` (uses configs/hd_methods.yaml → this file)
+#
+# Defaults merge scripts/configs/rank_visualizations_by_f1.yaml (HD methods, hd_edges, evaluation, …).
+# This file adds input.npy_paths / npy_dir, gallery.*, output (multi-colormap + raw grayscale), and
+# explicit blocks for top3_nmf_* (top3, nmf, equalize, edge_pre_smooth, spatial_normalization,
+# edge_maps, edge_detection). ``hd_edges`` overrides match ``benchmark_parametric_methods.yaml``.
+# Outputs: gallery_subdir/<colormap>/<stem>_png_suffix, edge_colormaps.txt,
+# gallery_subdir/raw_grayscale/<stem>/<method>.png .
+
+defaults:
+  - rank_visualizations_by_f1
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/hd_methods_gallery/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+# Extra input modes (rank uses input.npy_path for a single cube; this script uses lists or a directory).
+input:
+  npy_paths:
+  #   - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset5_spinalcord/5bins/0.npy"
+  #   - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset4_kidney/5bins/0.npy"
+  #   - "E:/MSImaging-data/_msi_visual/Extractions/NRL4506-5um/Intelli-slide/5_bins/0.npy"
+  #   - "E:/MSImaging-data/_msi_visual/Extractions/NRL4558_5um/5bins/2/0.npy"
+  #   - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/0.npy"
+  #   - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy"
+     - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/2.npy"
+  #   - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/3.npy"
+  # npy_dir: null
+  npy_glob: "*.npy"
+
+# MSI cube load (shared with all methods). Override rank defaults here if needed.
+data:
+  transpose_msi: false
+  normalization: tic  # tic | none | …
+
+# =============================================================================
+# top3_nmf_max / top3_nmf_mean — scripts/gallery_top3_nmf_edges.compute_top3_nmf_aggregate_edges_*
+#
+# Which k values: ``nmf.k_list`` drives TOP3+NMF HD only. ``hd_edges.nmf_component_edges.k_list`` matches the benchmark.
+#
+# Other keys: top3, nmf (non-k_list), equalize, edge_pre_smooth, spatial_normalization, edge_maps,
+# edge_detection (rgb/canny), output.edge_colormap / edge_colormap_list.
+# =============================================================================
+# msi_visual.percentile_ratio.TOP3 on spectra / coefficient cubes.
+top3:
+  low: 99.9
+  norm_percentile: 99.9
+  to_lab: true
+
+# sklearn NMF on nonnegative spectra at each k (TOP3+NMF stack only).
+nmf:
+  k_list: [3, 4, 5, 6, 8, 12, 18, 24, 36]
+  init: nndsvda
+  max_iter: 500
+  tol: 1.0e-4
+  random_state: 42
+  # 1.0 = all valid pixels; <1 fits on a random subset (faster).
+  fit_fraction: 0.05
+
+# LAB luminance equalize: display = left RGB panel; before_edges = input to gradient/canny.
+equalize:
+  enabled: false
+  display: false
+  before_edges: false
+  method: hist  # hist | clahe
+  clahe_clip_limit: 2.0
+  clahe_tile_grid_size: 8
+
+# Gaussian blur on uint8 RGB fed to edge detection only (TOP3 display can stay sharp via equalize split).
+edge_pre_smooth:
+  enabled: false
+  sigma: 0.0
+
+# Percentile stretch on raw float edge maps before colormap (shared with other HD rgb-based paths).
+spatial_normalization:
+  enabled: true
+  low_percentile: 1.0
+  high_percentile: 99.0
+
+# RGB branch: multi-scale Sobel (merge before downstream). Matches rank by default; for parity with
+# scripts/configs/gallery_top3_nmf_edges.yaml use sigmas: [0.0] only.
+edge_maps:
+  multi_scale:
+    enabled: false
+    sigmas: [0.0, 1.0, 2.0, 4.0]
+    aggregation: mean
+
+# RGB gradient / Canny (edge_detection.hd_method is ignored for top3_nmf_*; merged with rank for other methods).
+edge_detection:
+  rgb_method: gradient
+  rgb_color_space: lab  # gray | lab
+  canny:
+    low_threshold: 40.0
+    high_threshold: 120.0
+    aperture_size: 3
+    l2gradient: true
+    n_jobs: 0
+    rgb_mode: max_channel
+  # HD method ``soft_landmark_contrast`` (legacy alias: ``landmark_knn``).
+  # ``spatial_radii`` set → ``spatial_resolutions`` ignored. Use ``aggregation: mean`` for less region fill.
+  soft_landmark_contrast:
+    # soft_patch_contrast compares opposite-side soft landmark patch signatures and subtracts local texture.
+    score_mode: soft_patch_contrast
+    soft_topk: 80
+    soft_temperature: 0.06
+    soft_patch_radius: 1
+    soft_scale_aggregation: max
+    soft_chunk_size: 64
+    contrast_texture_weight: 0.22
+    contrast_aggregation: max
+    contrast_batch_size: 8192
+    # Used by neighbor/contrast modes; soft_patch_contrast uses soft_topk instead.
+    k: [40, 80, 140]
+    n_landmarks: 1000
+    spatial_radii: [1]
+    spatial_connectivity: "4"
+    aggregation: mean
+    # Used only when aggregation: percentile
+    percentile: 100.0
+    spatial_weight: uniform
+    spatial_weight_sigma: 2.0
+    landmark_sampling: random
+    similarity: dice
+    post_process: none
+    pca_enabled: true
+    pca_n_components: 64
+    pca_random_state: 42
+    random_state: 42
+    min_edge_percentile: 2.0
+    spectral_weight: false
+    hysteresis_low_percentile: 70.0
+    hysteresis_high_percentile: 95.0
+
+# =============================================================================
+# ``hd_edges`` — copy of ``scripts/configs/benchmark_parametric_methods.yaml`` (merged over rank).
+# Remaining rank-only keys (e.g. save_individual_distance_maps) may still apply unless you null them.
+# =============================================================================
+hd_edges:
+  normalize_channels: true
+  channel_low_percentile: 1.0
+  channel_high_percentile: 99
+  log1p: false
+  distance_functions: [l2]
+  pca:
+    enabled: false
+    n_components: 64
+    random_state: 42
+  aggregation: mean
+  topk: 5
+  neighborhood:
+    enabled: false
+    radius: 1
+    sigma: 0.0
+  edge_power: 1.0
+  ensemble_cluster:
+    n_experiments: 20
+    subsample_fraction: 0.2
+    pca_n_components: 16
+    n_clusters_list: [4, 8, 16, 32, 64, 128, 256]
+    kmeans_n_init: 8
+    random_state: 42
+    output_gamma: 1.0
+    suppress_below_percentile: null
+    per_run_normalize_by_sum: false
+    per_run_normalize_epsilon: 1.0e-12
+  nmf_component_edges:
+    k_list: [8, 16, 32, 64]
+    fit_fraction: 0.2
+    random_state: 42
+    init: nndsvda
+    max_iter: 300
+    tol: 1.0e-4
+    aggregate: nul
+    channel_low_percentile: 1.0
+    channel_high_percentile: 99.0
+    smooth_sigma: 0.0
+    hist_equalize: false
+
+gallery:
+  # edge_detection.hd_method names, plus top3_nmf_max | top3_nmf_mean
+  hd_methods:
+    #- top3_nmf_max
+    - soft_landmark_contrast
+    - distance_multi
+    #- gmm_kl
+    #- ensemble_cluster
+    #- nmf_component_edges
+
+  # Two methods above → 2 columns (increase if you add more hd_methods).
+  columns: 2
+
+  # Panel captions (filenames/raw PNG stems still use internal hd_methods names).
+  # ``distance_multi``: max neighbor spectral distance (+ z-score). Default metric: L2 (Euclidean).
+  method_labels:
+    soft_landmark_contrast: SoLaCE
+    distance_multi: Difference magnitude
+
+  cell_gap: 8
+  row_gap: 12
+  column_padding: 8
+  row_label_height: 30
+  cell_max_size: null
+  # Extra panel aggregating the displayed edge maps: max | mean | none
+  aggregate_edges: null
+  # Extra outputs: one PNG per method comparing that edge map across all input cubes.
+  compare_across_images: false
+  compare_across_images_columns: 4
+  # auto | max | [width, height]. Auto chooses a representative existing shape with minimal resize distortion.
+  compare_across_images_shape: auto
+
+# One gallery PNG per input cube per colormap name, under gallery_subdir/<colormap>/.
+# edge_colormap_list: if set, drives outputs (one folder per name). If null/empty, uses edge_colormap (or gray).
+# Raw 0–1 edge maps (uint8 L PNG) per method: gallery_subdir/raw_grayscale/<cube_stem>/<method>.png
+output:
+  edge_colormap: copper
+  edge_colormap_list:
+    # - gray
+    # - copper
+    # - magma
+    # - inferno
+    # - plasma
+    # - viridis
+    # - cividis
+    # - turbo
+    # - hot
+    # - bone
+    # - pink
+    # - spring
+    # - summer
+    # - autumn
+    # - winter
+    # - cool
+    # - Wistia
+    # - gist_heat
+    # - gist_ncar
+    # - gist_rainbow
+    # - nipy_spectral
+    # - jet
+    # - twilight
+    # - twilight_shifted
+    # - cubehelix
+    # - ocean
+    # - terrain
+    # - gnuplot
+    # - gnuplot2
+    # - CMRmap
+    # - seismic
+    # - RdYlGn
+    # - Spectral
+    # - coolwarm
+    # - bwr
+    # - BrBG
+    # - RdBu
+    # - RdGy
+    # - RdYlBu
+    # - RdYlGn
+     - PuBu
+    # - PuBuGn
+    # - PuRd
+    # - PuTh
+    # - PuOr
+    # - PuRd
+    # - PuOr
+    # - tab10
+    # - Set1
+    # - Dark2
+  save_raw_grayscale: true
+  raw_grayscale_subdir: raw_grayscale
+  gallery_subdir: hd_method_galleries
+  png_suffix: _hd_methods.png
+
+# Uncomment for grayscale everywhere when output.edge_colormap is null:
+# debug:
+#   edge_colormap: null
+
+logging:
+  level: INFO

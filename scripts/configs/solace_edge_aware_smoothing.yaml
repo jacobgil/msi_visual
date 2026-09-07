@@ -1,0 +1,72 @@
+# SoLaCE-guided edge-aware spatial smoothing of an MSI visualization.
+#
+#   python scripts/solace_edge_aware_smoothing.py
+#   python scripts/solace_edge_aware_smoothing.py data.npy_path=D:/data/0.npy
+#   # Smooth an existing RGB visualization instead of training MiCS:
+#   python scripts/solace_edge_aware_smoothing.py visualization.source=image \
+#       visualization.image_path=D:/some_visualization.png
+
+hydra:
+  run:
+    dir: outputs/solace_edge_aware_smoothing/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+seed: 17
+
+data:
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/MSimaging/negative/ID9_MSimaging_neg_RMS/5_bins/0.npy"
+  transpose_msi: false
+  normalization: tic   # tic | none
+
+# What to smooth.
+#   mics  -> train a MiCS embedding and smooth it (before RGB scaling)
+#   image -> load an existing RGB (PNG) or H*W*3 .npy and smooth it directly
+visualization:
+  source: mics
+  image_path: null
+
+# MiCS model (used when visualization.source=mics). Matches the mics_multiscale preset
+# from scripts/configs/batch_extract_mics_groups.yaml.
+mics:
+  clusters: [8, 32, 128, 256]
+  cluster: true
+  cluster_on_pca: false
+  beta: 20.0
+  num_layers: 3
+  num_epochs: 30
+  number_of_points: 1000
+  sampling: coreset
+  pixel_sampling: superpixel
+  num_samples: 5000
+  k_epoch: 20
+  temperature: 100.0
+  lr: 1.0
+  batch_size: 1024
+  warmup_epochs: 10
+  factor: 1.0
+  lab_to_rgb: true
+  random_state: 42
+  verbose: false
+
+# SoLaCE (soft_landmark_contrast) edge map. Reuses the hd_methods gallery config.
+solace:
+  rank_config: ${hydra:runtime.cwd}/scripts/configs/hd_methods_gallery.yaml
+  hd_method: soft_landmark_contrast
+  edge_colormap: PuBu
+
+# Joint-bilateral (edge-aware) smoothing parameters.
+smoothing:
+  spatial_sigma: 1.5    # Gaussian spatial weight sigma (pixels)
+  edge_scale: 0.15      # SoLaCE barrier sigma; smaller = block mixing across edges more strongly
+  iterations: 4         # diffusion passes (each mixes a `radius` neighborhood)
+  radius: null          # neighborhood radius per pass; null -> ceil(2*spatial_sigma), capped at 5
+  range_sigma: 0.0      # optional classic-bilateral intensity term (<=0 disables)
+  # Edge-guided unsharp: sharpens region boundaries (scaled by SoLaCE strength) while
+  # interiors stay smoothed. 0 disables; try ~0.5-1.0 to sharpen.
+  sharpen_amount: 0.8
+  sharpen_sigma: 1.0
+  gaussian_sigma: 1.5   # sigma for the isotropic-Gaussian comparison panel
+
+output:
+  save_individual: true
+  panel: true
+  dpi: 200

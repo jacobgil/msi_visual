@@ -1,0 +1,83 @@
+# Learn a global 1-to-1 LAB LUT (L fixed) optimizing perceptual color metrics.
+#
+# Run (repo root):
+#   python scripts/remap_perceptual_display.py input.visualization_path=path/to/viz.png
+# With MSI for edge-Dice guardrail:
+#   python scripts/remap_perceptual_display.py input.visualization_path=viz.png input.msi_npy_path=cube.npy
+# Finer LUT (slower, more params):
+#   python scripts/remap_perceptual_display.py remap.lut_ab_grid=7
+# 6x6 matrix map instead of LUT:
+#   python scripts/remap_perceptual_display.py remap.strategy=perceptual
+
+defaults:
+  - rank_visualizations_by_f1
+  - _self_
+
+data:
+  normalization: tic
+
+hydra:
+  run:
+    dir: outputs/remap_perceptual_display/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  job:
+    chdir: false
+
+input:
+  visualization_path: null
+  visualization_dir: null
+  msi_npy_path: null
+  transpose_msi: false
+  mask_path: null
+  allow_resize: true
+  background_threshold: 0
+
+remap:
+  mode: optimize
+  strategy: perceptual_lut  # perceptual_lut | perceptual | color_shuffle | contrast
+  # perceptual_lut: trilinear LUT on (L,a,b) -> delta_a, delta_b; L out = L in (1-to-1)
+  lut_ab_grid: 5   # nodes per a and b axis (5x5 = 25 chroma control points per L slice)
+  lut_l_grid: 1    # 1 = single LUT slice, L strictly preserved; 3 = L-dependent chroma LUT
+  # perceptual matrix / color_shuffle / contrast (see prior strategies)
+  hue_rotation_deg: 0.0
+  chroma_scale: 1.0
+  ab_shear_deg: 0.0
+  chroma_aniso_b: 1.0
+  rgb_perm_index: 0
+  optimize_rgb_perm: false
+  ab_offset_a: 0.0
+  ab_offset_b: 0.0
+  rgb_channel_order: [0, 1, 2]
+  gamma: 1.0
+  percentile_low: 1.0
+  percentile_high: 99.0
+  l_contrast: 1.0
+  rgb_diag: [1.0, 1.0, 1.0]
+  clahe_clip: 0.0
+  clahe_tile: 8
+
+objective:
+  weights:
+    lab_chroma_entropy: 0.35
+    lab_mean_chroma: 0.25
+    luminance_gradient_mean: 0.10
+    continuous_dice: 0.30
+    luminance_rms_contrast: 0.0
+    ab_shuffle_distance: 0.0
+  lab_entropy_bins_a: 16
+  lab_entropy_bins_b: 16
+  relative_to_input: true
+  dice_floor_ratio: 0.92
+  luminance_preservation_weight: 5.0
+
+optimize:
+  method: differential_evolution
+  max_iterations: 60
+  population_size: 16
+  random_trials: 500
+  seed: 42
+  polish: true
+
+output:
+  save_comparison: true
+  save_metrics_csv: true
+  comparison_pad: 8

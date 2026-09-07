@@ -13,7 +13,7 @@ from msi_visual.normalization import total_ion_count, spatial_total_ion_count
 
 
 def create_pipeline():
-    options = ["NMF3D", "Segmentation-NMF", "Segmentation-Kmeans", "Saliency Optimization", "UMAP-3D", "TOP-3", "Percentile-Ratio", "Existing model", "Combining with Segmentation", "Spearman Optimization"]
+    options = ["NMF3D", "Segmentation-NMF", "Segmentation-Kmeans", "Saliency Optimization", "UMAP-3D", "TOP3", "Percentile-Ratio", "Existing model", "Combining with Segmentation", "Spearman Optimization"]
     method = st.selectbox("Add visualization method", options, index=None)
 
     model = None
@@ -41,7 +41,7 @@ def create_pipeline():
         if st.button("Add"):
             model = NMF3D(max_iter=max_iter)
     
-    elif method == "TOP-3":
+    elif method == "TOP3":
         if st.button("Add"):
             model = TOP3()
 

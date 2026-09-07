@@ -1,0 +1,54 @@
+# SpatialMiCS: 3× bandpass features [X, |X-blur_reg|, |X-blur_fine|] → MiCS PCC.
+#
+# Baseline uses the same mics_multiscale hyperparameters as the rest of the repo (fair compare).
+#
+# Run from repo root:
+#   python scripts/train_spatial_mics.py
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/train_spatial_mics/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+data:
+  input_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy"
+  transpose: false
+
+# Match scripts/configs/batch_extract_mics_groups.yaml → mics_multiscale
+model:
+  num_epochs: 30
+  num_layers: 3
+  clusters: 8-32-128-256
+  sampling: coreset
+  num_samples: 5000
+  batch_size: 1024
+  pixel_sampling: superpixel
+  predict_percentile_low: 1.0
+  predict_percentile_high: 99.0
+  beta: 20.0
+  k_epoch: 20
+  temperature: 100.0
+  lr: 1.0
+  warmup_epochs: 10
+
+spatial_mics:
+  block_mode: bandpass      # bandpass = sharp; context = [X, blur(X), detail] (blurry)
+  sigma_regional: 3.0
+  sigma_fine: 0.7
+  detail_mode: abs
+  block_normalize: true
+  block_low_pct: 1.0
+  block_high_pct: 99.0
+  block_gains: [1.0, 1.0, 1.25]   # boost fine contrast block slightly
+  save_feature_cube: false
+
+compare_baseline:
+  enabled: true
+
+pipeline:
+  seed: 42
+  share_pixel_sampling: true
+  pixel_sampling_cache_path: null

@@ -1,0 +1,209 @@
+defaults:
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+input:
+  npy_path: null
+  visualization_paths: null
+
+data:
+  transpose_msi: false
+  # none | tic | spatial_tic
+  normalization: tic
+
+nmf_prediction:
+  k_components: 64
+  max_iter: 5000
+  tol: 0.0001
+  init: nndsvda
+  random_state: 42
+  target_normalization: minmax_per_component
+  target_norm_low_percentile: 0.2
+  target_norm_high_percentile: 99.8
+  target_scope: all_valid
+  sampling_method: random
+  sampling_num_samples: 5000
+  superpixel_init_segments: 256
+  superpixel_points_per_segment: 8
+  superpixel_compactness: 10.0
+  superpixel_max_iters: 6
+  superpixel_pca_fit_step: 4
+  superpixel_verbose: false
+  cv_n_splits: 5
+  cv_shuffle: true
+  cv_random_state: 42
+  cv_max_samples: 300000
+  # Unused by this script but kept for compatibility with shared sampler helper.
+  xgb_n_estimators: 300
+  xgb_learning_rate: 0.05
+  xgb_max_depth: 4
+  xgb_min_child_weight: 2.0
+  xgb_subsample: 0.8
+  xgb_colsample_bytree: 0.8
+  xgb_reg_lambda: 1.0
+  xgb_reg_alpha: 0.0
+  xgb_tree_method: hist
+  xgb_n_jobs: -1
+
+edge_stratification:
+  n_quantiles: 4
+  n_bins: 10
+
+block_cv:
+  enabled: false
+  block_size: 32
+  n_folds: 5
+  random_state: 42
+
+component_roi_metrics:
+  enabled: false
+  # Top fraction of pixels (by component value) used as ROI per component.
+  top_fraction: 0.20
+  num_samples: 4000
+  min_pixels: 64
+
+zadu_bins:
+  enabled: false
+  # Build bin-level ROI as union of top-fraction pixels of components in the bin.
+  top_fraction: 0.20
+  pairwise_num_samples: 4000
+  min_pixels: 64
+
+spatial_normalization:
+  low_percentile: 0.02
+  high_percentile: 99.8
+
+edge_agreement:
+  # Define positives for AUC using top edge-energy pixels in high-D map.
+  auc_positive_percentile: 85.0
+  auc_min_positive_pixels: 64
+  multi_scale:
+    enabled: false
+    sigmas: [0.0, 1.0, 2.0]
+    # mean | max
+    aggregation: mean
+  multi_percentile:
+    # Compute edge AUC over multiple high-D edge percentiles.
+    percentiles: [70, 80, 85, 90, 95]
+    # uniform | tail_linear | tail_power
+    weight_mode: tail_power
+    tail_power: 2.0
+
+edge_detection:
+  # gradient | canny | gmm_kl | distance_multi
+  hd_method: gmm_kl
+  # gradient | canny
+  rgb_method: gradient
+  canny:
+    low_threshold: 40.0
+    high_threshold: 120.0
+    # 3 | 5 | 7
+    aperture_size: 3
+    l2gradient: true
+    # 0 => auto CPU count
+    n_jobs: 0
+    # For rgb_method=canny: gray | max_channel | mean_channel | any_channel
+    rgb_mode: max_channel
+  gmm:
+    n_components: 12
+    covariance_type: diag
+    reg_covar: 1.0e-6
+    max_iter: 200
+    random_state: 42
+    max_samples: 200000
+
+edge_evaluation:
+  enabled: true
+  # f1 | continuous_dice (see scripts/debug_visualization_metrics.py edge_agreement block)
+  metric: continuous_dice
+  min_viz_edge_percentile: 0
+  # percentile | value | otsu
+  threshold_mode: otsu
+  # F_beta: 1=F1 (balanced), >1=emphasize recall, <1=emphasize precision
+  f_beta: 1.0
+  otsu_pre_equalize: true
+  # hist | clahe
+  otsu_equalize_method: hist
+  otsu_clahe_clip_limit: 2.0
+  otsu_clahe_tile_grid_size: 8
+  threshold_percentile: 90.0
+  threshold_value: 0.5
+  include_linf: true
+
+hd_edges:
+  # Pre-normalize each m/z channel before Sobel.
+  normalize_channels: true
+  channel_low_percentile: 0.01
+  channel_high_percentile: 99.9
+  # Stabilize dynamic range before channel normalization.
+  log1p: false
+  pca:
+    enabled: true
+    n_components: 16
+    random_state: 42
+  # mean | max | topk_mean
+  aggregation: mean
+  topk: 5
+
+clahe:
+  enabled: true
+  # clahe | hist
+  method: hist
+  clip_limit: 2.0
+  tile_grid_size: 8
+  apply_to:
+    # Apply CLAHE to RGB image before NMF prediction from RGB.
+    nmf_rgb_features: false
+    # Apply CLAHE to normalized NMF component maps before component-edge metrics.
+    nmf_component_maps: true
+    # Apply CLAHE to RGB branch used for edge-agreement maps.
+    edge_viz: true
+    # Apply CLAHE to HD edge maps before edge-agreement comparisons.
+    edge_hd: true
+
+mi:
+  n_neighbors: 5
+  random_state: 42
+
+correlation:
+  # Uses MSIVisualizationMetrics (matches benchmark correlation/zadu metrics).
+  pairwise_num_samples: 8000
+  # raw | pca | nmf | all (or list in feature_spaces)
+  feature_space: raw
+  # Optional multi-space mode, e.g. [raw, pca, nmf]. If set, overrides feature_space.
+  # feature_spaces: [raw, pca, nmf]
+  n_components: 64
+  pca_random_state: 42
+  nmf_random_state: 42
+  nmf_max_iter: 500
+  nmf_tol: 0.0001
+
+metrics:
+  # Select which metric groups are computed. Use ["all"] for everything.
+  # Available: nmf_lr, mi_knn, edge_agreement, correlation,
+  # nmf_kl_linear, edge_stratification, component_roi_metrics, zadu_bins
+  compute: ["edge_agreement", "edge_stratification"]
+
+nmf_kl_linear:
+  # Softmax linear model from RGB -> normalized NMF component contributions.
+  epochs: 300
+  learning_rate: 0.01
+  batch_size: 2048
+  weight_decay: 0.0001
+  max_train_samples: 120000
+  random_state: 42
+  eps: 1.0e-8
+
+logging:
+  level: INFO
+  # Log every N components during per-component loop.
+  component_log_every: 8
+
+output:
+  out_dir: null
+  save_component_panels: true
+  save_per_method_component_panels: false
+  component_panels_subdir: component_panels

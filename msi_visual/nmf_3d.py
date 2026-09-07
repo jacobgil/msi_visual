@@ -1,70 +1,92 @@
-from PIL import Image
-from sklearn.decomposition import NMF, non_negative_factorization
-import cv2
-import numpy as np
-from matplotlib import pyplot as plt
+"""NMF-based 3-component visualization, similar to PCA3D."""
+from pathlib import Path
+
 import joblib
-from msi_visual.normalization import spatial_total_ion_count, total_ion_count, median_ion
-from msi_visual.visualizations import visualizations_from_explanations
-from msi_visual.utils import normalize, segment_visualization
+import numpy as np
+from sklearn.decomposition import NMF
+
+from msi_visual.utils import normalize
 
 
 class NMF3D:
-    def __init__(self, start_bin=0, end_bin=None, max_iter=2000):
-        self.k = 3
+    """NMF decomposition to 3 components for RGB visualization."""
+
+    def __init__(
+        self,
+        n_components: int = 3,
+        init: str = "nndsvda",
+        max_iter: int = 200,
+        random_state: int | None = 42,
+        start_bin: int = 0,
+        end_bin: int | None = None,
+    ):
+        self.n_components = n_components
+        self.init = init
+        self.max_iter = max_iter
+        self.random_state = random_state
         self.start_bin = start_bin
         self.end_bin = end_bin
-        self.max_iter = max_iter
         self._trained = False
 
-    def __repr__(self):
-        return f"NMF-3D max_iter={self.max_iter}"
+    def _ensure_legacy_attrs(self) -> None:
+        """Fill defaults for instances loaded from old joblib pickles (no __init__)."""
+        if not hasattr(self, "n_components"):
+            self.n_components = 3
+        if not hasattr(self, "init"):
+            self.init = "nndsvda"
+        if not hasattr(self, "max_iter"):
+            self.max_iter = 200
+        if not hasattr(self, "random_state"):
+            self.random_state = 42
+        if not hasattr(self, "start_bin"):
+            self.start_bin = 0
+        if not hasattr(self, "end_bin"):
+            self.end_bin = None
+        if not hasattr(self, "_trained"):
+            self._trained = bool(getattr(self, "nmf", None) is not None)
 
-    def fit(self, images):
-        vector = np.concatenate([img.reshape(-1, images[0].shape[-1]) for img in images], axis=0)
-        vector = vector.reshape((-1, vector.shape[-1]))
-        self.model = NMF(
-            n_components=self.k,
-            init='random',
-            random_state=0,
-            max_iter=self.max_iter)
-        self.W = self.model.fit_transform(vector)
-        self.H = self.model.components_
-        self.train_image_shapes = [img.shape[:2] for img in images]
+    def __setstate__(self, state: dict) -> None:
+        self.__dict__.update(state)
+        self._ensure_legacy_attrs()
+
+    def __repr__(self) -> str:
+        self._ensure_legacy_attrs()
+        return f"NMF3D n_components={self.n_components} max_iter={self.max_iter} random_state={self.random_state}"
+
+    def fit(self, images: list[np.ndarray]) -> "NMF3D":
+        if self.end_bin is None:
+            self.end_bin = images[0].shape[-1]
+        n_bins = self.end_bin - self.start_bin
+        vector = np.concatenate(
+            [
+                img[:, :, self.start_bin : self.end_bin].reshape(-1, n_bins)
+                for img in images
+            ],
+            axis=0,
+        )
+        vector = np.clip(vector, 0.0, None).astype(np.float32)
+        self.nmf = NMF(
+            n_components=self.n_components,
+            init=self.init,
+            max_iter=self.max_iter,
+            random_state=self.random_state,
+        )
+        self.nmf.fit(vector)
         self._trained = True
+        return self
 
-    def visualize_training_components(self):
-        result = []
-        elements = 0
-        for index, shape in enumerate(self.train_image_shapes):
-            img_elements = shape[0] * shape[1]
-            w = self.W[elements: elements + img_elements, :].copy()
-            elements = elements + img_elements
-            explanations = w.transpose().reshape(self.k, shape[0], shape[1])
-            explanations = explanations.transpose((1, 2, 0))
-            explanations = normalize(explanations)
-            result.append(explanations)
-        return result
+    def predict(self, img: np.ndarray) -> np.ndarray:
+        n_bins = self.end_bin - self.start_bin
+        vector = img[:, :, self.start_bin : self.end_bin].reshape((-1, n_bins))
+        vector = np.clip(vector, 0.0, None).astype(np.float32)
+        result = self.nmf.transform(vector)
+        result = result.reshape(img.shape[0], img.shape[1], self.n_components)
+        return np.uint8(255 * normalize(result))
 
-    def predict(self, img):
-        vector = img.reshape(
-            (-1, img.shape[-1]))
-        w_new, h_new, n_iter = non_negative_factorization(
-            vector, H=self.H, W=None, n_components=self.k, update_H=False, random_state=0)
-        result = w_new.transpose().reshape(self.k, img.shape[0], img.shape[1])
-        return np.uint8(255 * normalize(result.transpose((1, 2, 0))))
-
-    def __call__(self, img):
+    def __call__(self, img: np.ndarray) -> np.ndarray:
         if not self._trained:
             self.fit([img])
         return self.predict(img)
 
-    def segment_visualization(self,
-                              img,
-                              visualization,
-                              method='spatial_norm'):
-
-        return segment_visualization(visualization)
-
-    def save(self, path):
+    def save(self, path: str | Path) -> None:
         joblib.dump(self, path)

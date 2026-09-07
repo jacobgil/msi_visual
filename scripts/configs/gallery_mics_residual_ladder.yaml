@@ -1,0 +1,70 @@
+# Progressive MiCS residual ladder.
+#
+# ladder_mode:
+#   capacity     — legacy depth ladder (L1, L2, … each adds to frozen cumulative emb)
+#   shared_local — cross-region shared base + local residual stages on top
+#
+# Run (repo root):
+#   python scripts/gallery_mics_residual_ladder.py
+#   python scripts/gallery_mics_residual_ladder.py gallery.ladder_mode=capacity
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/gallery_mics_residual_ladder/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+model:
+  num_epochs: 25
+  predict_spatial_smooth_sigma: 0.0
+
+gallery:
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy"
+  transpose_msi: false
+  tic_normalize: true
+
+  # --- shared / local decomposition (recommended) ---
+  ladder_mode: shared_local
+  shared_base_mode: mics          # pca | mics
+  shared_mics_layers: 1
+  shared_num_epochs: null         # null → model.num_epochs
+  shared_cluster_loss_weight: 1.0
+  local_layer_ladder: [3, 5, 7]   # local residual stages (on frozen shared base)
+  local_cluster_loss_weight: 0.0  # don't re-cluster local into shared buckets
+
+  # --- legacy capacity ladder (ladder_mode: capacity) ---
+  max_layers: 10
+  layer_ladder: null
+
+  seed: 42
+  share_pixel_sampling: true
+  pixel_sampling_cache_path: null
+  equalize_visualization: false
+  shared_normalization: true
+  save_residual_panels: true
+  save_increment_panels: true
+  increment_gain: 8.0
+  residual_lr_multiplier: 1.0
+  epochs_multiplier_per_stage: 1.0
+  pca_mics_morph: false
+
+  temperature_ladder:
+    - 100
+    - 100
+    - 100
+  k_epoch_ladder:
+    - 5
+    - 10
+    - 15
+  beta_ladder:
+    - 20
+    - 20
+    - 20
+  cluster_loss_weight_ladder: null
+
+  ncols: 3
+  figure_size_inches: 14
+  dpi: 300
+  panel_title_fontsize: 11

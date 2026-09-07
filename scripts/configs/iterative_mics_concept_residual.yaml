@@ -1,0 +1,129 @@
+# Iterative MiCS concept residual peeling.
+#
+# Run from repo root:
+#   python scripts/iterative_mics_concept_residual.py
+#
+# Useful overrides:
+#   residual.iterations=24 residual.strength=0.5
+#   residual.suppression_mode=attenuate
+#   gallery.npy_path="E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/MSimaging/positive/ID18a_MSimaging_pos_RMS/5_bins/0.npy"
+#   gallery.panel_source=mics_equalized
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/iterative_mics_concept_residual/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+seed: 17
+
+data:
+  transpose_msi: false
+  normalization: tic
+
+mics:
+  group: mics_multiscale
+  parameter_groups_config: ${hydra:runtime.cwd}/scripts/configs/batch_extract_mics_groups.yaml
+  defaults_yaml: ${hydra:runtime.cwd}/scripts/configs/train_parametric_mics_lmc.yaml
+  overrides: {}
+
+concepts:
+  n_concepts: 128
+  top_k: 8
+  nmf_init_pixels: 12000
+  nmf_max_iter: 500
+  ridge_lambda: 0.01
+  fit_method: mics_input
+  weight_mode: sparse_softmax
+  softmax_temperature: 0.3
+  train_epochs: 300
+  train_lr: 0.01
+  sparsity_weight: 1000
+  mics_input_batch_size: 2048
+  mics_input_tic_normalize: true
+  active_threshold: 0.0001
+  diagnostic_sparse_top_k: 4
+  diagnostic_cosine_percentile_low: 15
+  diagnostic_cosine_percentile_high: 90
+  diagnostic_cosine_gamma: 2.0
+  log_every: 50
+  top_peaks: 5
+
+explain:
+  min_concept_weight: 0.04
+
+viz:
+  enabled: true
+  n_example_pixels: 5
+  dpi: 200
+  concept_node_style: heatmap
+  concept_thumb_px: 360
+  map_fig_width: 26
+  map_fig_height: 24
+  map_marker_fontsize: 18
+  map_marker_size: 14
+  equalize_map_display: true
+  equalize_thumb_activation: false
+  save_both_display_variants: true
+  export_interpretability: true
+  interpretability_subdir: interpretability
+  export_dpi: 300
+  export_thumb_px: 480
+  example_pixel_spatial_weight: 2.5
+  example_pixel_interior_min_px: 28
+  example_pixel_interior_weight: 5.0
+  activation_percentile: 98.0
+  activation_gamma: 0.85
+  activation_colormap: magma
+  concept_rank_mode: relative
+  top_terms: 4
+  min_concept_weight: 0.04
+  overview_gallery:
+    enabled: true
+    rank_config: ${hydra:runtime.cwd}/scripts/configs/hd_methods_gallery.yaml
+    edge_colormap: PuBu
+    gap_px: 0
+    cosine_map: sparse
+
+residual:
+  iterations: 16
+  strength: 0.75
+  scale_mode: least_squares
+  max_scale: 10.0
+  suppression_mode: subtract
+  renormalize_tic: true
+  save_arrays: false
+  save_signatures: false
+  top_removed_mz: 25
+
+concepts_viz:
+  enabled: true
+  max_concepts: 12
+  spectrum_top_peaks: 25
+  cols: 4
+  dpi: 180
+  gap_px: 1
+  activation_percentile: 98.0
+  activation_gamma: 0.85
+  activation_colormap: magma
+  dedupe: true
+  dedupe_min_color_dist: 35.0
+  dedupe_max_spatial_corr: 0.88
+  dedupe_max_mz_cosine: 0.92
+
+gallery:
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy"
+  mz_axis_path: null
+  num_samples: 5000
+  sampling_mode: superpixel
+  share_pixel_sampling: true
+  strip_sampling_cluster_labels: true
+  # overview = 4-panel interpretability mosaic per stage (MiCS | concepts | SoLaCE | cosine)
+  panel_source: overview
+  ncols: 4
+  gap_px: 0
+  show_titles: false
+  save_equalized: true
+  dpi: 220

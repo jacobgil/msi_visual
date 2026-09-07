@@ -1,0 +1,108 @@
+# H&E tile embedding + MiCS visualization (CarstenHopf HEStaining).
+#
+# Pipeline per slide:
+#   ATD → 256×256 tiles @ ~20× → UNI2-h / OpenMidnight embeddings → MiCS panel
+#
+# Dependencies:
+#   conda install -c conda-forge imagecodecs
+#   pip install openslide-bin openslide-python timm huggingface_hub
+#   # OpenMidnight additionally needs: pip install torchvision (torch.hub dinov2)
+# HuggingFace gated models (UNI2-h, OpenMidnight):
+#   1. Visit the model page and accept the license:
+#      - https://huggingface.co/MahmoodLab/UNI2-h
+#      - https://huggingface.co/SophontAI/OpenMidnight
+#   2. Log in:  huggingface-cli login
+#      (OpenMidnight may require an institutional email on your HF account.)
+# OpenMidnight also needs a local DINOv2 clone (GitHub SSL often fails on Windows):
+#   git clone https://github.com/facebookresearch/dinov2.git C:/models/dinov2
+#   python scripts/batch_he_embed_mics_viz.py foundation.dinov2_repo=C:/models/dinov2 ...
+#
+# Run from repo root:
+#   python scripts/batch_he_embed_mics_viz.py
+#   python scripts/batch_he_embed_mics_viz.py foundation.model=openmidnight
+#   python scripts/batch_he_embed_mics_viz.py extract.dry_run=true
+#
+# Dense grid (high-res MiCS map):
+#   python scripts/batch_he_embed_mics_viz.py extract.tile_stride_px=32
+# Non-overlapping (fast):
+#   python scripts/batch_he_embed_mics_viz.py extract.tile_stride_px=256
+#
+
+hydra:
+  run:
+    dir: outputs/batch_he_embed_mics_viz/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+seed: 42
+
+extract:
+  input_root: "E:/MSI+SpatialTrans-datasets/CarstenHopf-Mannheim/datasets/datasets/HEstaining"
+  output_root: "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/HEStaining_embed"
+
+  # ~20× magnification (0.5 µm/px); adjust if your scanner MPP differs.
+  target_mpp: 0.5
+  tile_px: 256
+  # Grid step at ~20× (px). 32 → ~8× overlap vs 256 tiles; null/256 → non-overlapping.
+  tile_stride_px: 32
+  atd_max_size: 2048
+  min_tissue_frac: 0.35
+
+  recursive: true
+  preserve_relative_dirs: true
+  skip_existing: true
+  dry_run: false
+  write_manifest: true
+  include_glob: null
+  extensions:
+    - .ndpi
+    - .svs
+    - .tif
+    - .tiff
+    - .mrxs
+    - .scn
+
+foundation:
+  # uni2-h | openmidnight  (both are gated on HuggingFace — see header comments)
+  model: uni2-h
+  batch_size: 8
+  model_input_px: 224
+  device: null  # cuda if available
+  # Optional: skip HF download for OpenMidnight (manual .pt path)
+  local_checkpoint: null
+  # Required for openmidnight when torch.hub cannot reach GitHub (SSL errors):
+  # Path to a cloned https://github.com/facebookresearch/dinov2 checkout.
+  dinov2_repo: null
+
+mics:
+  train_config: ${hydra:runtime.cwd}/scripts/configs/train_parametric_mics_lmc.yaml
+  pca_dims: 128
+  benchmark:
+    num_samples: 12000
+    sampling_mode: random
+  model_overrides:
+    clusters: "8-32-128"
+    beta: 20.0
+    num_epochs: 80
+    pixel_sampling: random
+    lab_to_rgb: true
+    num_layers: 2
+
+output:
+  embeddings_subdir: embeddings
+  viz_subdir: viz
+
+visualization:
+  thumbnail_filename: he_thumbnail.png
+  thumbnail_max_size: 4096
+  include_thumbnail: true
+  # null → one display pixel per stride step (matches tile_stride_px)
+  mosaic_tile_px: null
+  panel_filename: panel_he_mics.png
+  panel_columns: 2
+  panel_full_size: true
+  cell_max_size: 512
+  dpi: 120
+  figsize_scale: 2.0
+  overlay:
+    enabled: true
+    alpha: 0.45
+    mask_to_tissue: true

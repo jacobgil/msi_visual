@@ -1,0 +1,59 @@
+# Batch H&E whole-slide thumbnail extraction.
+#
+# Dependencies for Aperio .svs (Windows):
+#   conda install -c conda-forge imagecodecs
+#   pip install openslide-bin openslide-python
+#
+# Run from repo root:
+#   python scripts/batch_extract_he_thumbnails.py
+#
+# Dry-run:
+#   python scripts/batch_extract_he_thumbnails.py extract.dry_run=true
+#
+# Larger thumbnails:
+#   python scripts/batch_extract_he_thumbnails.py extract.max_size=8192
+
+hydra:
+  run:
+    dir: outputs/batch_extract_he_thumbnails/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+extract:
+  # Folder containing H&E whole-slide images (searched recursively when recursive=true).
+  input_root: "E:/MSI+SpatialTrans-datasets/CarstenHopf-Mannheim/datasets/datasets/HEstaining"
+
+  # Per-slide output: {output_root}/{stem}/he_thumbnail.png (mirrors MSI extraction layout).
+  output_root: "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/HEStaining"
+
+  # Longest side of the saved thumbnail in pixels (OpenSlide picks a good pyramid level).
+  max_size: 4096
+
+  # Optional fixed OpenSlide level index (null = auto thumbnail via get_thumbnail).
+  level: null
+
+  # png | jpeg
+  format: png
+  jpeg_quality: 92
+
+  output_filename: he_thumbnail.png
+  save_metadata: true
+
+  # false → {output_root}/{stem}/he_thumbnail.png
+  # true  → {output_root}/{stem}__he_thumbnail.png
+  flat_output: false
+  preserve_relative_dirs: true
+
+  recursive: true
+  skip_existing: true
+  dry_run: false
+  write_manifest: true
+
+  # Optional glob filter relative to each slide path (null = all matching extensions).
+  include_glob: null
+
+  extensions:
+    - .ndpi
+    - .svs
+    - .tif
+    - .tiff
+    - .mrxs
+    - .scn

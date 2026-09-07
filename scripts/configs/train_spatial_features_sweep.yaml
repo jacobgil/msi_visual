@@ -1,0 +1,52 @@
+# Compare spatial MiCS input recipes (no U-Net):
+#   raw | blur-only | log-ratio | context 3x
+#
+# Run from repo root:
+#   python scripts/train_spatial_features_sweep.py
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/train_spatial_features_sweep/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+data:
+  input_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy"
+  transpose: false
+
+model:
+  num_epochs: 30
+  num_layers: 3
+  clusters: 8-32-128-256
+  sampling: coreset
+  num_samples: 5000
+  batch_size: 1024
+  pixel_sampling: superpixel
+  predict_percentile_low: 1.0
+  predict_percentile_high: 99.0
+  beta: 20.0
+  k_epoch: 20
+  temperature: 100.0
+  lr: 1.0
+  warmup_epochs: 10
+
+spatial_mics:
+  sigma_regional: 3.0
+  sigma_fine: 0.7
+  detail_mode: abs
+  block_normalize: true
+  block_low_pct: 1.0
+  block_high_pct: 99.0
+  block_gains: [1.0, 1.0, 1.25]
+  log_ratio_clip: 3.0
+  log_ratio_gain: 1.0
+  blur_only_gain: 1.0
+  equalize_viz: true
+  gallery_target_h: 440
+
+pipeline:
+  seed: 42
+  share_pixel_sampling: true
+  pixel_sampling_cache_path: null

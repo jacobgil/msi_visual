@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-store, must-revalidate" />
   <title>MSI-VISUAL</title>
+  <link rel="icon" href="favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
@@ -37,16 +39,16 @@
 
     /* ----- Left sidebar ----- */
     .sidebar {
-      width: 220px;
-      min-width: 220px;
-      background: var(--bg-panel);
+      width: 260px;
+      min-width: 260px;
+        background: var(--bg-panel);
       border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
     }
     .sidebar-brand {
-      padding: 1rem 1rem 0.75rem;
+      padding: 0.7rem 0.8rem 0.5rem;
       border-bottom: 1px solid var(--border);
       font-size: 0.8rem;
       font-weight: 600;
@@ -55,7 +57,7 @@
       text-transform: uppercase;
     }
     .sidebar-section {
-      padding: 0.75rem 0;
+      padding: 0.45rem 0;
       border-bottom: 1px solid var(--border);
     }
     .sidebar-section:last-of-type { border-bottom: none; }
@@ -65,27 +67,27 @@
       letter-spacing: 0.05em;
       color: var(--text-muted);
       text-transform: uppercase;
-      padding: 0 1rem 0.5rem;
+      padding: 0 0.8rem 0.3rem;
       margin: 0;
     }
     .sidebar-actions {
       display: flex;
       flex-direction: column;
-      gap: 2px;
-      padding: 0 0.5rem;
+      gap: 1px;
+      padding: 0 0.4rem;
     }
     .btn-icon {
       display: flex;
       align-items: center;
       gap: 0.6rem;
       width: 100%;
-      padding: 0.5rem 0.75rem;
+      padding: 0.4rem 0.6rem;
       border: none;
       border-radius: var(--radius-sm);
       background: transparent;
       color: var(--text);
       font-family: inherit;
-      font-size: 0.875rem;
+      font-size: 0.84rem;
       cursor: pointer;
       text-align: left;
       transition: background 0.15s, color 0.15s;
@@ -101,7 +103,7 @@
       display: flex;
       align-items: center;
       gap: 0.4rem;
-      padding: 0 0.5rem 0.5rem;
+      padding: 0 0.4rem 0.35rem;
     }
     .category-row input[type="number"] {
       width: 3rem;
@@ -114,18 +116,21 @@
       font-family: inherit;
     }
     .category-row input:focus { outline: none; border-color: var(--accent); }
-    .category-count { font-size: 0.75rem; color: var(--text-muted); padding: 0 0.5rem 0.25rem; }
+    .category-count { font-size: 0.72rem; color: var(--text-muted); padding: 0 0.4rem 0.2rem; }
     .sidebar-select {
       width: 100%;
-      margin: 0 0.5rem 0.5rem;
-      padding: 0.5rem 0.6rem;
+      margin: 0 0.4rem 0.35rem;
+      padding: 0.32rem 0.55rem;
       background: var(--bg-elevated);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       color: var(--text);
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-family: inherit;
       cursor: pointer;
+    }
+    .sidebar-select.narrow {
+      width: calc(100% - 2rem);
     }
     .sidebar-select:focus { outline: none; border-color: var(--accent); }
 
@@ -133,12 +138,12 @@
       display: flex;
       align-items: center;
       gap: 0.6rem;
-      padding: 0.5rem 1rem;
+      padding: 0.35rem 0.7rem;
       cursor: pointer;
       border-radius: var(--radius-sm);
-      margin: 0 0.5rem 2px;
+      margin: 0 0.4rem 2px;
       user-select: none;
-      font-size: 0.875rem;
+      font-size: 0.84rem;
     }
     .toggle-row:hover { background: var(--bg-elevated); }
     .toggle-row input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--primary); }
@@ -168,8 +173,30 @@
       align-items: flex-start;
       justify-content: flex-start;
     }
-    .viewport > div { position: relative; display: inline-block; }
-    .viewport img { display: block; vertical-align: top; }
+    .viewport > div { position: relative; display: inline-block; transform-origin: 0 0; }
+    .viewport img { display: block; }
+    .viewer-toolbar {
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      display: flex;
+      gap: 6px;
+      z-index: 10;
+    }
+    .viewer-toolbar button {
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-panel);
+      color: var(--text);
+      cursor: pointer;
+    }
+    .viewer-toolbar button:hover { background: var(--bg-elevated); }
+    .viewer-toolbar svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
     #overlay {
       position: absolute;
       left: 0;
@@ -187,6 +214,20 @@
       font-size: 1rem;
       color: var(--text-muted);
     }
+    .empty-state {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .empty-state img {
+      width: 96px;
+      height: 96px;
+      opacity: 0.85;
+    }
+    .empty-state.show { display: flex; }
 
     /* ----- Status bar ----- */
     .status-bar {
@@ -204,7 +245,7 @@
       position: fixed;
       top: 0;
       right: 0;
-      width: 380px;
+      width: 300px;
       max-width: 100%;
       height: 100%;
       background: var(--bg-panel);
@@ -216,51 +257,157 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      font-size: 0.7rem;
     }
     .settings-drawer.open { transform: translateX(0); }
     .settings-drawer-header {
-      padding: 1rem 1.25rem;
+      padding: 0.35rem 0.55rem;
       border-bottom: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-shrink: 0;
     }
-    .settings-drawer-header h2 { margin: 0; font-size: 1rem; font-weight: 600; }
+    .settings-drawer-header h2 { margin: 0; font-size: 0.78rem; font-weight: 600; }
     .settings-drawer-close {
-      padding: 0.35rem;
+      padding: 0.15rem;
       border: none;
       border-radius: var(--radius-sm);
       background: transparent;
       color: var(--text-muted);
       cursor: pointer;
       line-height: 1;
+      font-size: 0.72rem;
     }
     .settings-drawer-close:hover { background: var(--bg-elevated); color: var(--text); }
     .settings-drawer-body {
       flex: 1;
       overflow-y: auto;
-      padding: 1.25rem;
+      padding: 0.3rem 0.5rem 0.55rem;
     }
+    .settings-drawer .settings-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.08rem 0;
+      margin-bottom: 0.1rem;
+    }
+    .settings-drawer .settings-group {
+      margin-bottom: 0.2rem;
+      padding-bottom: 0.18rem;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .settings-drawer .settings-group:last-of-type {
+      border-bottom: none;
+    }
+    .settings-drawer .settings-group-title {
+      margin: 0 0 0.08rem 0;
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      line-height: 1.15;
+    }
+    .settings-drawer .settings-field {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.95fr);
+      align-items: center;
+      gap: 0.15rem 0.35rem;
+      min-height: 0;
+    }
+    .settings-drawer .settings-field label {
+      font-size: 0.66rem;
+      color: var(--text);
+      line-height: 1.15;
+    }
+    .settings-drawer .settings-field input,
+    .settings-drawer .settings-field select,
+    .settings-drawer .settings-field button {
+      padding: 0.1rem 0.3rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--text);
+      font-size: 0.66rem;
+      font-family: inherit;
+      min-width: 0;
+      line-height: 1.2;
+      height: 1.35rem;
+      box-sizing: border-box;
+    }
+    .settings-drawer .settings-field input:focus { outline: none; border-color: var(--accent); }
+    .settings-drawer .settings-field input[type="number"] {
+      width: 100%;
+      max-width: 5.8rem;
+      justify-self: stretch;
+    }
+    .settings-drawer .settings-field input[type="checkbox"] {
+      width: 0.8rem;
+      height: 0.8rem;
+      padding: 0;
+      justify-self: start;
+    }
+    .settings-drawer .settings-field input[type="text"] {
+      width: 100%;
+      justify-self: stretch;
+    }
+    .settings-drawer .settings-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.22rem;
+      padding-top: 0.08rem;
+      margin-top: 0.08rem;
+    }
+    .settings-drawer .settings-actions button {
+      padding: 0.2rem 0.45rem;
+      border-radius: 3px;
+      font-family: inherit;
+      font-size: 0.66rem;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text);
+      height: auto;
+      line-height: 1.15;
+    }
+    .settings-drawer .settings-actions button:hover { background: var(--border); }
+    .settings-drawer .settings-actions button.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .settings-drawer .settings-actions button.primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+    .settings-drawer .settings-actions button.success { background: var(--success); border-color: var(--success); color: #fff; }
+    .settings-drawer .settings-actions button.success:hover { background: #7fd7b6; border-color: #7fd7b6; }
+    /* Keep shared class defaults for modals that reuse these names */
     .settings-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 0.75rem 0;
-      margin-bottom: 1.25rem;
+      gap: 0.45rem 0;
+      margin-bottom: 0.6rem;
+    }
+    .settings-group {
+      margin-bottom: 0.7rem;
+    }
+    .settings-group-title {
+      margin: 0 0 0.35rem 0;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-muted);
     }
     .settings-field {
       display: grid;
       grid-template-columns: 1fr auto;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
     }
-    .settings-field label { font-size: 0.875rem; color: var(--text); }
-    .settings-field input {
-      padding: 0.5rem 0.65rem;
+    .settings-field label { font-size: 0.8rem; color: var(--text); }
+    .settings-field input,
+    .settings-field select {
+      padding: 0.32rem 0.6rem;
       background: var(--bg-elevated);
       border: 1px solid var(--border);
       border-radius: var(--radius-sm);
       color: var(--text);
-      font-size: 0.875rem;
+      font-size: 0.82rem;
       font-family: inherit;
       min-width: 0;
     }
@@ -269,7 +416,7 @@
     .settings-actions {
       display: flex;
       gap: 0.5rem;
-      padding-top: 0.5rem;
+      padding-top: 0.2rem;
     }
     .settings-actions button {
       padding: 0.5rem 1rem;
@@ -284,6 +431,551 @@
     .settings-actions button:hover { background: var(--border); }
     .settings-actions button.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
     .settings-actions button.primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+    .settings-actions button.success { background: var(--success); border-color: var(--success); color: #fff; }
+    .settings-actions button.success:hover { background: #7fd7b6; border-color: #7fd7b6; }
+    .nmf-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1200;
+      padding: 1rem;
+    }
+    .nmf-modal.open { display: flex; }
+    .nmf-modal-card {
+      width: min(1100px, 96vw);
+      max-height: 90vh;
+      overflow: auto;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+    }
+    .nmf-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    .nmf-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 0.75rem;
+    }
+    .nmf-card {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+    .nmf-card img {
+      width: 100%;
+      image-rendering: pixelated;
+      display: block;
+    }
+    .nmf-card-meta {
+      padding: 0.45rem 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+    .panel-modal-card {
+      width: min(1280px, 98vw);
+      max-height: 94vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .panel-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(280px, 0.85fr);
+      gap: 0.9rem;
+      min-height: 0;
+    }
+    .panel-col {
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+    .panel-search {
+      width: 100%;
+      padding: 0.35rem 0.55rem;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.82rem;
+    }
+    .panel-custom-path {
+      display: flex;
+      gap: 0.4rem;
+      align-items: stretch;
+    }
+    .panel-custom-path .panel-search {
+      flex: 1;
+      min-width: 0;
+    }
+    .panel-custom-path button {
+      flex: 0 0 auto;
+      padding: 0.3rem 0.65rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.82rem;
+    }
+    .panel-custom-path button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .panel-pick-grid {
+      display: grid;
+      /* Fixed track size — do not use 1fr or rows shrink when many cards share the viewport. */
+      grid-template-columns: repeat(auto-fill, 128px);
+      grid-auto-rows: 148px;
+      align-content: start;
+      justify-content: start;
+      gap: 0.5rem;
+      overflow-x: hidden;
+      overflow-y: auto;
+      flex: 1 1 auto;
+      min-height: 220px;
+      max-height: 58vh;
+      height: 58vh;
+      padding: 0.2rem;
+    }
+    .panel-pick {
+      width: 128px;
+      height: 148px;
+      min-width: 128px;
+      min-height: 148px;
+      max-height: 148px;
+      box-sizing: border-box;
+      align-self: start;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--bg-deep);
+      cursor: pointer;
+      text-align: left;
+      padding: 0;
+      color: inherit;
+      font-family: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+    .panel-pick.selected { outline: 2px solid var(--primary); border-color: var(--primary); }
+    .panel-pick img {
+      width: 128px;
+      height: 96px;
+      min-height: 96px;
+      max-height: 96px;
+      flex: 0 0 96px;
+      object-fit: contain;
+      background: #111;
+      display: block;
+    }
+    .panel-pick-meta {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 0.28rem 0.35rem;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      line-height: 1.25;
+      overflow: hidden;
+    }
+    .panel-pick-meta strong {
+      display: block;
+      color: var(--text);
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .panel-selected {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      max-height: 18vh;
+      overflow: auto;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-deep);
+    }
+    .panel-selected li {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.4rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.75rem;
+    }
+    .panel-selected li:last-child { border-bottom: none; }
+    .panel-selected li span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .panel-selected button {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.75rem;
+      padding: 0 0.2rem;
+    }
+    .panel-geo {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.45rem;
+    }
+    .panel-geo label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .panel-geo input {
+      width: 100%;
+      padding: 0.3rem 0.45rem;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: inherit;
+    }
+    .panel-keys {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem 0.7rem;
+      max-height: 18vh;
+      overflow: auto;
+      padding: 0.35rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg-deep);
+    }
+    .panel-keys label {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.75rem;
+      color: var(--text);
+      white-space: nowrap;
+    }
+    .panel-preview {
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      min-height: 140px;
+      max-height: 28vh;
+      overflow: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .panel-preview img {
+      max-width: 100%;
+      max-height: 28vh;
+      display: block;
+    }
+    .sweep-modal-card {
+      width: min(860px, 96vw);
+      max-height: 92vh;
+      font-size: 0.7rem;
+      padding: 0.65rem 0.7rem;
+    }
+    .sweep-modal-card .nmf-modal-header { margin-bottom: 0.35rem; }
+    .sweep-modal-card .nmf-modal-header strong { font-size: 0.82rem; }
+    .sweep-modal-card .settings-group-title {
+      font-size: 0.62rem;
+      margin: 0.3rem 0 0.2rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .sweep-modal-card .settings-actions {
+      margin-top: 0.3rem;
+      gap: 0.3rem;
+    }
+    .sweep-modal-card .settings-actions button {
+      padding: 0.25rem 0.55rem;
+      font-size: 0.7rem;
+    }
+    .sweep-meta {
+      font-size: 0.66rem;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+      line-height: 1.3;
+    }
+    .sweep-input-bar {
+      display: grid;
+      grid-template-columns: 4.2rem minmax(0, 1fr);
+      gap: 0.3rem;
+      align-items: center;
+      margin: 0 0 0.35rem;
+      font-size: 0.66rem;
+      color: var(--text-muted);
+    }
+    .sweep-input-bar select {
+      width: 100%;
+      min-width: 0;
+      padding: 0.18rem 0.3rem;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.66rem;
+      box-sizing: border-box;
+    }
+    .cluster-sweep-box {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.3rem 0.4rem;
+      margin: 0.3rem 0 0.35rem;
+      background: var(--bg-deep);
+    }
+    .cluster-sweep-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.25rem 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+    .cluster-sweep-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.68rem;
+      color: var(--text);
+      cursor: pointer;
+    }
+    .cluster-sweep-toggle strong { font-weight: 600; }
+    .cluster-sweep-hint {
+      font-size: 0.6rem;
+      color: var(--text-muted);
+    }
+    .cluster-sweep-grid {
+      display: grid;
+      grid-template-columns: 3.8rem 3.8rem auto auto;
+      gap: 0.25rem;
+      align-items: end;
+      margin-bottom: 0.2rem;
+    }
+    .cluster-sweep-grid label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.05rem;
+      font-size: 0.58rem;
+      color: var(--text-muted);
+    }
+    .cluster-sweep-grid input[type="number"] {
+      width: 100%;
+      padding: 0.15rem 0.28rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.66rem;
+      box-sizing: border-box;
+    }
+    .cluster-sweep-consec {
+      flex-direction: row !important;
+      align-items: center;
+      gap: 0.22rem !important;
+      margin-bottom: 0.08rem;
+      cursor: pointer;
+      font-size: 0.6rem !important;
+    }
+    .cluster-sweep-grid button {
+      padding: 0.18rem 0.4rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.62rem;
+      white-space: nowrap;
+    }
+    .cluster-sweep-grid button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .cluster-sweep-pool-label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.05rem;
+      font-size: 0.58rem;
+      color: var(--text-muted);
+    }
+    .cluster-sweep-pool-label input {
+      width: 100%;
+      padding: 0.15rem 0.28rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 0.62rem;
+      box-sizing: border-box;
+    }
+    .cluster-sweep-preview {
+      margin-top: 0.2rem;
+      font-size: 0.6rem;
+      color: var(--accent);
+      font-family: ui-monospace, Consolas, monospace;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sweep-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      max-height: 34vh;
+      overflow: auto;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.28rem 0.32rem;
+      background: var(--bg-deep);
+    }
+    .sweep-row {
+      display: grid;
+      grid-template-columns: 15px minmax(92px, 0.9fr) 52px minmax(150px, 1.5fr);
+      gap: 0.22rem;
+      align-items: center;
+      font-size: 0.66rem;
+    }
+    .sweep-row > span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 0.64rem;
+    }
+    .sweep-row input[type="text"],
+    .sweep-row input[type="number"],
+    .sweep-row select {
+      width: 100%;
+      padding: 0.12rem 0.28rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 0.64rem;
+      box-sizing: border-box;
+    }
+    .sweep-row select {
+      font-family: inherit;
+      font-size: 0.6rem;
+    }
+    .sweep-range {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.15rem;
+    }
+    .sweep-range label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.02rem;
+      font-size: 0.52rem;
+      color: var(--text-muted);
+    }
+    .sweep-opts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.3rem;
+      margin: 0.35rem 0 0.25rem;
+    }
+    .sweep-opts label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+      font-size: 0.6rem;
+      color: var(--text-muted);
+    }
+    .sweep-opts label.sweep-opts-check {
+      flex-direction: row;
+      align-items: center;
+      gap: 0.3rem;
+      margin-top: 0.7rem;
+    }
+    .sweep-opts input[type="number"] {
+      padding: 0.18rem 0.3rem;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.66rem;
+    }
+    .sweep-progress {
+      margin-top: 0.3rem;
+      font-size: 0.66rem;
+      color: var(--text-muted);
+      min-height: 1em;
+    }
+    .sweep-override {
+      margin-top: 0.25rem;
+      padding: 0.25rem 0.35rem;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: ui-monospace, Consolas, monospace;
+      font-size: 0.6rem;
+      color: var(--accent);
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 4.2rem;
+      overflow: auto;
+    }
+    .sweep-config-bar {
+      display: grid;
+      grid-template-columns: minmax(110px, 1.5fr) auto auto minmax(80px, 1fr) auto;
+      gap: 0.22rem;
+      align-items: center;
+      margin: 0.3rem 0 0.2rem;
+      position: relative;
+      z-index: 2;
+    }
+    .sweep-config-bar select,
+    .sweep-config-bar input[type="text"] {
+      width: 100%;
+      min-width: 0;
+      padding: 0.18rem 0.3rem;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.66rem;
+      box-sizing: border-box;
+    }
+    .sweep-config-bar select { cursor: pointer; }
+    .sweep-config-bar button {
+      padding: 0.18rem 0.4rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.62rem;
+      white-space: nowrap;
+    }
+    .sweep-config-bar button:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
   </style>
 </head>
 <body>
@@ -292,9 +984,13 @@
 
     <div class="sidebar-section">
       <h3 class="sidebar-section-title">Image</h3>
-      <select id="inputFileSelect" class="sidebar-select" title="Select .npy file to load">
+      <select id="inputFileSelect" class="sidebar-select narrow" title="Select .npy file to load">
         <option value="">—</option>
       </select>
+      <label class="toggle-row">
+        <input type="checkbox" id="autoLoadOnSelect" />
+        <span>Auto-load on select</span>
+      </label>
     </div>
 
     <div class="sidebar-section">
@@ -342,9 +1038,38 @@
           <svg viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
           <span class="label">Recompute</span>
         </button>
+        <button type="button" id="btnRankNmfRegion" class="btn-icon" title="Rank NMF components in selected ROI">
+          <svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 16l3-3 3 2 4-5"/><circle cx="7" cy="16" r="1"/><circle cx="10" cy="13" r="1"/><circle cx="13" cy="15" r="1"/><circle cx="17" cy="10" r="1"/></svg>
+          <span class="label">Rank NMF in ROI</span>
+        </button>
         <button type="button" id="btnCopyClipboard" class="btn-icon" title="Copy viz to clipboard">
           <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
           <span class="label">Copy to clipboard</span>
+        </button>
+        <button type="button" id="btnSaveImage" class="btn-icon" title="Save current viz to the app output folder">
+          <svg viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          <span class="label">Save image + yaml</span>
+        </button>
+        <button type="button" id="btnComposePanel" class="btn-icon" title="Compose a panel from saved results and generated visualizations">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span class="label">Compose panel</span>
+        </button>
+        <button type="button" id="btnParamSweep" class="btn-icon" title="Hydra-style parameter sweep for the current visualization">
+          <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h14"/><circle cx="18" cy="12" r="2"/><circle cx="14" cy="18" r="2"/></svg>
+          <span class="label">Parameter sweep</span>
+        </button>
+      </div>
+      <div class="category-row" style="margin-top:0.5rem;">
+        <label for="nmfComponents" style="font-size:0.8rem; color:var(--text-muted);">NMF comps</label>
+        <input type="number" id="nmfComponents" min="1" max="256" value="32" title="NMF components for ROI ranking" />
+      </div>
+      <select id="actionConfigImportSelect" class="sidebar-select narrow" title="Configs in scripts/annotator_server/configs">
+        <option value="">— Select yaml —</option>
+      </select>
+      <div class="sidebar-actions">
+        <button type="button" id="btnActionConfigImport" class="btn-icon" title="Load selected config">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M8 9l4-4 4 4"/><path d="M5 19h14"/></svg>
+          <span class="label">Load yaml</span>
         </button>
       </div>
     </div>
@@ -361,9 +1086,26 @@
 
   <main class="main">
     <div class="viewer" id="viewer">
+      <div class="viewer-toolbar">
+        <button type="button" id="btnRotateLeft" title="Rotate left">
+          <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1015-6.7"/><path d="M3 4v6h6"/></svg>
+        </button>
+        <button type="button" id="btnRotateRight" title="Rotate right">
+          <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 11-15-6.7"/><path d="M21 4v6h-6"/></svg>
+        </button>
+        <button type="button" id="btnResetView" title="Reset orientation">
+          <svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1015-6.7"/><path d="M3 4v6h6"/><path d="M12 7v5l3 3"/></svg>
+        </button>
+        <button type="button" id="btnFitView" title="Zoom to fit">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </button>
+      </div>
+      <div class="empty-state" id="emptyState">
+        <img src="favicon.ico" alt="Favicon" />
+      </div>
       <div class="viewport" id="viewport">
-        <div>
-          <img id="img" alt="Visualization" />
+        <div id="vizContainer">
+          <img id="img" alt="" />
           <canvas id="overlay"></canvas>
         </div>
       </div>
@@ -378,28 +1120,225 @@
       <button type="button" class="settings-drawer-close" id="btnSettingsClose" title="Close">✕</button>
     </div>
     <div class="settings-drawer-body">
-      <p style="margin:0 0 1rem 0; font-size:0.85rem; color: var(--text-muted);">Override YAML. Apply and reload to run with new config.</p>
-      <div class="settings-grid">
-        <div class="settings-field"><label>Number of points (LMC reference)</label><input type="number" id="configNumberOfPoints" min="100" max="10000" step="100" /></div>
-        <div class="settings-field"><label>Num samples (pixel budget)</label><input type="number" id="configNumSamples" min="500" max="50000" step="500" /></div>
-        <div class="settings-field"><label>Pixel sampling</label><select id="configPixelSampling" title="superpixel = spread over segments (slower), random = fast"><option value="superpixel">superpixel</option><option value="random">random</option></select></div>
-        <div class="settings-field"><label>PCA fit step</label><input type="number" id="configPcaFitStep" min="1" max="64" step="1" title="Subsample step for PCA fit (X_raw[::step, :]); 1 = all pixels" /></div>
-        <div class="settings-field"><label>Num epochs</label><input type="number" id="configNumEpochs" min="1" max="500" /></div>
-        <div class="settings-field"><label>Clusters (e.g. 16-32-64-128)</label><input type="text" id="configClusters" placeholder="16-32-64-128" /></div>
-        <div class="settings-field"><label>Cluster on PCA</label><input type="checkbox" id="configClusterOnPca" title="Run KMeans on PCA-reduced data" /></div>
-        <div class="settings-field"><label>Cluster PCA dims</label><input type="number" id="configClusterPcaDims" min="1" max="500" step="1" title="PCA dimensions when clustering on PCA" /></div>
-        <div class="settings-field"><label>Batch size</label><input type="number" id="configBatchSize" min="64" max="4096" step="64" /></div>
-        <div class="settings-field"><label>Beta</label><input type="number" id="configBeta" min="0" step="0.1" /></div>
-        <div class="settings-field"><label>Cluster loss weight</label><input type="number" id="configClusterLossWeight" min="0" step="0.1" title="Weight for MiCS cluster loss" /></div>
-        <div class="settings-field"><label>Category loss weight</label><input type="number" id="configCategoryLossWeight" min="0" step="0.1" title="Weight for supervised loss" /></div>
+      <div class="settings-group">
+        <div class="settings-group-title">Model</div>
+        <div class="settings-grid">
+          <div class="settings-field">
+            <label>Model type</label>
+            <select id="configModelType">
+              <option value="mics_lmc">MiCS + LMC</option>
+              <option value="parametric_umap">Parametric UMAP</option>
+              <option value="top3">TOP3 (pseudo-RGB)</option>
+              <option value="percentile_ratio">Percentile ratio</option>
+              <option value="nmf_3d">NMF3D (RGB)</option>
+              <option value="kmeans_segmentation">K-means segmentation</option>
+              <option value="nmf_segmentation">NMF segmentation</option>
+              <option value="nonparametric_umap">Nonparametric UMAP (3D)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-group-title">Classical msi_visual</div>
+        <div class="settings-grid">
+          <div class="settings-field"><label>K (segmentation)</label><input type="number" id="configSimpleK" min="2" max="256" step="1" title="Clusters for k-means / NMF segmentation" /></div>
+          <div class="settings-field"><label>NMF3D max iter</label><input type="number" id="configNmf3dMaxIter" min="1" max="5000" step="1" /></div>
+          <div class="settings-field"><label>NMF3D components</label><input type="number" id="configNmf3dNComponents" min="1" max="32" step="1" /></div>
+          <div class="settings-field"><label>NMF seg max iter</label><input type="number" id="configNmfSegMaxIter" min="1" max="10000" step="1" /></div>
+          <div class="settings-field"><label>PR3D low %</label><input type="number" id="configTop3Low" min="0" max="100" step="0.1" /></div>
+          <div class="settings-field"><label>PR3D norm %</label><input type="number" id="configTop3Norm" min="0" max="100" step="0.1" /></div>
+          <div class="settings-field"><label>NP UMAP min_dist</label><input type="number" id="configUmapNpMinDist" min="0" step="0.05" /></div>
+          <div class="settings-field"><label>NP UMAP neighbors</label><input type="number" id="configUmapNpNeighbors" min="2" max="500" step="1" /></div>
+          <div class="settings-field"><label>NP UMAP metric</label><input type="text" id="configUmapNpMetric" placeholder="euclidean" /></div>
+        </div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-group-title">Sampling</div>
+        <div class="settings-grid">
+          <div class="settings-field"><label>Number of points (LMC reference)</label><input type="number" id="configNumberOfPoints" min="100" max="10000" step="100" /></div>
+          <div class="settings-field"><label>Num samples (pixel budget)</label><input type="number" id="configNumSamples" min="500" max="50000" step="500" /></div>
+          <div class="settings-field"><label>Pixel sampling</label><select id="configPixelSampling" title="superpixel = spread over segments (slower), random = fast"><option value="superpixel">superpixel</option><option value="random">random</option></select></div>
+          <div class="settings-field"><label>PCA fit step</label><input type="number" id="configPcaFitStep" min="1" max="64" step="1" title="Subsample step for PCA fit (X_raw[::step, :]); 1 = all pixels" /></div>
+        </div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-group-title">Architecture</div>
+        <div class="settings-grid">
+          <div class="settings-field"><label>Number of components</label><input type="number" id="configNumberOfComponents" min="1" max="32" /></div>
+          <div class="settings-field"><label>Num layers (res blocks)</label><input type="number" id="configNumLayers" min="1" max="8" /></div>
+          <div class="settings-field"><label>Model width factor</label><input type="number" id="configFactor" min="0.1" max="4" step="0.1" /></div>
+        </div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-group-title">Training</div>
+        <div class="settings-grid">
+          <div class="settings-field"><label>Num epochs</label><input type="number" id="configNumEpochs" min="1" max="500" /></div>
+          <div class="settings-field"><label>Learning rate</label><input type="number" id="configLr" min="0" step="0.01" /></div>
+          <div class="settings-field"><label>Warmup epochs</label><input type="number" id="configWarmupEpochs" min="0" max="200" /></div>
+          <div class="settings-field"><label>Batch size</label><input type="number" id="configBatchSize" min="64" max="4096" step="64" /></div>
+          <div class="settings-field"><label>Beta</label><input type="number" id="configBeta" min="0" step="0.1" /></div>
+        </div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-group-title">Parametric UMAP</div>
+        <div class="settings-grid">
+          <div class="settings-field"><label>UMAP neighbors</label><input type="number" id="configUmapNeighbors" min="2" max="200" step="1" /></div>
+          <div class="settings-field"><label>UMAP training epochs</label><input type="number" id="configUmapTrainingEpochs" min="1" max="500" step="1" /></div>
+          <div class="settings-field"><label>UMAP graph epochs</label><input type="number" id="configUmapEpochs" min="1" max="500" step="1" /></div>
+        </div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-group-title">Clustering & Loss</div>
+        <div class="settings-grid">
+          <div class="settings-field"><label>Clusters (e.g. 16-32-64-128)</label><input type="text" id="configClusters" placeholder="16-32-64-128" /></div>
+          <div class="settings-field"><label>Cluster on PCA</label><input type="checkbox" id="configClusterOnPca" title="Run KMeans on PCA-reduced data" /></div>
+          <div class="settings-field"><label>Cluster PCA dims</label><input type="number" id="configClusterPcaDims" min="1" max="500" step="1" title="PCA dimensions when clustering on PCA" /></div>
+          <div class="settings-field"><label>Cluster loss weight</label><input type="number" id="configClusterLossWeight" min="0" step="0.1" title="Weight for MiCS cluster loss" /></div>
+          <div class="settings-field"><label>Category loss weight</label><input type="number" id="configCategoryLossWeight" min="0" step="0.1" title="Weight for supervised loss" /></div>
+        </div>
       </div>
       <div class="settings-actions">
-        <button type="button" id="btnConfigSave">Save</button>
+        <button type="button" id="btnFastPreset" class="success">Fast preset</button>
+        <button type="button" id="btnConfigExport">Export YAML to annotator configs</button>
         <button type="button" id="btnConfigApply" class="primary">Apply and reload viz</button>
+      </div>
+      <div class="settings-group" style="margin-top: 0.4rem;">
+        <div class="settings-group-title">Data</div>
+        <div class="settings-grid">
+          <div class="settings-field"><label>Input folder or .npy</label><input type="text" id="configInputPath" placeholder="E:\MSImaging-data\...\*.npy or folder" /></div>
+          <div class="settings-field"><label>App output folder</label><input type="text" id="configAppOutput" placeholder="…\output-MiCS-app (saved viz + sweeps)" title="Where Save image / sweeps write" /></div>
+          <div class="settings-field"><label>Panel output folder</label><input type="text" id="configPanelOutput" placeholder="…\output-MiCS-app\panels" title="Where Compose panel Save writes" /></div>
+        </div>
+        <div class="settings-actions" style="margin-top:0.15rem;">
+          <button type="button" id="btnSaveOutputPaths">Save output paths</button>
+          <button type="button" id="btnResetOutputPaths">Reset to defaults</button>
+        </div>
+      </div>
+      <div class="settings-group">
+        <div class="settings-group-title">Import</div>
+        <div class="settings-grid">
+          <div class="settings-field"><label>Config file</label><select id="configImportSelect"><option value="">— Select config —</option></select></div>
+          <div class="settings-field"><label>Import</label><button type="button" id="btnConfigImport">Load config</button></div>
+        </div>
       </div>
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <div class="nmf-modal" id="nmfRankModal" role="dialog" aria-modal="true" aria-label="Ranked NMF components">
+    <div class="nmf-modal-card">
+      <div class="nmf-modal-header">
+        <strong id="nmfRankTitle">NMF component ranking</strong>
+        <button type="button" id="btnCloseNmfModal" class="btn-icon">Close</button>
+      </div>
+      <div id="nmfRankSummary" style="font-size:0.85rem; color:var(--text-muted); margin-bottom:0.75rem;"></div>
+      <div id="nmfRankGrid" class="nmf-grid"></div>
+    </div>
+  </div>
+
+  <div class="nmf-modal" id="composePanelModal" role="dialog" aria-modal="true" aria-label="Compose visualization panel">
+    <div class="nmf-modal-card panel-modal-card">
+      <div class="nmf-modal-header">
+        <strong>Compose panel</strong>
+        <button type="button" id="btnCloseComposePanel" class="btn-icon">Close</button>
+      </div>
+      <div class="panel-layout">
+        <div class="panel-col">
+          <label class="settings-group-title" for="panelFolderSelect" style="margin:0;">Folder</label>
+          <select id="panelFolderSelect" class="panel-search" title="Choose a results or generated-panel folder"></select>
+          <div class="panel-custom-path">
+            <input type="text" id="panelCustomPath" class="panel-search" placeholder="Or paste any folder path (e.g. E:\…\Visualizations\…)" title="Load PNG/JPG from any local folder" />
+            <button type="button" id="btnPanelLoadPath" title="Load custom folder path">Load</button>
+          </div>
+          <input type="search" id="panelSearch" class="panel-search" placeholder="Filter by name, tag, or model type…" />
+          <div id="panelPickGrid" class="panel-pick-grid"></div>
+        </div>
+        <div class="panel-col">
+          <div class="settings-group-title">Selected (order = panel cells)</div>
+          <ul id="panelSelectedList" class="panel-selected"></ul>
+          <div class="panel-geo">
+            <label>Columns<input type="number" id="panelCols" min="1" max="12" value="3" /></label>
+            <label>Rows<input type="number" id="panelRows" min="1" max="12" value="2" /></label>
+            <label>Cell max px<input type="number" id="panelCellMax" min="64" max="1600" value="480" /></label>
+          </div>
+          <label class="toggle-row" style="margin:0; padding:0.2rem 0;">
+            <input type="checkbox" id="panelNoCaptions" />
+            <span>No YAML captions under images</span>
+          </label>
+          <div class="settings-group-title">YAML fields under each image</div>
+          <div id="panelKeyList" class="panel-keys"></div>
+          <label class="settings-group-title" for="panelOutputPath" style="margin:0;">Save panels to</label>
+          <input type="text" id="panelOutputPath" class="panel-search" placeholder="Panel output folder…" title="Where Save panel writes PNGs" />
+          <div class="settings-actions">
+            <button type="button" id="btnPanelPreview">Preview</button>
+            <button type="button" id="btnPanelSave" class="primary">Save panel</button>
+          </div>
+          <div class="panel-preview"><img id="panelPreviewImg" alt="" /></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nmf-modal" id="sweepModal" role="dialog" aria-modal="true" aria-label="Parameter sweep">
+    <div class="nmf-modal-card sweep-modal-card">
+      <div class="nmf-modal-header">
+        <strong>Parameter sweep</strong>
+        <button type="button" id="btnCloseSweep" class="btn-icon">Close</button>
+      </div>
+      <div id="sweepMeta" class="sweep-meta">Load a visualization first.</div>
+      <div class="sweep-input-bar">
+        <label for="sweepInputSelect">Input</label>
+        <select id="sweepInputSelect" title="Select which .npy to sweep"></select>
+      </div>
+      <div class="settings-group-title">Parameters</div>
+      <div id="sweepFields" class="sweep-fields"></div>
+      <div class="sweep-override" id="sweepOverridePreview"></div>
+      <div class="cluster-sweep-box">
+        <div class="cluster-sweep-head">
+          <label class="cluster-sweep-toggle">
+            <input type="checkbox" id="clusterSweepEnable" />
+            <strong>Cluster sweep</strong>
+          </label>
+          <span class="cluster-sweep-hint">2–5 levels from power-of-2 pool · other params optional</span>
+        </div>
+        <div class="cluster-sweep-grid">
+          <label>Min<input type="number" id="clusterSweepMinK" min="2" max="5" value="2" /></label>
+          <label>Max<input type="number" id="clusterSweepMaxK" min="2" max="5" value="5" /></label>
+          <label class="cluster-sweep-consec" title="Only adjacent powers, e.g. 8-16-32">
+            <input type="checkbox" id="clusterSweepConsecutive" />
+            <span>Consecutive</span>
+          </label>
+          <button type="button" id="btnClusterSweepApply">Fill clusters</button>
+        </div>
+        <label class="cluster-sweep-pool-label">Pool
+          <input type="text" id="clusterSweepPool" value="2,4,8,16,32,64,128,256,512,1024,2048,4096,8192" />
+        </label>
+        <div id="clusterSweepPreview" class="cluster-sweep-preview"></div>
+      </div>
+      <div class="sweep-opts">
+        <label>Max runs<input type="number" id="sweepMaxRuns" min="1" max="5000" value="32" /></label>
+        <label>Panel cols<input type="number" id="sweepPanelCols" min="1" max="12" value="4" /></label>
+        <label class="sweep-opts-check">
+          <input type="checkbox" id="sweepBuildPanel" checked />
+          <span>Build panel</span>
+        </label>
+      </div>
+      <div class="sweep-config-bar">
+        <select id="sweepConfigSelect" title="Saved sweep configs">
+          <option value="">— Saved —</option>
+        </select>
+        <button type="button" id="btnSweepConfigLoad">Load</button>
+        <button type="button" id="btnSweepConfigDelete" title="Delete selected">Del</button>
+        <input type="text" id="sweepConfigName" placeholder="Save as…" />
+        <button type="button" id="btnSweepConfigSave">Save</button>
+      </div>
+      <div class="settings-actions">
+        <button type="button" id="btnSweepStart" class="primary">Start sweep</button>
+        <button type="button" id="btnSweepCancel">Cancel</button>
+      </div>
+      <div id="sweepProgress" class="sweep-progress"></div>
+    </div>
+  </div>
+
+  <script src="app.js?v=20260826e"></script>
 </body>
 </html>

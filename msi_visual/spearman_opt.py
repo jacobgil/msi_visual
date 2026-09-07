@@ -3,8 +3,9 @@ from sklearn.metrics.pairwise import pairwise_distances
 import torch
 from PIL import Image
 import tqdm
-import torchsort
 import cv2
+
+from msi_visual.soft_rank import soft_rank
 
 from msi_visual.percentile_ratio import TOP3
 from sklearn.cluster import KMeans, kmeans_plusplus
@@ -149,7 +150,7 @@ class SpearmanOptimization:
     def compute_epoch(self):
         reference_points = self.visualization[self.indices]
         output_distances = torch.cdist(self.visualization, reference_points)
-        output_ranks = torchsort.soft_rank(
+        output_ranks = soft_rank(
             output_distances,
             regularization_strength=self.regularization_strength)
 

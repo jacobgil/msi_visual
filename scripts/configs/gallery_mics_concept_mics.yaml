@@ -1,0 +1,42 @@
+# Sparse concepts trained with the MiCS correlation objective (not teacher distillation).
+
+#
+
+#   python scripts/gallery_mics_concept_distill.py --config-name=gallery_mics_concept_mics
+
+
+
+defaults:
+
+  - gallery_mics_concept_distill
+
+  - _self_
+
+
+
+distill:
+
+  train_objective: mics
+
+  display_bounds: self
+
+  readout_ridge_fit: false
+
+  readout_epochs: 0
+
+  recon_weight: 0.0
+
+  mics_k_epoch: 1
+
+  mics_teacher_blend: 0.0
+
+  embed_diversity_weight: 0.005
+
+  concept_diversity_weight: 0.0005
+
+
+
+gallery:
+
+  distill_column_label: sparse MiCS objective
+

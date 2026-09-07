@@ -1,0 +1,93 @@
+# Peak-token MiCS: hybrid m/z encoding (Fourier + window residuals) + small transformer.
+#
+# Multi-slide discovery + long run (checkpoints + previews every N epochs):
+#   python scripts/train_peak_token_mics.py
+#
+# Explicit slides:
+#   python scripts/train_peak_token_mics.py data.npy_paths=[path/a.npy,path/b.npy]
+#
+# Shorter smoke test:
+#   python scripts/train_peak_token_mics.py training.max_epochs=5 training.max_hours=0.1
+
+defaults:
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/peak_token_mics/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+seed: 42
+
+data:
+  npy_path: null
+  npy_paths: []
+  transpose_msi: false
+  normalization: tic
+  min_tissue_pixels: 800
+  max_slides: null
+  discover:
+    roots:
+      - "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2"
+      - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset18_brainmouse20um"
+      - "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset4_kidney"
+    npy_globs:
+      - "**/5_bins/*.npy"
+      - "**/5bins/*.npy"
+  spectral_filter:
+    auto: true   # train on largest compatible spectral group
+    spectral_bins: 5255
+    start_mz: 99
+    end_mz: 2000
+    bins_per_mz: 5
+
+model:
+  top_k: 128
+  embed_dim: 3
+  d_model: 128
+  nhead: 4
+  num_layers: 2
+  dim_feedforward: 192
+  dropout: 0.05
+  mass_window_size: 0.0   # 0 = auto (Da vs bin-index)
+  mass_scale: 0.0
+  max_mass_windows: 512
+  sort_peaks_by_mass: true
+  num_epochs: 60          # fallback if training.max_epochs unset
+  batch_size: 512
+  lr: 0.0008
+  weight_decay: 0.0001
+  warmup_epochs: 3
+  num_samples: 24000        # ~6k/slide when 4 slides; scales with slide count
+  number_of_points: 1500
+  sampling: coreset
+  beta: 20.0
+  k_epoch: 20
+  temperature: 100.0
+  cluster: true
+  clusters: 16-32-64-1024
+  cluster_loss_weight: 1.0
+  cluster_on_pca: false
+  cluster_pca_dims: 64
+  lab_to_rgb: true
+  predict_percentile_low: 1.0
+  predict_percentile_high: 99.0
+  predict_spatial_smooth_sigma: 0.0
+
+training:
+  max_epochs: 800           # upper cap; often stopped by max_hours first
+  max_hours: 12.0           # ~all-day run
+  pool_refresh_epochs: 15   # resample pixels + refresh cluster heads
+  adaptive_sampling: proportional   # proportional | equal | sqrt
+  cosine_lr: true
+  min_lr_ratio: 0.05
+  release_slide_memory: true
+  refresh_clusters_on_pool_refresh: true
+  checkpoint_every_epochs: 10
+  checkpoint_subdir: checkpoints
+  visualize_every_epochs: 25
+
+output:
+  mosaic_filename: peak_token_mics_gallery.png
+  mosaic_gap_px: 2
+  max_preview_slides: 6
+  preview_slide_indices: []   # empty = first max_preview_slides

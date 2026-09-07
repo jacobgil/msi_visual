@@ -1,0 +1,66 @@
+# @package model.mixture_of_experts
+#
+# Merge into a parent config with Hydra, e.g.
+#   defaults:
+#     - train_parametric_mics_lmc
+#     - mixture_of_experts/demo
+#   model:
+#     model_type: mixture_of_experts
+#
+# Per-expert MiCS clustering is **explicit** below. Any of
+#   clusters | cluster_on_pca | cluster_pca_dims
+# omitted on a row falls back to ``model.clusters`` / ``model.cluster_on_pca`` /
+# ``model.cluster_pca_dims`` from the composed train config (e.g. train_parametric_mics_lmc).
+# ``model.cluster: false`` disables MiCS clustering for the whole run (all experts).
+#
+# Default spread below: every ``clusters`` string is from
+# ``scripts/configs/bayes_tune_mics_lmc.yaml`` → ``search_space.clusters.choices``,
+# picked for **diversity** (short vs long ladders, tight vs wide ratios, small/medium/very-high
+# menus). ``cluster_pca_dims`` ∈ {32, 512} and ``cluster_on_pca`` ∈ {false, true} vary per row.
+#
+# Init speed: ``share_cluster_pca`` fits **one** PCA on sampled pixels for every expert with
+# ``cluster_on_pca: true`` (faster than per-expert PCA; subspace is shared, not per-expert optimal).
+# ``shared_cluster_pca_dims``: omit or null → use max of those experts' ``cluster_pca_dims``.
+# Repeated K (e.g. 64) on the **same** feature matrix reuses one KMeans ``fit_predict`` automatically.
+#
+share_cluster_pca: true
+# shared_cluster_pca_dims: 512  # optional fixed cap; comment out for auto (max of PCA experts)
+
+# Fusion: default ``mean`` (smoother). For ``softmax_gate``, gate_temperature > 1 softens gates.
+fusion: mean
+layer_norm_before_fuse: true
+gate_temperature: 2.0
+gate_hidden: 128
+experts:
+  - num_layers: 2
+    clusters: "4-16-64"
+    cluster_on_pca: false
+    cluster_pca_dims: 32
+  - num_layers: 2
+    clusters: "4-64-512"
+    cluster_on_pca: true
+    cluster_pca_dims: 32
+  - num_layers: 2
+    clusters: "8-16-32-64"
+    cluster_on_pca: true
+    cluster_pca_dims: 512
+  - num_layers: 2
+    clusters: "16-64-128"
+    cluster_on_pca: false
+    cluster_pca_dims: 512
+  - num_layers: 2
+    clusters: "32-128-512"
+    cluster_on_pca: true
+    cluster_pca_dims: 32
+  - num_layers: 2
+    clusters: "64-128-256-512"
+    cluster_on_pca: false
+    cluster_pca_dims: 32
+  - num_layers: 2
+    clusters: "128-256-512-1024"
+    cluster_on_pca: true
+    cluster_pca_dims: 512
+  - num_layers: 2
+    clusters: "64-256-512"
+    cluster_on_pca: true
+    cluster_pca_dims: 512

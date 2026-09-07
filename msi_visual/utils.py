@@ -90,3 +90,74 @@ def set_region_importance(segmentation_mask, factors):
         segmentation_mask[label, :,
                           :] = segmentation_mask[label, :, :] * factor
     return segmentation_mask
+
+
+def cluster_id_labels_to_rgb_u8(
+    labels_hw: np.ndarray,
+    *,
+    fill_value: int = -1,
+    background: tuple[int, int, int] = (0, 0, 0),
+    color_scheme: str = "gist_rainbow",
+) -> np.ndarray:
+    """
+    Color integer cluster ids (0..K-1) with a matplotlib colormap; ``fill_value`` pixels
+    (e.g. MiCS non-sampled sites) are ``background``.
+    """
+    labels_hw = np.asarray(labels_hw)
+    h, w = labels_hw.shape[:2]
+    rgb = np.zeros((h, w, 3), dtype=np.uint8)
+    for bi, c in enumerate(background):
+        rgb[:, :, bi] = int(c)
+    m = labels_hw != fill_value
+    if not np.any(m):
+        return rgb
+    kmax = int(labels_hw[m].max()) + 1
+    cmap = plt.cm.get_cmap(color_scheme)
+    for lid in range(kmax):
+        sel = (labels_hw == lid) & m
+        if not np.any(sel):
+            continue
+        r, g, b, _a = cmap(lid / max(kmax, 1))
+        rgb[sel, 0] = int(255 * r)
+        rgb[sel, 1] = int(255 * g)
+        rgb[sel, 2] = int(255 * b)
+    return rgb
+
+
+def cluster_palette_rgb_u8(n_clusters: int, color_scheme: str = "gist_rainbow") -> np.ndarray:
+    """RGB palette (K, 3) uint8 for cluster ids 0..K-1 (matches ``cluster_id_labels_to_rgb_u8``)."""
+    k = max(1, int(n_clusters))
+    cmap = plt.cm.get_cmap(color_scheme)
+    rgba = cmap(np.arange(k, dtype=np.float64) / k)
+    return (255.0 * rgba[:, :3]).astype(np.uint8)
+
+
+def soft_cluster_probs_to_rgb_u8(
+    probs_hwk: np.ndarray,
+    *,
+    valid_mask: np.ndarray | None = None,
+    palette: np.ndarray | None = None,
+    color_scheme: str = "gist_rainbow",
+    background: tuple[int, int, int] = (0, 0, 0),
+) -> np.ndarray:
+    """
+    Blend cluster colors by softmax probabilities: rgb = sum_k p_k * palette[k].
+    ``probs_hwk`` is H×W×K with rows summing to ~1 on valid tissue pixels.
+    """
+    p = np.asarray(probs_hwk, dtype=np.float64)
+    if p.ndim != 3:
+        raise ValueError(f"probs_hwk must be HxWxK, got {p.shape}")
+    h, w, k = p.shape
+    pal = (
+        np.asarray(palette, dtype=np.float64)
+        if palette is not None
+        else cluster_palette_rgb_u8(k, color_scheme).astype(np.float64)
+    )
+    if pal.shape[0] != k:
+        raise ValueError(f"palette rows {pal.shape[0]} != K={k}")
+    rgb = (p.reshape(-1, k) @ pal).reshape(h, w, 3)
+    out = np.clip(rgb, 0.0, 255.0).astype(np.uint8)
+    if valid_mask is not None:
+        m = np.asarray(valid_mask, dtype=bool)
+        out[~m] = np.asarray(background, dtype=np.uint8)
+    return out

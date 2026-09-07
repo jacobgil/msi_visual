@@ -1,0 +1,140 @@
+# Overlay VIA annotations on per-method RGB visualizations (same pipeline as
+# benchmark_parametric_methods: TOP3 per-pixel intensities, PCA3D, NMF3D, Parametric UMAP, MiCS-LMC).
+#
+# From repo root:
+#   python scripts/view_annotations_on_methods.py annotation.annotation_json=C:/path.json
+#
+defaults:
+  - benchmark_parametric_methods
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/view_annotations_on_methods/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  job:
+    chdir: false
+
+# Same MSI + JSON resolution as view_annotation_boundaries.yaml (nested under annotation:)
+annotation:
+  annotation_json: "E:/MSI-papers_data/MSI-ATLAS/MSI-atlas_annotations_expAI/NRL4485-s2_annotations-only-updatedV2_of-V20.json"
+  index: null
+  paths:
+    - - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/0.npy
+      - 1
+    - - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/2.npy
+      - 0
+    - - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy
+      - 2
+    - - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/3.npy
+      - 3
+  # One paths row: slide: 0 | All rows: slide: all  OR  slides: [0, 1, 2, 3]  OR  slide: [0, 2]
+  slide: all
+  npy: null
+  # Spatial alignment with VIA: transpose_spatial_mode wins if set.
+  # chain_flip = data.transpose().transpose(1, 2, 0)[::-1, :, :] on H×W×C (default if transpose_spatial: true).
+  # swap_hw = plain np.transpose(..., (1, 0, 2)) only.
+  transpose_spatial: true
+  transpose_spatial_mode: chain_flip
+  ignore: []
+  keep: null
+  boundary_width: 2
+  category_keys:
+    - main_cat1
+    - Allen_name
+    - sub_cat2
+  continue_on_method_error: true
+  # TOP3: benchmark uses LAB→RGB on three intensity maps (often very bright; white edges vanish).
+  # false = show top-3 intensities as B/G/R channels (clearer); true = match benchmark PNGs.
+  top3_to_lab: false
+  # When output.equalize_visualizations is false, still equalize TOP3 before drawing (contrast).
+  equalize_top3_for_overlay: true
+  # Stretch LAB L (1–99% on tissue) before drawing; keeps A/B so color is not lost to flat gray.
+  enhance_overlay_rgb: false
+  enhance_overlay_l_lo_percentile: 1.0
+  enhance_overlay_l_hi_percentile: 99.0
+  fill_alpha: 0.45
+  boundary_halo: 2
+
+# Method names match benchmark: top3 (TOP3 class = per-pixel top-3 intensities as RGB),
+# pca, parametric_umap, nmf_3d. Add parametric_mics_lmc to run every MiCS group from mics_lmc.parameter_groups.
+methods:
+  - top3
+
+output:
+  annotated_subdir: annotated_visualizations
+  # Merged with benchmark output.*; matches benchmark default for viz style
+  equalize_visualizations: false
+
+# Lighter defaults for a single interactive run (merged with benchmark_parametric_methods).
+benchmark:
+  sampling_modes: [random]
+  repeats: 1
+  seed_start: 42
+
+# HD vs RGB edge algorithms for edge_metrics (this script does not take these from debug_visualization_metrics).
+# gradient | canny | gmm_kl | distance_multi | landmark_knn | ensemble_cluster (same implementation as rank_visualizations_by_f1)
+# Use a list to run every HD edge method: one CSV row per method and PNGs tagged with __hd_<name>__.
+# Example: hd_method: [gmm_kl, distance_multi, gradient]
+edge_detection:
+  hd_method: [gmm_kl, distance_multi, gradient, ensemble_cluster]
+  rgb_method: gradient
+  canny:
+    low_threshold: 40.0
+    high_threshold: 120.0
+    aperture_size: 3
+    l2gradient: true
+    n_jobs: 0
+    rgb_mode: max_channel
+  gmm:
+    n_components: 32
+    covariance_type: diag
+    reg_covar: 1.0e-6
+    max_iter: 300
+    random_state: 42
+    max_samples: 200000
+  landmark_knn:
+    k: 50
+    n_landmarks: 1000
+    spatial_radii: [1]
+    spatial_connectivity: "4"
+    aggregation: max
+    pca_enabled: true
+    pca_n_components: 64
+
+# Used when edge_detection.hd_method is distance_multi; channel prep + Sobel stack.
+hd_edges:
+  normalize_channels: true
+  channel_low_percentile: 1.0
+  channel_high_percentile: 99.0
+  log1p: false
+  distance_functions: [l2, sam, cosine, chebyshev, manhattan]
+  pca:
+    enabled: false
+    n_components: 64
+    random_state: 42
+  aggregation: mean
+  topk: 5
+  neighborhood:
+    enabled: true
+    radius: 1
+    sigma: 1.0
+  # When edge_detection.hd_method: ensemble_cluster — copy defaults from scripts/configs/rank_visualizations_by_f1.yaml
+  # ensemble_cluster:
+  #   n_experiments: 12
+  #   subsample_fraction: 0.5
+  #   pca_n_components: 16
+  #   n_clusters_list: [6, 8, 10, 12]
+  #   kmeans_n_init: 8
+  #   random_state: 42
+
+# Edge metrics + AUC (spatial_normalization, edge_agreement, clahe, edge_evaluation from debug_visualization_metrics).
+edge_metrics:
+  enabled: true
+  # PNGs: annotations on each normalized edge map (hd/viz × mean/L∞)
+  maps_subdir: edge_map_annotations
+  # Raw float maps + preview PNGs (no annotations) for debugging black/dim overlays
+  save_maps_separate: true
+  separate_subdir: edge_maps_separate
+  print_map_stats: true
+  # One CSV row per method with all scalar metrics (AUC, Spearman, F1/continuous_dice, …)
+  csv_name: edge_metrics.csv

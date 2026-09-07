@@ -1,0 +1,243 @@
+input:
+  npy_path: E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset4_kidney/5bins/0.npy
+  visualization_folder: C:/Users/PahnkeLab/Desktop/maldi_msi/all_kidney
+  allow_resize: true
+  skip_eq: true
+  divide_by_255: true
+  equalize_visualization: false
+  equalize_visualization_method: hist
+  equalize_visualization_clahe_clip_limit: 2.0
+  equalize_visualization_clahe_tile_grid_size: 8
+output:
+  out_dir: null
+  csv_name: rankings.csv
+  gallery_top_n: 19
+  gallery_bottom_n: 19
+  gallery_columns: 3
+  gallery_rows: 6
+  gallery_cell_padding: 0
+  gallery_show_labels: false
+  gallery_prepend_hd_edge: true
+  gallery_edge_colormap: PuBu
+data:
+  transpose_msi: false
+  normalization: tic
+spatial_normalization:
+  enabled: true
+  low_percentile: 1.0
+  high_percentile: 99.0
+top3:
+  low: 99.9
+  norm_percentile: 99.9
+  to_lab: true
+nmf:
+  k_list:
+  - 3
+  - 4
+  - 5
+  - 6
+  - 8
+  - 12
+  - 18
+  - 24
+  - 36
+  init: nndsvda
+  max_iter: 500
+  tol: 0.0001
+  random_state: 42
+  fit_fraction: 0.1
+equalize:
+  enabled: true
+  display: true
+  before_edges: true
+  method: hist
+  clahe_clip_limit: 2.0
+  clahe_tile_grid_size: 8
+edge_pre_smooth:
+  enabled: false
+  sigma: 0.0
+edge_maps:
+  multi_scale:
+    enabled: false
+    sigmas:
+    - 0.0
+    - 1.0
+    - 2.0
+    - 4.0
+    aggregation: mean
+edge_detection:
+  hd_method: soft_landmark_contrast
+  rgb_method: gradient
+  rgb_color_space: lab
+  canny:
+    low_threshold: 40.0
+    high_threshold: 120.0
+    aperture_size: 3
+    l2gradient: true
+    n_jobs: 0
+    rgb_mode: max_channel
+  gmm:
+    n_components: 32
+    covariance_type: diag
+    reg_covar: 1.0e-06
+    max_iter: 1000
+    random_state: 42
+    max_samples: 2000
+    pca_enabled: true
+    pca_n_components: 64
+    pca_random_state: 42
+  soft_landmark_contrast:
+    score_mode: soft_patch_contrast
+    soft_topk: 80
+    soft_temperature: 0.06
+    soft_patch_radius: 1
+    soft_scale_aggregation: max
+    soft_chunk_size: 64
+    contrast_texture_weight: 0.22
+    contrast_aggregation: max
+    contrast_batch_size: 8192
+    k:
+    - 40
+    - 80
+    - 140
+    n_landmarks: 1000
+    spatial_radii:
+    - 1
+    spatial_connectivity: '4'
+    aggregation: mean
+    percentile: 100.0
+    spatial_weight: uniform
+    spatial_weight_sigma: 2.0
+    landmark_sampling: random
+    similarity: dice
+    post_process: none
+    pca_enabled: true
+    pca_n_components: 64
+    pca_random_state: 42
+    random_state: 42
+    min_edge_percentile: 2.0
+    spectral_weight: false
+    hysteresis_low_percentile: 70.0
+    hysteresis_high_percentile: 95.0
+hd_edges:
+  normalize_channels: true
+  channel_low_percentile: 1.0
+  channel_high_percentile: 99.0
+  log1p: false
+  distance_functions:
+  - l2
+  - cosine
+  - chebyshev
+  - manhattan
+  save_individual_distance_maps: true
+  pca:
+    enabled: false
+    n_components: 32
+    random_state: 42
+  aggregation: mean
+  topk: 5
+  neighborhood:
+    enabled: true
+    radius: 1
+    sigma: 1.0
+  edge_power: 1.0
+  ensemble_cluster:
+    n_experiments: 50
+    subsample_fraction: 0.2
+    pca_n_components: 32
+    n_clusters_list:
+    - 8
+    - 16
+    - 32
+    - 64
+    - 128
+    - 256
+    kmeans_n_init: 8
+    random_state: 42
+    output_gamma: 1.0
+    suppress_below_percentile: null
+    per_run_normalize_by_sum: false
+    per_run_normalize_epsilon: 1.0e-08
+  nmf_component_edges:
+    k_list:
+    - 3
+    - 4
+    - 5
+    - 6
+    - 8
+    - 12
+    - 18
+    - 24
+    - 36
+    fit_fraction: 0.1
+    random_state: 42
+    init: nndsvda
+    max_iter: 500
+    tol: 0.0001
+    aggregate: mean
+    channel_low_percentile: 1.0
+    channel_high_percentile: 99.0
+    smooth_sigma: 1.0
+    hist_equalize: true
+evaluation:
+  metric: continuous_dice
+  min_viz_edge_percentile: 0
+  threshold_mode: otsu
+  f_beta: 1.0
+  otsu_pre_equalize: false
+  otsu_equalize_method: hist
+  otsu_clahe_clip_limit: 2.0
+  otsu_clahe_tile_grid_size: 8
+  threshold_percentile: 90.0
+  threshold_value: 0.5
+  square_before_continuous_metrics: false
+  equalize_edges_before_metric: false
+  composite:
+    enabled: true
+    normalize: average_rank
+    normalize_batch: true
+    lab_entropy_bins_a: 16
+    lab_entropy_bins_b: 16
+    weights:
+      continuous_dice: 1.0
+      luminance_rms_contrast: 0.5
+      luminance_gradient_mean: 0.0
+      lab_chroma_entropy: 0.5
+      lab_mean_chroma: 0.0
+spatial_coverage:
+  enabled: true
+  n_select: 19
+  patch_size: 16
+  normalize: per_location_rank
+  first_global_best: true
+  save_quality_maps: true
+  colormap: PuBu
+  weights:
+    continuous_dice: 1.0
+    luminance_rms_contrast: 1.0
+clahe:
+  enabled: false
+  clip_limit: 2.0
+  tile_grid_size: 8
+  apply_to:
+    nmf_rgb_features: false
+    nmf_component_maps: false
+    edge_viz: false
+    edge_hd: false
+debug:
+  save_viz_edges: true
+  save_viz_edges_binary: true
+  save_npy: false
+  save_edge_equalized: true
+  extra_hd_method: null
+  extra_hd_label: soft landmark contrast
+  first_panel: hd_edge
+  gallery_panel: viz
+  display_gamma: 0.5
+  save_agreement_overlay: true
+  save_individual_hd_edges: true
+  edge_colormap: copper
+  local_dice_window: 3
+n_jobs: 1
+logging:
+  level: INFO

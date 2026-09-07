@@ -1,0 +1,35 @@
+mode: train
+data:
+  input_path: E:\MSImaging-data\_msi_visual\Extractions
+  transpose: false
+model:
+  number_of_points: 1000
+  sampling: coreset
+  num_epochs: 100
+  number_of_components: 3
+  num_layers: 2
+  lab_to_rgb: true
+  cluster: true
+  clusters: 16-128-256-512
+  cluster_on_pca: true
+  cluster_pca_dims: 20
+  num_samples: 5000
+  pixel_sampling: superpixel
+  pca_fit_step: 16
+  beta: 1.0
+  k_epoch: 20
+  temperature: 100.0
+  lr: 1.0
+  batch_size: 1024
+  warmup_epochs: 10
+  factor: 1.0
+  random_state: 42
+  verbose: false
+  cluster_loss_weight: 1.0
+  category_loss_weight: 10.0
+inference:
+  model_path: null
+  inference_folder: /home/jacob/Desktop/msi_data/*.npy
+output_dir: null
+save_visualizations: true
+continue_on_error: false

@@ -1,0 +1,345 @@
+# MiCS+LMC parameter groups for batch_extract_pymzml post-extract visualizations.
+# Referenced via visualizations.mics_benchmark_config in batch_extract_pymzml.yaml.
+
+mics_lmc:
+  defaults_yaml: "scripts/configs/train_parametric_mics_lmc.yaml"
+  parameter_groups:
+    # Balanced default ladder (good all-round starting point).
+    - name: mics_std
+      overrides:
+        model_type: mics_lmc
+        clusters_auto_tune: null
+        sampling: coreset
+        number_of_points: 1000
+        num_epochs: 30
+        num_layers: 3
+        number_of_components: 3
+        lab_to_rgb: true
+        cluster: true
+        clusters: 128-256-512-1024
+        cluster_on_pca: false
+        num_samples: 5000
+        beta: 20.0
+        k_epoch: 20
+        temperature: 100.0
+        lr: 1.0
+        batch_size: 1024
+        warmup_epochs: 10
+        factor: 1.0
+        random_state: 42
+        verbose: false
+
+    # Multiscale ladder (8→128); strong on HD edges in gallery evals.
+    - name: mics_multiscale
+      overrides:
+        model_type: mics_lmc
+        clusters_auto_tune: null
+        sampling: coreset
+        number_of_points: 1000
+        num_epochs: 30
+        num_layers: 3
+        number_of_components: 3
+        lab_to_rgb: true
+        cluster: true
+        clusters: 8-32-128-256
+        cluster_on_pca: false
+        num_samples: 5000
+        beta: 20.0
+        k_epoch: 20
+        temperature: 100.0
+        lr: 1.0
+        batch_size: 1024
+        warmup_epochs: 10
+        factor: 1.0
+        random_state: 42
+        verbose: false
+
+    # Cluster-only (no LMC pull); preserves discrete tissue regions.
+    - name: mics_beta0
+      overrides:
+        model_type: mics_lmc
+        clusters_auto_tune: null
+        sampling: coreset
+        number_of_points: 1000
+        num_epochs: 50
+        num_layers: 3
+        number_of_components: 3
+        lab_to_rgb: true
+        cluster: true
+        clusters: 128-256-512
+        cluster_on_pca: false
+        num_samples: 5000
+        beta: 0.0
+        k_epoch: 20
+        temperature: 100.0
+        lr: 1.0
+        batch_size: 1024
+        warmup_epochs: 10
+        factor: 1.0
+        random_state: 42
+        verbose: false
+
+    # Mild LMC (beta=1); finer cluster ladder, longer training.
+    - name: mics_beta1
+      overrides:
+        model_type: mics_lmc
+        clusters_auto_tune: null
+        sampling: coreset
+        number_of_points: 1000
+        num_epochs: 100
+        num_layers: 3
+        number_of_components: 3
+        lab_to_rgb: true
+        cluster: true
+        clusters: 32-64-128-256-512
+        cluster_on_pca: false
+        num_samples: 5000
+        beta: 1.0
+        k_epoch: 20
+        temperature: 100.0
+        lr: 1.0
+        batch_size: 1024
+        warmup_epochs: 10
+        factor: 1.0
+        random_state: 42
+        verbose: false
+
+    # Very coarse clusters + deep MLP (benchmark mics2 style).
+    - name: mics_coarse
+      overrides:
+        model_type: mics_lmc
+        clusters_auto_tune: null
+        sampling: coreset
+        number_of_points: 1000
+        num_epochs: 30
+        num_layers: 7
+        number_of_components: 3
+        lab_to_rgb: true
+        cluster: true
+        clusters: 1024-2048-4096
+        cluster_on_pca: false
+        num_samples: 5000
+        beta: 20.0
+        k_epoch: 20
+        temperature: 100.0
+        lr: 1.0
+        batch_size: 1024
+        warmup_epochs: 10
+        factor: 1.0
+        random_state: 42
+        verbose: false
+
+    # Benchmark mics2 alias: very coarse clusters + deep MLP.
+    - name: mics2
+      overrides:
+        model_type: mics_lmc
+        clusters_auto_tune: null
+        sampling: coreset
+        number_of_points: 1000
+        num_epochs: 30
+        num_layers: 7
+        number_of_components: 3
+        lab_to_rgb: true
+        cluster: true
+        clusters: 1024-2048-4096
+        cluster_on_pca: false
+        num_samples: 5000
+        beta: 20.0
+        k_epoch: 20
+        temperature: 100.0
+        lr: 1.0
+        batch_size: 1024
+        warmup_epochs: 10
+        factor: 1.0
+        random_state: 42
+        verbose: false
+
+    # Benchmark mics3: PCA cluster features, beta=0, mid-scale fixed ladder.
+    - name: mics3
+      overrides:
+        model_type: mics_lmc
+        clusters_auto_tune: null
+        sampling: coreset
+        number_of_points: 1000
+        num_epochs: 100
+        num_layers: 7
+        number_of_components: 3
+        lab_to_rgb: true
+        cluster: true
+        clusters: 256-512-1024
+        cluster_on_pca: true
+        cluster_pca_dims: 64
+        num_samples: 5000
+        beta: 0.0
+        k_epoch: 20
+        temperature: 100.0
+        lr: 1.0
+        batch_size: 1024
+        warmup_epochs: 10
+        factor: 1.0
+        random_state: 42
+        verbose: false
+
+    # Silhouette-tuned k ladder on PCA features (benchmark mics4).
+    - name: mics_silhouette
+      overrides:
+        model_type: mics_lmc
+        sampling: coreset
+        number_of_points: 1000
+        num_epochs: 100
+        num_layers: 3
+        number_of_components: 3
+        lab_to_rgb: true
+        cluster: true
+        clusters: null
+        clusters_auto_tune: silhouette
+        clusters_auto_tune_k_min: 8
+        clusters_auto_tune_k_step: 4
+        cluster_on_pca: true
+        cluster_pca_dims: 128
+        num_samples: 5000
+        beta: 20.0
+        k_epoch: 20
+        temperature: 100.0
+        lr: 1.0
+        batch_size: 1024
+        warmup_epochs: 10
+        factor: 1.0
+        random_state: 42
+        verbose: false
+
+    # PCA-reduced cluster features; mid-scale fixed ladder.
+    - name: mics_pca
+      overrides:
+        model_type: mics_lmc
+        clusters_auto_tune: null
+        sampling: coreset
+        number_of_points: 1000
+        num_epochs: 100
+        num_layers: 3
+        number_of_components: 3
+        lab_to_rgb: true
+        cluster: true
+        clusters: 256-512-1024
+        cluster_on_pca: true
+        cluster_pca_dims: 128
+        num_samples: 5000
+        beta: 20.0
+        k_epoch: 20
+        temperature: 100.0
+        lr: 1.0
+        batch_size: 1024
+        warmup_epochs: 10
+        factor: 1.0
+        random_state: 42
+        verbose: false
+
+    # Shallow network, fast multiscale (good for quick previews).
+    - name: mics_shallow
+      overrides:
+        model_type: mics_lmc
+        clusters_auto_tune: null
+        sampling: random
+        number_of_points: 1000
+        num_epochs: 30
+        num_layers: 2
+        number_of_components: 3
+        lab_to_rgb: true
+        cluster: true
+        clusters: 8-32-128
+        cluster_on_pca: false
+        num_samples: 5000
+        beta: 20.0
+        k_epoch: 20
+        temperature: 100.0
+        lr: 1.0
+        batch_size: 1024
+        warmup_epochs: 10
+        factor: 1.0
+        random_state: 42
+        verbose: false
+
+    # Deep MLP on standard ladder; more expressive color mapping.
+    - name: mics_deep
+      overrides:
+        model_type: mics_lmc
+        clusters_auto_tune: null
+        sampling: coreset
+        number_of_points: 1000
+        num_epochs: 50
+        num_layers: 7
+        number_of_components: 3
+        lab_to_rgb: true
+        cluster: true
+        clusters: 128-256-512-1024
+        cluster_on_pca: false
+        num_samples: 5000
+        beta: 20.0
+        k_epoch: 20
+        temperature: 100.0
+        lr: 1.0
+        batch_size: 1024
+        warmup_epochs: 10
+        factor: 1.0
+        random_state: 42
+        verbose: false
+
+    # Fine-grained clusters, mild LMC, random reference sampling.
+    - name: mics_fine
+      overrides:
+        model_type: mics_lmc
+        clusters_auto_tune: null
+        sampling: random
+        number_of_points: 1000
+        num_epochs: 50
+        num_layers: 3
+        number_of_components: 3
+        lab_to_rgb: true
+        cluster: true
+        clusters: 512-1024-2048
+        cluster_on_pca: false
+        num_samples: 5000
+        beta: 1.0
+        k_epoch: 20
+        temperature: 100.0
+        lr: 1.0
+        batch_size: 1024
+        warmup_epochs: 10
+        factor: 1.0
+        random_state: 42
+        verbose: false
+
+    # Dataset18 brain (mouse, 20um): mild LMC, PCA cluster features, superpixel sampling.
+    - name: mics_brain18
+      overrides:
+        model_type: mics_lmc
+        clusters_auto_tune: null
+        clusters_auto_tune_k_min: 4
+        clusters_auto_tune_k_max: 256
+        clusters_auto_tune_k_step: 4
+        clusters_auto_tune_n_candidates: 20
+        sampling: coreset
+        number_of_points: 500
+        num_epochs: 50
+        num_layers: 2
+        number_of_components: 3
+        lab_to_rgb: true
+        cluster: true
+        clusters: 32-64-128-256-512
+        cluster_on_pca: true
+        cluster_pca_dims: 20
+        num_samples: 2000
+        pixel_sampling: superpixel
+        pca_fit_step: 128
+        beta: 1.1
+        k_epoch: 20
+        temperature: 100.0
+        lr: 1.0
+        batch_size: 2048
+        warmup_epochs: 10
+        factor: 1.0
+        random_state: 42
+        verbose: false
+        predict_percentile_low: 1.0
+        predict_percentile_high: 99.0
+        predict_spatial_smooth_sigma: 0.8

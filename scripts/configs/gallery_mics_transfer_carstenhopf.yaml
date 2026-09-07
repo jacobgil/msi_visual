@@ -1,0 +1,144 @@
+# Train MiCS on one CarstenHopf slide, infer on all compatible slides (9510 bins).
+#
+# Grid layout (gallery.layout):
+#   by_train_slide — one MiCS setting; rows = train slides; cols = targets × (xfer|xfer+ft|self|self+align)
+#   by_slide       — one row per target slide; columns = each MiCS setting × modes
+#   by_setting     — one row per MiCS setting; columns = each slide × modes (legacy)
+#
+# Train sweep smoke (3 train rows, 4 targets, one setting):
+#   python scripts/gallery_mics_transfer.py --config-name=gallery_mics_transfer_carstenhopf \
+#     gallery.max_slides=4 gallery.max_train_slides=3
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/gallery_mics_transfer_carstenhopf/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+input:
+  npy_path: null
+  npy_paths: []
+  npy_dir: "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/MSimaging"
+  npy_glob: "**/5_bins/0.npy"
+
+data:
+  transpose_msi: false
+  normalization: tic
+
+seed: 42
+
+gallery:
+  # Parameter groups from batch extract presets (null = all groups in that file).
+  parameter_groups_config: ${hydra:runtime.cwd}/scripts/configs/batch_extract_mics_groups.yaml
+  defaults_yaml: ${hydra:runtime.cwd}/scripts/configs/train_parametric_mics_lmc.yaml
+  mics_groups:
+    - mics_std
+  # Used when layout != by_train_slide (single fixed train slide):
+  infer_polarity: pos     # restrict gallery to pos or neg slides only
+  train_polarity: pos
+  train_index: 0
+  train_slide_key: ID18a_MSimaging_pos_RMS
+  max_slides: null        # cap target slides
+  max_train_slides: null  # cap train-sweep rows (by_train_slide only)
+  # Reuse superpixel/coreset caches across runs (big speedup on reruns + finetune).
+  persistent_cache_dir: ${hydra:runtime.cwd}/outputs/gallery_mics_transfer_carstenhopf/_pixel_caches
+  prebuild_target_caches: true
+  # Gallery-only MiCS overrides (do not change batch_extract presets).
+  mics_overrides:
+    num_epochs: 20
+    warmup_epochs: 5
+  include_self_columns: true
+  include_self_aligned_columns: true
+  include_finetune_columns: true
+  include_finetune_color_columns: true
+  include_novelty_columns: true
+  include_he_columns: true
+  he_column_label: H&E
+  he:
+    enabled: true
+    source: auto          # wsi | thumbnail | auto
+    root: "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/HEStaining"
+    folder_suffix: "_HEstaining"
+    filename: he_thumbnail.png
+    wsi_root: "E:/MSI+SpatialTrans-datasets/CarstenHopf-Mannheim/datasets/datasets/HEStaining"
+    wsi_recursive: true
+    target_dpi: 400
+    max_dpi: 3200
+    wsi_max_size: 16384
+  transfer_column_label: xfer
+  finetune_column_label: xfer+ft
+  finetune_color_column_label: xfer+ft+align
+  # xfer+ft display vs xfer+ft+align (same finetuned weights, different color render)
+  finetune_display_anchor: full
+  finetune_display_anchor_blend: 1.0
+  finetune_color_anchor: chroma
+  finetune_color_anchor_blend: 0.6
+  self_column_label: self
+  self_aligned_column_label: self+align
+  # self+align: full MiCS fit on each target; chroma = target L + train a/b (edges + color)
+  self_aligned_color_anchor: chroma   # chroma | full
+  novelty_column_label: d_train
+  relative_novelty_column_label: log d_self/d_train
+  novelty:
+    enabled: true
+    relative_enabled: true
+    space: embedding      # embedding | spectrum
+    reference: coreset     # sampled | coreset (coreset = 1000 refs, faster novelty)
+    metric: euclidean
+    top_k: 5               # mean distance to k nearest refs
+    epsilon: 1.0e-6        # stabilizes log(d_self / d_train)
+    colormap: magma
+    relative_colormap: coolwarm
+    clip_percentile: 99.0
+    relative_clip_percentile: 99.0
+    chunk_size: 8192
+  finetune_mode: transfer   # transfer | miss_stratified (latter needs HD edge quality map)
+  finetune_epochs: 5
+  finetune_lr_scale: 0.1
+  finetune_warmup_epochs: 0
+  finetune_skip_train_slide: true
+  finetune_anchor_percentiles: true
+  spectral_filter:
+    start_mz: 99
+    end_mz: 2000
+    bins_per_mz: 5
+    spectral_bins: 9510
+  num_samples: 5000
+  sampling_mode: superpixel
+  share_pixel_sampling: true
+  pixel_sampling_cache_path: null
+  shared_sampling:
+    enforce_same_pca_fit_step: true
+    pca_fit_step: 4
+    enforce_same_sampling_seed: true
+  # Layout
+  layout: by_slide    # by_train_slide | by_slide | by_setting
+  cell_max_size: [420, 280]   # downscale each viz before letterbox
+  cell_size: null               # fixed [w,h]; null = auto from max downscaled viz
+  row_label_width: 200      # wider labels for by_slide slide names
+  col_label_height: 34
+  gap_px: 4
+  background_rgb: [14, 14, 16]
+  equalize_visualization: true
+  equalize_method: lab_l   # lab_l | hist | clahe | per_channel
+  clahe_clip_limit: 2.0
+  clahe_tile_grid_size: 8
+  save_raw_panel: true
+  raw_output_filename: gallery_mics_transfer_raw.png
+  output_filename: gallery_mics_transfer.png
+
+metrics:
+  enabled: true
+  skip_hd_edges: false  # required for continuous_dice vs SoLACE HD edges
+  rank_config: ${hydra:runtime.cwd}/scripts/configs/hd_methods_gallery.yaml
+  square_before_continuous_dice: false
+  color_emd:
+    enabled: true
+    bins: 32
+    colorspace: lab   # lab | rgb — 1D EMD per channel, averaged
+  weights:
+    continuous_dice: 1.0
+    luminance_rms_contrast: 0.0
+    lab_chroma_entropy: 0.0

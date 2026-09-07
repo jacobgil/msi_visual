@@ -1,0 +1,57 @@
+# Gallery: experimental residual-cluster MiCS (shared + per-K residual heads).
+#
+# Run:
+#   python scripts/gallery_mics_residual_cluster.py
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/gallery_mics_residual_cluster/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+model:
+  num_layers: 2
+  num_epochs: 100
+  num_samples: 20000
+  temperature: 100.0
+  cluster_on_pca: false
+  cluster_pca_dims: 8
+  beta: 20.0
+  pixel_sampling: superpixel
+  sampling: random
+  number_of_points: 1000
+  pca_fit_step: 4
+  lr: 1.0
+  lab_to_rgb: true
+  predict_spatial_smooth_sigma: 0.0
+  cluster: true
+  clusters: 8-16-32-64-128-256
+  # Residual head width = factor * residual_factor; depth = residual_num_layers
+  residual_factor: 0.25
+  residual_num_layers: 2
+  # Penalize large Δ; relative=True scales by shared embedding energy
+  residual_l2_weight: 0.05
+  residual_l2_relative: true
+  # Train k=8, freeze, train k=16, freeze, … (epochs split evenly unless epochs_per_level set)
+  level_wise_freeze: true
+  epochs_per_level: null
+
+gallery:
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset4_kidney/5bins/0.npy"
+  transpose_msi: false
+  tic_normalize: true
+  seed: 42
+  # per_panel: each panel stretched independently (shows level differences)
+  # shared: fixed percentiles from shared embed (fair but levels often look identical)
+  normalization: per_panel
+  show_delta_panels: false
+  show_final_panel: false
+  include_fused_increments: false
+  ncols: 4
+  figure_size_inches: 16
+  dpi: 300
+  panel_title_fontsize: 9
+  share_pixel_sampling: true
+  pixel_sampling_cache_path: null

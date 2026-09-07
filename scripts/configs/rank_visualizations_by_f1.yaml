@@ -1,0 +1,293 @@
+defaults:
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/rank_f1/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+input:
+  # MSI .npy (HxWxC). Default = cube in repo root when you run from project dir; override as needed.
+  #npy_path: ${hydra:runtime.cwd}/v00__NRL4506-5um__Intelli-slide__5_bins__0.npy
+  # Examples:
+  #npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4506-5um/Intelli-slide/5_bins/0.npy"
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset4_kidney/5bins/0.npy"
+  #npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4558_5um/5bins/2/0.npy"
+  # Folder containing visualization images (.png, .jpg, etc.) or .npy
+  #visualization_folder: "C:/Users/PahnkeLab/Desktop/maldi_msi/A_collect-all-images-for-benchmarking/5µm-with-Abeta"
+  visualization_folder: "C:/Users/PahnkeLab/Desktop/maldi_msi/all_kidney"
+
+  allow_resize: true
+  skip_eq: true  # true = skip images with "eq" in filename (e.g. 0_Trimap3D_eq.png)
+  divide_by_255: true  # true = viz/255 only; no percentile/min-max on edges (weak viz → weak edges)
+  # Equalize RGB luminance in LAB (after load/resize, before viz edges and metrics).
+  equalize_visualization: false
+  equalize_visualization_method: hist  # hist | clahe
+  equalize_visualization_clahe_clip_limit: 2.0
+  equalize_visualization_clahe_tile_grid_size: 8
+
+output:
+  out_dir: null  # null = use hydra run dir
+  csv_name: rankings.csv
+  gallery_top_n: 19
+  gallery_bottom_n: 19
+  gallery_columns: 3
+  gallery_rows: 6
+  gallery_cell_padding: 0
+  gallery_show_labels: false
+  gallery_prepend_hd_edge: true
+  gallery_edge_colormap: PuBu
+
+# HD edges: match scripts/configs/benchmark_parametric_methods.yaml (edge maps + HD + eval).
+# Rank reads `edge_maps` + `evaluation`; benchmark uses `edge_agreement.multi_scale` + `edge_evaluation`.
+data:
+  transpose_msi: false
+  normalization: tic
+
+# Same percentiles as benchmark `spatial_normalization` (rank also supports enabled: false for min-max).
+spatial_normalization:
+  enabled: true  # false = min-max only (no percentile stretch)
+  low_percentile: 1.0
+  high_percentile: 99.0
+
+# Used only when edge_detection.hd_method: top3_nmf_max | top3_nmf_mean (see gallery_top3_nmf_edges / hd_methods_gallery).
+top3:
+  low: 99.9
+  norm_percentile: 99.9
+  to_lab: true
+
+nmf:
+  k_list: [3, 4, 5, 6, 8, 12, 18, 24, 36]
+  init: nndsvda
+  max_iter: 500
+  tol: 1.0e-4
+  random_state: 42
+  fit_fraction: 0.1
+
+equalize:
+  enabled: true
+  display: true
+  before_edges: true
+  method: hist
+  clahe_clip_limit: 2.0
+  clahe_tile_grid_size: 8
+
+edge_pre_smooth:
+  enabled: false
+  sigma: 0.0
+
+# Sigmas/aggregation match benchmark `edge_agreement.multi_scale`.
+edge_maps:
+  multi_scale:
+    enabled: false
+    sigmas: [0.0, 1.0, 2.0, 4.0]
+    aggregation: mean
+
+edge_detection:
+  # gradient | canny | gmm_kl | distance_multi | soft_landmark_contrast | landmark_knn | ensemble_cluster | nmf_component_edges | top3_nmf_max | top3_nmf_mean
+  hd_method: soft_landmark_contrast
+
+  # gradient | canny
+  rgb_method: gradient
+  rgb_color_space: lab  # gray | lab
+  canny:
+    low_threshold: 40.0
+    high_threshold: 120.0
+    aperture_size: 3
+    l2gradient: true
+    n_jobs: 0
+    rgb_mode: max_channel
+  gmm:
+    n_components: 32
+    covariance_type: diag
+    reg_covar: 1.0e-6
+    max_iter: 1000
+    random_state: 42
+    max_samples: 2000
+    # Optional: PCA on spectra before GMM (fit on subsampled fit set; transform all pixels).
+    pca_enabled: true
+    pca_n_components: 64
+    pca_random_state: 42
+  # Soft landmark contrast edge detector (same defaults as hd_methods_gallery.yaml).
+  soft_landmark_contrast:
+    score_mode: soft_patch_contrast
+    soft_topk: 80
+    soft_temperature: 0.06
+    soft_patch_radius: 1
+    soft_scale_aggregation: max
+    soft_chunk_size: 64
+    contrast_texture_weight: 0.22
+    contrast_aggregation: max
+    contrast_batch_size: 8192
+    # Used by legacy neighbor/contrast modes; soft_patch_contrast uses soft_topk instead.
+    k: [40, 80, 140]
+    n_landmarks: 1000
+    spatial_radii: [1]
+    spatial_connectivity: "4"
+    aggregation: mean
+    percentile: 100.0
+    spatial_weight: uniform
+    spatial_weight_sigma: 2.0
+    landmark_sampling: random
+    similarity: dice
+    post_process: none
+    pca_enabled: true
+    pca_n_components: 64
+    pca_random_state: 42
+    random_state: 42
+    min_edge_percentile: 2.0
+    spectral_weight: false
+    hysteresis_low_percentile: 70.0
+    hysteresis_high_percentile: 95.0
+
+# Match benchmark `hd_edges` (distance_multi + channel norm + neighborhood).
+hd_edges:
+  normalize_channels: true
+  channel_low_percentile: 1.0
+  channel_high_percentile: 99.0
+  log1p: false
+  distance_functions: [l2, cosine, chebyshev, manhattan]
+  save_individual_distance_maps: true
+  pca:
+    enabled: false
+    n_components: 32
+    random_state: 42
+  aggregation: mean
+  topk: 5
+  neighborhood:
+    enabled: true
+    radius: 1
+    sigma: 1.0
+  # Optional: x**edge_power on valid pixels before spatial normalization (1.0 = off). e.g. 2.0 suppresses weak edges.
+  edge_power: 1.0
+  # Used when edge_detection.hd_method: ensemble_cluster (PCA + KMeans on subsamples; mean boundary map).
+  # If hd_edges.pca is enabled, spectra are projected twice (outer PCA then inner PCA); set pca.enabled: false to avoid.
+  ensemble_cluster:
+    n_experiments: 50
+    subsample_fraction: 0.2
+    pca_n_components: 32
+    n_clusters_list: [8, 16, 32, 64, 128, 256]
+    kmeans_n_init: 8
+    random_state: 42
+    # Sparsity (boundary map is ~[0,1] before global percentile norm): output_gamma>1 → x^gamma (e.g. 2).
+    output_gamma: 1.0
+    # Optional: zero response below this percentile on valid tissue (after gamma); null = off.
+    suppress_below_percentile: null
+    # Optional: divide each run's boundary map by sum(valid) + epsilon before mean/max (balances high-k runs).
+    per_run_normalize_by_sum: false
+    per_run_normalize_epsilon: 1.0e-8
+  # When edge_detection.hd_method: nmf_component_edges — NMF at each k, per-component Sobel edges, pool + aggregate.
+  nmf_component_edges:
+    k_list: [3, 4, 5, 6, 8, 12, 18, 24, 36]
+    fit_fraction: 0.1
+    random_state: 42
+    init: nndsvda
+    max_iter: 500
+    tol: 1.0e-4
+    # mean | max — primary HD map; L∞ map is always max over all component-edge maps.
+    aggregate: mean
+    channel_low_percentile: 1.0
+    channel_high_percentile: 99.0
+    # Per 2D component map, before percentile norm + Sobel: Gaussian blur (0 = off), then cv2.equalizeHist.
+    smooth_sigma: 1.0
+    hist_equalize: true
+
+# Match benchmark `edge_evaluation` (rank key name is `evaluation`).
+# include_linf / compute_gradient_alignment are used by DebugNMFEvaluator only, not this script.
+evaluation:
+  metric: continuous_dice
+  # f1 | continuous_dice | gradient_ssim (or grad_ssim)
+  min_viz_edge_percentile: 0
+  threshold_mode: otsu
+  f_beta: 1.0
+  otsu_pre_equalize: false
+  otsu_equalize_method: hist
+  otsu_clahe_clip_limit: 2.0
+  otsu_clahe_tile_grid_size: 8
+  threshold_percentile: 90.0
+  threshold_value: 0.5
+  square_before_continuous_metrics: false
+  equalize_edges_before_metric: false
+
+  # Weighted ranking score (composite_score) + CSV columns. Debug triple PNG title still uses ``metric`` only.
+  # Per-component scaling before applying weights (recommended across differing scales):
+  #   average_rank — tie-aware average ranks among viz this run (higher raw better → mapped linearly to [0,1]);
+  #                  composite_score = Σ weight_k × normalized_rank_score_k
+  #   minmax — min-max each raw metric across valid viz this run, then same weighted sum
+  #   raw — no scaling (only if weights manually scaled). Legacy: normalize_batch: false → raw when normalize omitted.
+  composite:
+    enabled: true
+    normalize: average_rank
+    normalize_batch: true  # legacy: ignored when ``normalize`` is set (still honored if normalize omitted)
+    lab_entropy_bins_a: 16
+    lab_entropy_bins_b: 16
+    weights:
+      continuous_dice: 1.0
+      luminance_rms_contrast: 0.5
+      luminance_gradient_mean: 0.0
+      lab_chroma_entropy: 0.5
+      lab_mean_chroma: 0.0
+
+# Optional greedy subset selection for spatial coverage.
+# For each visualization, build a per-pixel local quality map from patch-centered metrics, then select N images
+# that maximize sum(max(selected_quality_maps)) over valid tissue. Outputs under spatial_coverage/.
+spatial_coverage:
+  enabled: true
+  n_select: 19
+  patch_size: 16
+  # per_location_rank: for each pixel/location, rank visualizations separately for each metric (best=1, worst=0),
+  # then combine rank scores with weights. minmax/raw are available for comparison.
+  normalize: per_location_rank
+  first_global_best: true
+  save_quality_maps: true
+  colormap: PuBu
+  weights:
+    continuous_dice: 1.0
+    luminance_rms_contrast: 1.0
+
+# Match benchmark `clahe` (not read by rank_visualizations_by_f1.py; kept for config parity / copy-paste).
+clahe:
+  enabled: false
+  clip_limit: 2.0
+  tile_grid_size: 8
+  apply_to:
+    nmf_rgb_features: false
+    nmf_component_maps: false
+    edge_viz: false
+    edge_hd: false
+
+# Debug output under out_dir/viz_edges_debug/ (see rank_visualizations_by_f1.py).
+debug:
+  # Per viz: {stem}__triple.png (viz | viz edges | HD edges [+ local Dice if local_dice_window>0] + score);
+  # if save_edge_equalized: also {stem}__triple_eq.png (equalized viz/HD edge panels, same as hd_edge_norm_eq).
+  # if save_npy: {stem}__viz_edge.npy (float32).
+  save_viz_edges: true
+  # Only when evaluation.metric is f1 (skipped for continuous_dice / gradient_ssim): __viz_edge_binary.png/.npy
+  save_viz_edges_binary: true
+  save_npy: false
+  # Affects HD edge PNGs saved once before scoring (hd_edge_norm*_eq*) and writes __triple_eq.png (viz/HD edge panels only).
+  save_edge_equalized: true
+  # Optional fourth edge panel appended to the right; current hd_method is already soft_landmark_contrast, so keep off.
+  extra_hd_method: null
+  extra_hd_label: soft landmark contrast
+  # First panel in __triple*.png: hd_edge | viz_edge | viz
+  first_panel: hd_edge
+  # gallery_top.png / gallery_bottom.png source: triple | triple_eq | viz
+  gallery_panel: viz
+  # Only used when input.divide_by_255: true — gamma on edge panels in __triple.png (omit or null = linear).
+  display_gamma: 0.5
+  # Only when evaluation.metric is f1: __agreement_overlay.png
+  save_agreement_overlay: true
+  # One-time HD per-distance maps (l2, sam, …) before the viz loop; uses hd_edges / spatial_normalization.
+  save_individual_hd_edges: true
+  # Matplotlib colormap for HD edge PNGs (hd_edge_norm*, hd_edge_*_norm*) and __triple.png / __triple_eq.png viz/HD edge panels. null = grayscale.
+  edge_colormap: copper
+  # Fourth panel on __triple.png: local soft Dice (2·Σ(v·h)/(Σv+Σh) in a k×k window on binarized edges; same thresholds as F1). 0 = off.
+  # Typical k: 16–48; 32 is a reasonable default when enabled (spatial scale ~32 px).
+  # Title bar: mean(local) and mean(local|>0); CSV columns mean_local_dice / mean_local_dice_pos (not global F1).
+  local_dice_window: 3
+
+# Multiprocessing
+n_jobs: 1  # 0 = all CPUs, 1 = sequential
+
+logging:
+  level: INFO

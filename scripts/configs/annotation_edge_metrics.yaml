@@ -1,0 +1,72 @@
+# Annotation-boundary metrics for soft edge methods (SoLaCE vs baselines).
+#
+# With incomplete VIA labels, scores are relative (boundary enrichment / AP /
+# Top-p% F1 vs annotated borders), not absolute edge quality.
+#
+# Run (repo root):
+#   python scripts/annotation_edge_metrics.py
+
+defaults:
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/annotation_edge_metrics/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  job:
+    chdir: false
+
+annotation:
+  annotation_json: "E:/MSI-papers_data/MSI-ATLAS/MSI-atlas_annotations_expAI/NRL4485-s2_annotations-only-updatedV2_of-V20.json"
+  index: null
+  paths:
+    - - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/0.npy
+      - 1
+    - - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/2.npy
+      - 0
+    - - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy
+      - 2
+    - - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/3.npy
+      - 3
+  slide: all
+  transpose_spatial: true
+  transpose_spatial_mode: chain_flip
+  # Drop background polygons (main_cat1=BG); token matches full cat or main_cat1.
+  ignore:
+    - BG
+  keep: null
+  category_keys:
+    - main_cat1
+    - Allen_name
+    - sub_cat2
+
+edges:
+  raw_root: "outputs/hd_methods_gallery_solace_baselines/2026-07-16/17-01-37/solace_baselines/raw_grayscale"
+  methods:
+    - soft_landmark_contrast
+    - distance_multi
+    - tic_sobel
+  method_labels:
+    soft_landmark_contrast: SoLaCE
+    distance_multi: Difference magnitude
+    tic_sobel: TIC Sobel
+
+metrics:
+  # Dilate GT boundary by this many pixels (helps thin annotation strokes).
+  boundary_dilate: 1
+  # Density-matched F1 at these top percentages (inside annotated ROI), then average.
+  top_pcts: [5, 10, 15, 20]
+  # Kept for backward compatibility if top_pcts omitted.
+  top_pct: 10.0
+  # Rank-normalize edge maps on tissue before metrics (fairer across scales).
+  rank_normalize: true
+  # Min boundary pixels for a main_cat1 to enter the by-category enrichment plot.
+  # By default all categories use boundary vs local surrounding (exterior ring),
+  # which is the right contrast for plaques and for region borders in general.
+  category_negative_mode: surrounding  # surrounding | interior | auto
+  min_category_boundary_pixels: 40
+  min_category_interior_pixels: 8
+  category_ring_width: 3
+  pooled_ring_width: 3
+  plot:
+    dpi: 300
+    save_pdf: true

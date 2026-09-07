@@ -1,40 +1,157 @@
 # Default configuration for MSIParametricMiCSLMC training and inference
+#
+defaults:
+  - _self_
+  # MoE experts + fusion knobs when ``model.model_type`` is ``mixture_of_experts`` (# @package → model.mixture_of_experts).
+  - mixture_of_experts/demo
 
 # Mode: "train" or "inference" (or set inference.model_path to auto-detect inference mode)
 mode: train
 
 # Data configuration
 data:
-  input_path: "/home/jacob/Desktop/msi_data"
+  # input_path: "E:\\MSImaging-data\\_msi_visual\\Extractions\\Metaspace_datasets\\Dataset5_spinalcord\\5bins\\"
+  # input_path: "E:\\MSImaging-data\\_msi_visual\\Extractions\\NRL4506-5um\\Intelli-slide\\5_bins\\"
+  #input_path: "E:\\MSImaging-data\\_msi_visual\\Extractions\\Metaspace_datasets\\Dataset4_kidney\\5bins\\"
+  #input_path: "E:\\MSImaging-data\\_msi_visual\\Extractions\\NRL4558_5um\\"
+  input_path: "E:\\MSImaging-data\\_msi_visual\\Extractions\\NRL4485-s2\\5_bins\\1.npy"
   transpose: false  # Whether to transpose the image
+
+# HD edge map for edge_stratified / miss_stratified (soft_landmark_contrast pipeline).
+# Optional override: model.hd_edge_map_path — float32 (H,W) in [0,1], same size as MSI.
+rank_config: ${hydra:runtime.cwd}/scripts/configs/hd_methods_gallery.yaml
+
+# Spatial edge-agreement quality (rank_visualizations spatial_coverage logic, single viz).
+# Saves *_spatial_quality.png, *_local_dice, *_local_contrast, *_hd_edge_reference, *_viz_edge.
+spatial_quality:
+  enabled: false   # off while miss-stratified / recall panels are paused
+  patch_size: 4
+  colormap: PuBu
+  save_npy: false
+  save_panel: false
+  panel_add_title: true
+  panel_title_height: 32
+  # Optional format string; placeholders: {stem} {mean_q} {global_dice} {window}
+  panel_title: null
+  # Recall panel: edge dice + LAB entropy. Miss *sampling* uses dice only (miss_quality below).
+  lab_entropy_bins_a: 16
+  lab_entropy_bins_b: 16
+  lab_entropy_stride: 1
+  weights:
+    continuous_dice: 1.0
+    luminance_rms_contrast: 0.0
+    lab_chroma_entropy: 0.0   # was 1.0 — entropy inflated “recall” away from edge misses
 
 # Model hyperparameters
 model:
+  # mics_lmc = pixel MLP (PCC). mics_unet = small U-Net on H×W×C cube; same MiCS+LMC batch losses + optional
+  # differentiable Sobel soft-Dice vs hd_edges and luminance contrast (see dice/contrast weights below).
+  model_type: mics_lmc  # mics_lmc | mics_unet | mixture_of_experts
+  # --- mics_unet only ---
+  unet_base_channels: 32
+  dice_loss_weight: 0.001   # >0 needs hd_edges_path or auto Sobel proxy from MSI when dice_loss_weight > 0
+  contrast_loss_weight: 0.001
+  hd_edges_path: null    # optional .npy float32 (H,W) in [0,1], same spatial size as MSI slice
+  # Classical msi_visual methods (when model_type is one of top3, nmf_3d, …)
+  simple_k: 8
+  nmf_3d_max_iter: 200
+  nmf_3d_n_components: 3
+  top3_low: 99.9
+  top3_norm_percentile: 99.9
+  nmf_segmentation_max_iter: 2000
+  umap_np_min_dist: 0.5
+  umap_np_n_neighbors: 100
+  umap_np_metric: euclidean
+  # --- benchmark mics2 (benchmark_parametric_methods.yaml parameter_groups.mics2) ---
+  # Training knobs match mics2; only pixel_sampling uses miss_stratified (bootstrap still superpixel).
+  sampling: coreset
   number_of_points: 1000
-  sampling: coreset  # Options: random, kmeans++, kmeans, coreset
-  num_epochs: 100
+  num_epochs: 30
   number_of_components: 3
+  num_layers: 7
   lab_to_rgb: true
-  cluster: true #use MiCS clustering
-  clusters: 16-32-64-128
-  cluster_on_pca: false  # if true, KMeans runs on PCA-reduced sampled data
-  cluster_pca_dims: 50   # PCA dimensions when cluster_on_pca is true
+  predict_percentile_low: 1.0
+  predict_percentile_high: 99.0
+
+  #smoothing parameters
+  predict_spatial_smooth_sigma: 0.0 #0.8 for slight blur
+  
+  #cluster parameters
+  cluster: true
+  clusters: 16-32-64-1024
+  clusters_auto_tune: null
+  clusters_auto_tune_k_min: 4
+  clusters_auto_tune_k_max: 256
+  clusters_auto_tune_k_step: 4
+  clusters_auto_tune_n_candidates: 20
+  clusters_auto_tune_ladder: legacy
+  clusters_auto_tune_k_fine: 2048
+  cluster_on_pca: false
+  cluster_pca_dims: 64
   num_samples: 5000
-  pixel_sampling: superpixel  # "superpixel" (spread over segments, slower) or "random" (fast)
-  pca_fit_step: 4  # subsample step for PCA fit (X_raw[::pca_fit_step, :]); 1 = use all pixels
-  beta: 1.0
-  k_epoch: 20 #use for MiCS
-  #k_epoch: 1 #use for LMC only
+  pca_fit_step: 16
+  beta: 20.0
+  k_epoch: 20
   temperature: 100.0
   lr: 1.0
   batch_size: 1024
   warmup_epochs: 10
-  factor: 1.0
+  factor: 1
   random_state: 42
   verbose: false
-  # Loss weights: cluster (MiCS) vs supervised (category annotations)
   cluster_loss_weight: 1.0
-  category_loss_weight: 1.0
+  category_loss_weight: 0.0
+  hd_edge_map_path: null
+  edge_stratified_grid_cells: 16
+  edge_stratified_edge_floor: 0.05
+  edge_stratified_uniform_mix: 0.15
+  # Standard mics2 single-pass training (no bootstrap→miss refit, no recall panels).
+  pixel_sampling: superpixel
+  miss_stratified:  # paused — set pixel_sampling: miss_stratified + two_pass: true to re-enable
+    two_pass: false
+    refit_mode: finetune       # finetune | scratch (scratch = full retrain on miss samples)
+    finetune_epochs: 25
+    finetune_lr_scale: 0.25    # was 0.1 — gradients were too weak on miss pixels
+    finetune_weighted_batches: true  # minibatches oversample high-miss pixels
+    finetune_warmup_epochs: 0
+    bootstrap_epochs: null     # null → use model.num_epochs (30 for mics2)
+    bootstrap_sampling: superpixel
+    miss_quality: dice_only    # miss map from local HD↔viz dice, not LAB entropy blend
+    quality_gamma: 2.0
+    hd_edge_floor: 0.05
+    uniformity_floor: 0.0
+    sampler: topk
+    top_k: 2000               # train on worst misses (see additive)
+    additive: false           # was true — 5k bootstrap drowned out 1k misses in batches
+    uniform_mix: 0.0          # only for sampler=weighted
+    weight_percentile: null   # only for sampler=weighted (e.g. 65)
+    quota_by_weight: true    # only used when sampler=grid
+    quality_map_path: null  # optional .npy (H,W) skips bootstrap if set
+    save_maps: false
+    save_npy: false
+    save_bootstrap_viz: false
+    save_miss_map: false
+    save_miss_badness_map: false
+    save_miss_weight_map: false
+    miss_map_equalize: true
+    miss_colormap: hot
+    save_sampling_viz: false
+    save_sampled_map: false
+    save_recall_sample_overlay: false
+    save_panel: false
+    panel_add_labels: true
+    recall_colormap: PuBu
+    colormap: hot
+    sample_dot_radius: 1
+    sample_dot_hollow: true
+    sample_dot_alpha: 0.55
+    sample_dot_ring_width: 1
+    sample_dot_color: [255, 230, 40]
+  # Parametric UMAP settings (used when model_type: parametric_umap)
+  umap_n_neighbors: 50
+  umap_n_training_epochs: 2
+  # UMAP graph optimization epochs (controls default 200 in umap-learn)
+  umap_n_epochs: 2
 
 
 # Inference configuration
@@ -44,9 +161,8 @@ inference:
   inference_folder: "/home/jacob/Desktop/msi_data/*.npy"
   # If inference_folder is set after training, inference will run automatically using the trained model(s)
 
-# Default configuration for MSIParametricMiCSLMC training and inference
-
-output_dir: null  # If null, uses outputs/ directory
+output_dir: output-parametric_mics-lmc
 save_visualizations: true
+# Per-channel histogram equalization on *_viz.png (after percentile stretch in predict). Often looks noisy; set true only if you want punchier local contrast.
+viz_histogram_equalize: false
 continue_on_error: false  # Continue processing other files if one fails
-

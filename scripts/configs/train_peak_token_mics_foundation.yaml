@@ -1,0 +1,56 @@
+# Foundation peak-token MiCS: one model across all catalog slides + optional discovery.
+#
+# Resamples spectra to a shared m/z grid for MiCS distances; peak tokens still use
+# each slide's native Dalton axis.
+#
+#   python scripts/train_peak_token_mics.py --config-name train_peak_token_mics_foundation
+#
+# Smoke test:
+#   python scripts/train_peak_token_mics.py --config-name train_peak_token_mics_foundation training.max_epochs=3 training.max_hours=0.05 data.max_slides=6
+
+defaults:
+  - train_peak_token_mics
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/peak_token_mics_foundation/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+data:
+  foundation_mode: true
+  benchmark_catalog: scripts/configs/benchmark_parametric_methods.yaml
+  include_comment_catalog: true
+  catalog_require_exists: true
+  min_tissue_pixels: 800
+  max_slides: null
+  discover:
+    merge_with_catalog: true
+    roots:
+      - "E:/MSImaging-data/_msi_visual/Extractions"
+    npy_globs:
+      - "**/5_bins/*.npy"
+      - "**/5bins/*.npy"
+  spectral_filter:
+    auto: false
+
+model:
+  top_k: 256
+  num_samples: 50000
+  samples_per_slide: 400
+  canonical_mz_step: 5.0
+  mass_range_padding_da: 20.0
+  number_of_points: 2000
+  cluster_on_pca: true
+  cluster_pca_dims: 128
+
+training:
+  max_epochs: 1200
+  max_hours: 24.0
+  pool_refresh_epochs: 20
+  adaptive_sampling: sqrt
+  checkpoint_every_epochs: 10
+  visualize_every_epochs: 25
+
+output:
+  max_preview_slides: 8
+  mosaic_filename: peak_token_mics_foundation_gallery.png

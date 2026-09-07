@@ -1,0 +1,218 @@
+defaults:
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/gallery_top3_nmf/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+# Same MSI cube as rank_visualizations_by_f1 (override on CLI).
+input:
+  #5um slides
+  #npy_path: "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset4_kidney/5bins/0.npy"
+  #npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4506-5um/Intelli-slide/5_bins/0.npy"
+  
+  #npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4558_5um/5bins/1/0.npy"
+  #npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4558_5um/5bins/2/0.npy"
+  
+  #npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s6-5um/1/5_bins/0.npy"
+  #npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s6-5um/2/5_bins/0.npy"
+  #npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s6-5um/3/5_bins/0.npy"
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s6-5um/4/5_bins/0.npy"
+  
+
+  #20um slides
+  #npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/0.npy"
+  #npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy"
+  #npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/2.npy"
+  #npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/3.npy"
+  
+  # Optional: explicit args.txt (default: ``<npy parent>/args.txt``). Parsed with ``Namespace`` like extraction tools.
+  args_txt_path: null
+
+data:
+  transpose_msi: false
+  # tic | none | ...
+  normalization: tic
+
+
+
+# NMF on nonnegative spectra (valid pixels); one model per k.
+nmf:
+  k_list: [3, 5, 7, 9, 11, 13, 15]
+  init: nndsvda
+  max_iter: 500
+  tol: 0.0001
+  random_state: 42
+  # 1.0 = fit on all valid pixels; else fit on this fraction (random subset) and transform the rest (faster).
+  fit_fraction: 0.1
+
+# TOP3 pseudo-RGB (msi_visual.percentile_ratio.TOP3)
+top3:
+  low: 99.9
+  norm_percentile: 99.9
+  to_lab: true
+
+# Equalize luminance in RGB→LAB (equalize L, then back to RGB). Same helper as rank/debug_edge_maps.
+# display: left panel; before_edges: input to Sobel/gradient edge maps (can enable one or both).
+equalize:
+  enabled: true
+  display: true
+  before_edges: true
+  method: hist  # hist | clahe
+  clahe_clip_limit: 2.0
+  clahe_tile_grid_size: 8
+
+# Gaussian blur on uint8 RGB only for edge detection (left TOP3 panel stays sharp). After equalize split.
+edge_pre_smooth:
+  enabled: true
+  sigma: 2.0
+
+# Viz edges on TOP3 RGB (same knobs as rank script).
+spatial_normalization:
+  enabled: true
+  low_percentile: 1.0
+  high_percentile: 99.0
+
+edge_maps:
+  multi_scale:
+    enabled: false
+    sigmas: [0.0]
+    aggregation: mean
+
+# HD reference for ``output.edge_panel: local_dice`` (nmf_component_edges on MSI; match rank / benchmark).
+hd_edges:
+  normalize_channels: true
+  channel_low_percentile: 1.0
+  channel_high_percentile: 99.0
+  log1p: false
+  distance_functions: [l2, cosine, chebyshev, manhattan]
+  save_individual_distance_maps: true
+  pca:
+    enabled: false
+    n_components: 32
+    random_state: 42
+  aggregation: mean
+  topk: 5
+  neighborhood:
+    enabled: true
+    radius: 1
+    sigma: 1.0
+  edge_power: 1.0
+  nmf_component_edges:
+    k_list: [3, 5, 7, 9, 11]
+    fit_fraction: 0.1
+    random_state: 42
+    init: nndsvda
+    max_iter: 500
+    tol: 1.0e-4
+    aggregate: mean
+    channel_low_percentile: 1.0
+    channel_high_percentile: 99.0
+    smooth_sigma: 1.0
+    hist_equalize: true
+
+# Binarization for local soft-Dice heatmap (same keys as rank ``evaluation``).
+evaluation:
+  min_viz_edge_percentile: 0
+  threshold_mode: otsu
+  otsu_pre_equalize: false
+  otsu_equalize_method: hist
+  otsu_clahe_clip_limit: 2.0
+  otsu_clahe_tile_grid_size: 8
+  threshold_percentile: 90.0
+  threshold_value: 0.5
+  # Continuous Dice chart / rank ``continuous_dice`` parity:
+  square_before_continuous_metrics: false
+  equalize_edges_before_metric: false
+
+edge_detection:
+  rgb_method: gradient
+  rgb_color_space: lab
+  canny:
+    low_threshold: 40.0
+    high_threshold: 120.0
+    aperture_size: 3
+    l2gradient: true
+    n_jobs: 0
+    rgb_mode: max_channel
+
+output:
+  # Append TOP3 on raw MSI as the last grid cell (after all TOP3-on-NMF-k tiles).
+  append_top3_msi_tile: true
+  top3_msi_tile_title: "TOP3 (MSI)"
+  # Preset (this file): hide_edge_panels + below_top3: all → TOP3 grid, then one light strip (coverage | Dice).
+  out_dir: output-gallery_top3_nmf
+  gallery_png: gallery_top3_nmf_edges.png
+  # Save each grid cell and each diagram under subfolders of the run directory (for slides / figures).
+  save_individual_assets: true
+  panels_dir: panels
+  diagrams_dir: diagrams
+  # If true, read ``input.args.txt_path`` or ``<npy dir>/args.txt`` for ``id`` / ``slide_name`` / … and use a
+  # slug as a subdirectory under the Hydra run dir (or ``out_dir``), and prefix top-level PNG/CSV names.
+  use_slide_name_from_args_txt: true
+  # edges | local_dice — local_dice uses rank-style local soft-Dice heatmap vs HD ``nmf_component_edges`` (fourth triple panel).
+  edge_panel: local_dice
+  # true = omit the split bottom grid (or combined right column): no Sobel / local-Dice *raster* panels.
+  # Does NOT remove strips below TOP3; those are diagnostics + continuous Dice unless below_top3: none.
+  # Alias: hide_edges. Gallery PNG path: hydra run dir unless out_dir is set.
+  hide_edge_panels: true
+  # Only if true: when hide_edge_panels is true, also omit the diagnostics matplotlib strip from the composite PNG.
+  hide_diagnostics_when_hiding_edges: false
+  # Composite PNG below TOP3: all | none | diagnostics | continuous_dice
+  # - all: diagnostics (3 line plots) + continuous Dice bar chart — use with hide_edge_panels for TOP3-only + both graphs
+  # - none: TOP3 grid only (standalone diagnostics.png / gallery_continuous_dice.png still written if enabled)
+  # - diagnostics: diagnostics strip only (no continuous Dice in composite)
+  # - continuous_dice: continuous Dice strip only (no diagnostics in composite)
+  below_top3: all
+  # Bar chart + CSV of global continuous Dice (soft viz vs HD nmf_component_edges) per gallery row.
+  continuous_dice_chart:
+    enabled: true
+    png: gallery_continuous_dice.png
+    csv: gallery_continuous_dice.csv
+    include_in_gallery: true
+    dpi: 150
+    gallery_dpi: 120
+    figsize: [12.0, 4.0]
+    title: "Continuous Dice (soft viz vs HD nmf_component_edges)"
+  local_dice:
+    window: 3
+    # Stretch valid-pixel values to [0,1] by p_low–p_high before uint8 (otherwise heatmap often looks black vs white).
+    display_percentile_stretch: true
+    stretch_low_percentile: 1.0
+    stretch_high_percentile: 99.0
+  # Vertical gap (pixels) between the TOP3 grid and the edges grid (stacked in one PNG).
+  split_gallery_gap: 24
+  # Optional matplotlib colormap name for edge panels (null = grayscale).
+  edge_colormap: null
+  # Grid: ``gallery_columns`` cells per row (same for TOP3 and edge blocks).
+  gallery_columns: 4
+  # null = full resolution (no downscaling). Or [max_w, max_h] to shrink large cells to fit.
+  cell_max_size: null
+  column_padding: 8
+  cell_gap: 8
+  row_gap: 12
+  row_label_height: 34
+  # Optional grayscale row: max/mean of raw Sobel edges (per k + full MSI). Off by default; use TOP3 (MSI) tile instead.
+  aggregate_all_edges:
+    enabled: false
+    # One gallery cell per mode (default: both mean and max). If omitted, legacy ``mode`` is used for a single cell.
+    modes: [max]
+  # Cumulative pixel coverage (max path) + continuous Dice in one light figure (white bg, gray grid, blue markers).
+  diagnostics:
+    enabled: true
+    combine_continuous_dice_in_panel: true
+    # τ = coverage_frac_of_max × max(v on valid) for that step’s max-aggregated map; coverage = mean(valid)[v > τ].
+    coverage_frac_of_max: 0.1
+    coverage_dice_fig_width: 14.0
+    coverage_dice_fig_height: 4.0
+    # Width for the 3-panel row (coverage | L1 on valid | continuous Dice) when combined with Dice chart.
+    combined_three_panel_fig_width: 21.0
+    csv: gallery_edge_diagnostics.csv
+    png: gallery_edge_diagnostics.png
+    # When combine_continuous_dice_in_panel is true, Dice is drawn in the same PNG (right panel); no second strip.
+    include_in_gallery: true
+    dpi: 150
+    gallery_dpi: 120
+
+logging:
+  level: INFO

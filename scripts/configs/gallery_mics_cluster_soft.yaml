@@ -1,0 +1,49 @@
+# MiCS cluster-head gallery: soft softmax-weighted maps (not argmax).
+#
+# Run:
+#   python scripts/gallery_mics_cluster_soft.py
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/gallery_mics_cluster_soft/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+# 3rd-best kidney trial (T=100, clusters 8-32-128, cluster_on_pca=false).
+model:
+  num_layers: 2
+  num_epochs: 100
+  num_samples: 20000
+  temperature: 100.0
+  clusters: 8-32-128
+  cluster_on_pca: false
+  cluster_pca_dims: 8
+  beta: 20.0
+  pixel_sampling: superpixel
+  sampling: random
+  number_of_points: 1000
+  pca_fit_step: 4
+  lr: 1.0
+  lab_to_rgb: true
+  predict_spatial_smooth_sigma: 0.0
+
+gallery:
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy"
+  transpose_msi: false
+  tic_normalize: true
+  num_layers: null           # null → model.num_layers (2 for kidney best)
+  seed: 42
+  share_pixel_sampling: true
+  pixel_sampling_cache_path: null
+  color_scheme: tab20c
+  layout: hub          # hub: clusters top, MiCS center bottom + arrows | grid: flat mosaic
+  arrow_color: white
+  include_argmax_panels: false
+  include_mics_viz_panel: true
+  save_soft_probs: false
+  ncols: 3
+  figure_size_inches: 14
+  dpi: 300
+  panel_title_fontsize: 10

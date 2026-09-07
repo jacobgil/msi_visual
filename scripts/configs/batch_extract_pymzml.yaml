@@ -1,0 +1,124 @@
+# Batch imzML → .npy extraction via PymzmlToNumpy (same as extract_pymzml.py).
+#
+# Run from repo root (positive mode, default):
+#   python scripts/batch_extract_pymzml.py
+#
+# Negative-ion mode (12 slides under MSimaging/negative):
+#   python scripts/batch_extract_pymzml.py --config-name=batch_extract_pymzml_negative
+#
+# Dry-run (list jobs only):
+#   python scripts/batch_extract_pymzml.py extract.dry_run=true
+#
+# With visualizations (TOP3, PCA, soft HD edges, multiple MiCS):
+#   python scripts/batch_extract_pymzml.py visualizations.enabled=true
+#
+# Override paths:
+#   python scripts/batch_extract_pymzml.py extract.input_root=D:/data/positive
+
+hydra:
+  run:
+    dir: outputs/batch_extract_pymzml/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+extract:
+  # Root folder containing .imzML files (searched recursively when recursive=true).
+  input_root: "E:/MSI+SpatialTrans-datasets/CarstenHopf-Mannheim/datasets/datasets/MSimaging/positive"
+
+  # Base folder for numpy extractions (repo convention: Extractions/<dataset>/.../5_bins/0.npy).
+  output_root: "E:/MSImaging-data/_msi_visual/Extractions/CarstenHopf-Mannheim/MSimaging/positive"
+
+  # Saved in each output folder as args.txt (identifier for the extraction run).
+  id: "CarstenHopf-Mannheim_MSimaging_positive"
+
+  bins: 5
+  bins_subdir: "5_bins"
+  region_filename: "0.npy"
+
+  # null → auto-detect min/max m/z from each slide.
+  start_mz: null
+  end_mz: null
+
+  nonzero: false
+  recursive: true
+  skip_existing: true
+  dry_run: false
+
+  # Extraction backend: legacy (PymzmlToNumpy) or fast (stream + np.add.at + workers).
+  backend: fast
+  # Process workers for backend=fast (auto-falls back to 1 on small slices).
+  num_workers: 8
+  # Optional row slice for backend=fast (null = full slide).
+  max_rows: null
+
+  # Optional glob filter relative to input_root (null = all *.imzML).
+  include_glob: null
+
+  # Write CSV manifest under the Hydra output dir.
+  write_manifest: true
+
+# Optional post-extract visualizations (merged with generate_visualization_panel.yaml defaults).
+visualizations:
+  enabled: true
+  subdir: viz
+  skip_existing: true
+  # Windows: run each slide's viz in a fresh Python process (isolates DLL state from extract).
+  # Uses the same interpreter as the parent (sys.executable); override with python: if needed.
+  subprocess: true
+  # python: C:/Users/PahnkeLab/miniconda3/envs/maldi/python.exe
+  seed: 42
+
+  data:
+    transpose_msi: false
+    tic_normalize: true
+
+  # Classical / fast methods (no parametric_mics_lmc here — use mics_groups for MiCS).
+  methods:
+    - top3
+    - pca
+    - soft_edges
+
+  # Ten MiCS presets (see batch_extract_mics_groups.yaml for clusters/beta/layers).
+  mics_groups:
+    - mics_std
+    - mics_multiscale
+    - mics_beta0
+    - mics_beta1
+    - mics_coarse
+    - mics_silhouette
+    - mics_pca
+    - mics_shallow
+    - mics_deep
+    - mics_fine
+
+  mics_parameter_group: null
+  mics_benchmark_config: scripts/configs/batch_extract_mics_groups.yaml
+
+  # Shared MiCS knobs only — per-group settings live in batch_extract_mics_groups.yaml.
+  mics_model: {}
+
+  benchmark:
+    num_samples: 5000
+    sampling_mode: random
+
+  output:
+    save_panel: true
+    panel_png: panel.png
+    columns: 4
+    cell_max_size: 420
+    dpi: 120
+    figsize_scale: 2.2
+    panel_full_size: true
+    save_equalized: false
+
+  top3:
+    low: 99.9
+    norm_percentile: 99.9
+    to_lab: true
+
+  pca:
+    max_iter: 2000
+
+  soft_edges:
+    rank_config: scripts/configs/hd_methods_gallery.yaml
+    hd_method: soft_landmark_contrast
+    colormap: PuBu
+    label: SoftEdges

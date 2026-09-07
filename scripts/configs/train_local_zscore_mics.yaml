@@ -1,0 +1,51 @@
+# Local z-score MiCS: per-pixel (X − local_mean) / local_std in a Gaussian window.
+#
+# Run from repo root:
+#   python scripts/train_local_zscore_mics.py
+
+defaults:
+  - train_parametric_mics_lmc
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/train_local_zscore_mics/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+data:
+  input_path: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy"
+  transpose: false
+
+model:
+  num_epochs: 30
+  num_layers: 3
+  clusters: 8-32-128-256
+  sampling: coreset
+  num_samples: 5000
+  batch_size: 1024
+  pixel_sampling: superpixel
+  predict_percentile_low: 1.0
+  predict_percentile_high: 99.0
+  beta: 20.0
+  k_epoch: 20
+  temperature: 100.0
+  lr: 1.0
+  warmup_epochs: 10
+
+local_zscore:
+  sigma: 0.7
+  eps: 1.0e-6
+  clip_z: 5.0
+  block_normalize: true
+  block_low_pct: 1.0
+  block_high_pct: 99.0
+  block_gain: 1.0
+  equalize_viz: true
+  gallery_target_h: 520
+
+compare_baseline:
+  enabled: true
+
+pipeline:
+  seed: 42
+  share_pixel_sampling: true
+  pixel_sampling_cache_path: null

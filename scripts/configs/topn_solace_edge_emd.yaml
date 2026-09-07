@@ -1,0 +1,53 @@
+# Across SoLaCE edges vs same-side control: top-N intensity EMD vs N.
+#
+# At strong SoLaCE edge pixels, compare top-N fingerprints on opposite sides
+# of the edge (across) vs two patches on the same side (along). High
+# across/along means TOP-N jumps at SoLaCE boundaries.
+#
+# Run (repo root):
+#   python scripts/topn_solace_edge_emd.py
+#   python scripts/topn_solace_edge_emd.py data.slide=0
+
+defaults:
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/topn_solace_edge_emd/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  job:
+    chdir: false
+
+data:
+  paths:
+    - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/0.npy
+    - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/2.npy
+    - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/1.npy
+    - E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/3.npy
+  slide: all
+  transpose_spatial_mode: chain_flip
+  normalization: tic
+
+solace:
+  rank_config: ${hydra:runtime.cwd}/scripts/configs/hd_methods_gallery.yaml
+  hd_method: soft_landmark_contrast
+
+analysis:
+  ns: [1, 2, 3, 5, 8, 10]
+  # Keep strongest SoLaCE pixels on tissue (percentile).
+  edge_percentile: 90.0
+  # Max edge sites sampled per slide.
+  max_edges: 250
+  # Pixel offset from edge along normal / tangent.
+  offset_px: 3
+  # Disk radius for each patch (pixels).
+  patch_radius: 2
+  seed: 0
+
+plot:
+  dpi: 300
+  save_pdf: true
+  style: paper
+  annotate_n: 3
+  title: ""
+  xlabel: "N (top intensities per pixel)"
+  ylabel: "Mean Wasserstein distance"

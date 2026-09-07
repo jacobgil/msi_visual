@@ -1,0 +1,130 @@
+defaults:
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/bayes_tune_mics_lmc/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+input:
+  # Single MSI: npy_path. Multi-MSI: npy_paths (list) or npy_dir + npy_glob.
+  # Precedence: npy_paths > npy_dir > npy_path.
+  npy_path: "E:/MSImaging-data/_msi_visual/Extractions/Metaspace_datasets/Dataset4_kidney/5bins/0.npy"
+  npy_paths: []
+  npy_dir: null
+  npy_glob: "**/5_bins/0.npy"
+
+data:
+  transpose_msi: false
+  normalization: tic
+
+# Reuses the exact soft_landmark_contrast, RGB edge extraction, spatial normalization,
+# and hd_edges settings from the HD-method gallery.
+rank_config: ${hydra:runtime.cwd}/scripts/configs/hd_methods_gallery.yaml
+
+# Provides the baseline MiCS model defaults; search_space overrides selected model fields.
+train_config: ${hydra:runtime.cwd}/scripts/configs/train_parametric_mics_lmc.yaml
+
+tuning:
+  random_state: 42
+  # ~15 OFAT + up to 150 hill (random fallback fills grid after OFAT exhausts 1-step neighbors).
+  n_iterations: 180
+  n_initial_random: 6
+  # Candidate pool evaluated by expected improvement at each Bayesian step.
+  n_candidates: 8
+  # bayesian: GP+EI throughout (respecting n_initial_random).
+  # ofat_then_bayesian: OFAT → hill → GP+EI on remaining budget.
+  # ofat_then_hill: OFAT → extended hill only (no GP+EI; recommended for categorical MiCS search).
+  strategy: ofat_then_hill
+  # Expected-improvement knobs (ignored when strategy=ofat_then_hill).
+  bayesian:
+    ei_xi: 0.04
+    gp_alpha: 2.0e-4
+    random_explore_probability: 0.12
+
+  # Held constant during tuning (2026-05-18 kidney run: top trials agreed on these).
+  fixed_params:
+    beta: 20.0
+    num_epochs: 100
+    num_samples: 20000
+    pixel_sampling: superpixel
+    lr: 1.0
+    lab_to_rgb: true
+    num_layers: 2
+    number_of_points: 1000
+    pca_fit_step: 4
+    sampling: random
+
+  # Used when strategy is ofat_then_bayesian or ofat_then_hill
+  ofat_then_bayesian:
+    baseline:
+      temperature: 1
+      clusters: "8-32-128"
+      cluster_pca_dims: 512
+      cluster_on_pca: true
+    update_working_between_dims: true
+    skip_numeric_ofat: true
+    float_linspace_steps: 3
+    category_max_levels: null
+
+  # After OFAT completes: stochastic hill climb on best-so-far.
+  # With ofat_then_hill this is the only post-OFAT phase (replaces former GP+EI budget).
+  # With strategy=bayesian, set after_ofat_only=false to interleave hill with GP+EI.
+  hill_climbing:
+    enabled: true
+    after_ofat_only: true
+    max_trials: 150
+    relative_float_step: 0.2
+    # When single-axis neighbors are already in tried_keys (common after OFAT), sample random untried combos.
+    random_fallback: true
+
+objective:
+  metric: continuous_dice
+  square_before_continuous_dice: false
+  # rank_composite: maximize weighted mean normalized rank vs all past trials per MSI slice (default).
+  # weighted_metrics: per-trial weighted sum of min–max normalized metric means (no cross-trial ranking).
+  score_mode: weighted_metrics
+  # Min–max bounds for weighted_metrics ([low, high] → clip to [0,1]). Ignored when score_mode != weighted_metrics,
+  # except diagnostic columns objective_norm__* are still written when score_mode rank_composite.
+  metric_bounds:
+    continuous_dice: [0.0, 1.0]
+    luminance_rms_contrast: [0.0, 0.5]
+    lab_chroma_entropy: [0.0, 8.0]
+  # Weights (nonnegative); normalized internally. Used by both modes.
+  weights:
+    continuous_dice: 1.0
+    luminance_rms_contrast: 0.5
+    lab_chroma_entropy: 0.5
+
+output:
+  edge_colormap: PuBu
+  equalize_mics_rgb: false
+
+# Reduced search space after 2026-05-18 exploratory run (see bayes_mics_trials.csv analysis).
+# Solved scalars live in tuning.fixed_params; OFAT + hill sweep only the axes below.
+search_space:
+  temperature:
+    type: categorical
+    choices: [1, 10.0, 100.0]
+  clusters:
+    type: categorical
+    choices:
+      # Core ladders from top composite trials (incl. global best 8-16-32-64-2048)
+      - "8-16-32"
+      - "8-16-32-64"
+      - "8-32-128"
+      - "8-16-32-64-2048"
+      - "8-32-128-2048"
+      - "16-32-64-128"
+      - "16-32-64-128-2048"
+      - "32-64-128-2048"
+      - "32-64-128-256-512"
+      - "256-512-1024-2048"
+  cluster_pca_dims:
+    type: categorical
+    choices: [8, 32, 512]
+  cluster_on_pca:
+    type: categorical
+    choices: [false, true]
+
+logging:
+  level: INFO

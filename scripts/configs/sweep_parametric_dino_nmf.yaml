@@ -1,0 +1,45 @@
+defaults:
+  - _self_
+
+hydra:
+  run:
+    dir: outputs/dino-nmf-sweep/${now:%Y-%m-%d}/${now:%H-%M-%S}
+
+data:
+  # Path to MSI .npy file (HxWxC or CxHxW if transpose_msi=true)
+  #input_npy: "E:/MSImaging-data/_msi_visual/Extractions/NRL4558_5um/5bins/2/0.npy"
+  input_npy: "E:/MSImaging-data/_msi_visual/Extractions/NRL4485-s2/5_bins/2.npy"
+  transpose_msi: false
+  tic_normalize: true
+sweep:
+  pixel_sampling: [random]
+  num_samples: [5000]
+  train_epochs: [200]
+  learning_rate: [0.001]
+  token_dropout: [0.5]
+  pca_fit_step: [4]
+
+model:
+  nmf_k: 32
+  random_state: 42
+  batch_size: 512
+  d_model: 64
+  n_layers: 3
+  dino_dim: 64
+  ema_momentum: 0.999
+  student_temp: 0.15
+  teacher_temp: 0.07
+  max_nmf_fit_samples: 4000
+  koleo_weight: 0.0
+  # 0 = raw spectrum as MLP input; >0 = PCA on training tokens first (token_dropout masks PCs).
+  pre_mlp_pca_dim: 16
+  # Penalize correlated RGB CLS channels across the batch (reduces gray / achromatic maps).
+  cls_decorrelate_weight: 1.0
+  # Stronger views + teacher batch-centering (DINO-style) — helps avoid trivial distillation.
+  view_noise_std: 0.1
+  spectral_dropout_p: 0.1
+  teacher_center_logits: false
+
+output:
+  out_dir: output-dino-sweep
+  equalize_visualizations: true
