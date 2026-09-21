@@ -1,0 +1,3540 @@
+{
+  "superpixel__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r0__s42__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r0__s42__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r0__s42__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r0__s42__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r0__s42__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r0_s42": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r0__s42__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r0__s42__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r0__s42__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r0__s42__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r0__s42__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r1_s43": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r1__s43__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r1__s43__superpixel__parametric_umap.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r1__s43__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r1__s43__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r1__s43__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r2_s44": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r2__s44__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r2__s44__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r2__s44__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r2__s44__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r2__s44__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r3_s45": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r3__s45__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r3__s45__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r3__s45__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r3__s45__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r3__s45__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r4_s46": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r4__s46__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r4__s46__superpixel__pca.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r4__s46__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r4__s46__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r4__s46__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r5_s47": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r5__s47__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r5__s47__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r5__s47__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r5__s47__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r5__s47__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r6_s48": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r6__s48__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r6__s48__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r6__s48__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r6__s48__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r6__s48__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r7_s49": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r7__s49__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r7__s49__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r7__s49__superpixel__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r7__s49__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r7__s49__superpixel__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r8_s50": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r8__s50__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r8__s50__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r8__s50__superpixel__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r8__s50__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r8__s50__superpixel__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r9_s51": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r9__s51__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r9__s51__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r9__s51__superpixel__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r9__s51__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r9__s51__superpixel__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r0_s42": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r0__s42__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r0__s42__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r0__s42__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r0__s42__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r0__s42__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r1_s43": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r1__s43__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r1__s43__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r1__s43__superpixel__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r1__s43__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r1__s43__superpixel__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r2_s44": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r2__s44__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r2__s44__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r2__s44__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r2__s44__superpixel__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r2__s44__superpixel__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r3_s45": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r3__s45__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r3__s45__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r3__s45__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r3__s45__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r3__s45__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r4_s46": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r4__s46__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r4__s46__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r4__s46__superpixel__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r4__s46__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r4__s46__superpixel__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r5_s47": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r5__s47__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r5__s47__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r5__s47__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r5__s47__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r5__s47__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r6_s48": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r6__s48__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r6__s48__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r6__s48__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r6__s48__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r6__s48__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r7_s49": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r7__s49__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r7__s49__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r7__s49__superpixel__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r7__s49__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r7__s49__superpixel__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r8_s50": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r8__s50__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r8__s50__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r8__s50__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r8__s50__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r8__s50__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r9_s51": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r9__s51__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r9__s51__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r9__s51__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r9__s51__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r9__s51__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r0_s42": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r0__s42__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r0__s42__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r0__s42__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r0__s42__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r0__s42__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r1_s43": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r1__s43__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r1__s43__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r1__s43__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r1__s43__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r1__s43__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r2_s44": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r2__s44__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r2__s44__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r2__s44__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r2__s44__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r2__s44__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r3_s45": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r3__s45__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r3__s45__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r3__s45__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r3__s45__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r3__s45__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r4_s46": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r4__s46__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r4__s46__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r4__s46__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r4__s46__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r4__s46__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r5_s47": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r5__s47__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r5__s47__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r5__s47__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r5__s47__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r5__s47__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r6_s48": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r6__s48__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r6__s48__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r6__s48__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r6__s48__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r6__s48__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r7_s49": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r7__s49__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r7__s49__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r7__s49__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r7__s49__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r7__s49__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r8_s50": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r8__s50__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r8__s50__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r8__s50__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r8__s50__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r8__s50__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r9_s51": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r9__s51__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r9__s51__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r9__s51__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r9__s51__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r9__s51__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r0_s42": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r0__s42__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r0__s42__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r0__s42__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r0__s42__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r0__s42__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r1_s43": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r1__s43__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r1__s43__superpixel__pca.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r1__s43__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r1__s43__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r1__s43__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r2_s44": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r2__s44__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r2__s44__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r2__s44__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r2__s44__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r2__s44__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r3_s45": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r3__s45__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r3__s45__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r3__s45__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r3__s45__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r3__s45__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r4_s46": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r4__s46__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r4__s46__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r4__s46__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r4__s46__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r4__s46__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r5_s47": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r5__s47__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r5__s47__superpixel__parametric_umap.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r5__s47__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r5__s47__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r5__s47__superpixel__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r6_s48": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r6__s48__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r6__s48__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r6__s48__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r6__s48__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r6__s48__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r7_s49": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r7__s49__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r7__s49__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r7__s49__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r7__s49__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r7__s49__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r8_s50": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r8__s50__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r8__s50__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r8__s50__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r8__s50__superpixel__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r8__s50__superpixel__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r9_s51": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r9__s51__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r9__s51__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r9__s51__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r9__s51__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r9__s51__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r0_s42": [
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r0__s42__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r0__s42__superpixel__parametric_umap.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r0__s42__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r0__s42__superpixel__top3.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r0__s42__superpixel__pca.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r1_s43": [
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r1__s43__superpixel__nmf_3d.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r1__s43__superpixel__parametric_umap.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r1__s43__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r1__s43__superpixel__top3.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r1__s43__superpixel__pca.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r2_s44": [
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r2__s44__superpixel__parametric_umap.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r2__s44__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r2__s44__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r2__s44__superpixel__top3.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r2__s44__superpixel__pca.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r3_s45": [
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r3__s45__superpixel__nmf_3d.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r3__s45__superpixel__parametric_umap.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r3__s45__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r3__s45__superpixel__top3.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r3__s45__superpixel__pca.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r4_s46": [
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r4__s46__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r4__s46__superpixel__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r4__s46__superpixel__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r4__s46__superpixel__top3.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r4__s46__superpixel__pca.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r5_s47": [
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r5__s47__superpixel__nmf_3d.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r5__s47__superpixel__parametric_umap.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r5__s47__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r5__s47__superpixel__top3.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r5__s47__superpixel__pca.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r6_s48": [
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r6__s48__superpixel__nmf_3d.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r6__s48__superpixel__parametric_umap.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r6__s48__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r6__s48__superpixel__top3.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r6__s48__superpixel__pca.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r7_s49": [
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r7__s49__superpixel__parametric_umap.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r7__s49__superpixel__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r7__s49__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r7__s49__superpixel__top3.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r7__s49__superpixel__pca.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r8_s50": [
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r8__s50__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r8__s50__superpixel__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r8__s50__superpixel__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r8__s50__superpixel__top3.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r8__s50__superpixel__pca.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r9_s51": [
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r9__s51__superpixel__nmf_3d.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r9__s51__superpixel__parametric_umap.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r9__s51__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r9__s51__superpixel__top3.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r9__s51__superpixel__pca.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r0_s42": [
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r0__s42__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r0__s42__superpixel__pca.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r0__s42__superpixel__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r0__s42__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r0__s42__superpixel__top3.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r1_s43": [
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r1__s43__superpixel__pca.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r1__s43__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r1__s43__superpixel__top3.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r1__s43__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r1__s43__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r2_s44": [
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r2__s44__superpixel__pca.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r2__s44__superpixel__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r2__s44__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r2__s44__superpixel__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r2__s44__superpixel__top3.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r3_s45": [
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r3__s45__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r3__s45__superpixel__pca.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r3__s45__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r3__s45__superpixel__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r3__s45__superpixel__top3.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r4_s46": [
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r4__s46__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r4__s46__superpixel__pca.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r4__s46__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r4__s46__superpixel__top3.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r4__s46__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r5_s47": [
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r5__s47__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r5__s47__superpixel__pca.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r5__s47__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r5__s47__superpixel__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r5__s47__superpixel__top3.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r6_s48": [
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r6__s48__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r6__s48__superpixel__pca.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r6__s48__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r6__s48__superpixel__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r6__s48__superpixel__top3.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r7_s49": [
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r7__s49__superpixel__parametric_umap.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r7__s49__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r7__s49__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r7__s49__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r7__s49__superpixel__top3.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r8_s50": [
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r8__s50__superpixel__parametric_umap.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r8__s50__superpixel__pca.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r8__s50__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r8__s50__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r8__s50__superpixel__top3.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r9_s51": [
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r9__s51__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r9__s51__superpixel__pca.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r9__s51__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r9__s51__superpixel__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r9__s51__superpixel__top3.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r0_s42": [
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r0__s42__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r0__s42__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r0__s42__superpixel__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r0__s42__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r0__s42__superpixel__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r1_s43": [
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r1__s43__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r1__s43__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r1__s43__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r1__s43__superpixel__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r1__s43__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r2_s44": [
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r2__s44__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r2__s44__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r2__s44__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r2__s44__superpixel__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r2__s44__superpixel__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r3_s45": [
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r3__s45__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r3__s45__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r3__s45__superpixel__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r3__s45__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r3__s45__superpixel__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r4_s46": [
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r4__s46__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r4__s46__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r4__s46__superpixel__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r4__s46__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r4__s46__superpixel__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r5_s47": [
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r5__s47__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r5__s47__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r5__s47__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r5__s47__superpixel__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r5__s47__superpixel__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r6_s48": [
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r6__s48__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r6__s48__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r6__s48__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r6__s48__superpixel__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r6__s48__superpixel__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r7_s49": [
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r7__s49__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r7__s49__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r7__s49__superpixel__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r7__s49__superpixel__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r7__s49__superpixel__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r8_s50": [
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r8__s50__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r8__s50__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r8__s50__superpixel__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r8__s50__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r8__s50__superpixel__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r9_s51": [
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r9__s51__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r9__s51__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r9__s51__superpixel__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r9__s51__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r9__s51__superpixel__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__NRL4558_5um__5bins__2__0.npy__e65e3281__r0_s42": [
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r0__s42__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r0__s42__superpixel__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r0__s42__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r0__s42__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r0__s42__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__NRL4558_5um__5bins__2__0.npy__e65e3281__r1_s43": [
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r1__s43__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r1__s43__superpixel__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r1__s43__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r1__s43__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r1__s43__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__NRL4558_5um__5bins__2__0.npy__e65e3281__r2_s44": [
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r2__s44__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r2__s44__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r2__s44__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r2__s44__superpixel__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r2__s44__superpixel__pca.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__NRL4558_5um__5bins__2__0.npy__e65e3281__r3_s45": [
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r3__s45__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r3__s45__superpixel__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r3__s45__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r3__s45__superpixel__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r3__s45__superpixel__pca.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__NRL4558_5um__5bins__2__0.npy__e65e3281__r4_s46": [
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r4__s46__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r4__s46__superpixel__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r4__s46__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r4__s46__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r4__s46__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__NRL4558_5um__5bins__2__0.npy__e65e3281__r5_s47": [
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r5__s47__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r5__s47__superpixel__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r5__s47__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r5__s47__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r5__s47__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__NRL4558_5um__5bins__2__0.npy__e65e3281__r6_s48": [
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r6__s48__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r6__s48__superpixel__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r6__s48__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r6__s48__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r6__s48__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__NRL4558_5um__5bins__2__0.npy__e65e3281__r7_s49": [
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r7__s49__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r7__s49__superpixel__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r7__s49__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r7__s49__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r7__s49__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__NRL4558_5um__5bins__2__0.npy__e65e3281__r8_s50": [
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r8__s50__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r8__s50__superpixel__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r8__s50__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r8__s50__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r8__s50__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "superpixel__NRL4558_5um__5bins__2__0.npy__e65e3281__r9_s51": [
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r9__s51__superpixel__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r9__s51__superpixel__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r9__s51__superpixel__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r9__s51__superpixel__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r9__s51__superpixel__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r0_s42": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r0__s42__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r0__s42__random__pca.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r0__s42__random__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r0__s42__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r0__s42__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r1_s43": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r1__s43__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r1__s43__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r1__s43__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r1__s43__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r1__s43__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r2_s44": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r2__s44__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r2__s44__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r2__s44__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r2__s44__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r2__s44__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r3_s45": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r3__s45__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r3__s45__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r3__s45__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r3__s45__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r3__s45__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r4_s46": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r4__s46__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r4__s46__random__parametric_umap.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r4__s46__random__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r4__s46__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r4__s46__random__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r5_s47": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r5__s47__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r5__s47__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r5__s47__random__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r5__s47__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r5__s47__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r6_s48": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r6__s48__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r6__s48__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r6__s48__random__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r6__s48__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r6__s48__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r7_s49": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r7__s49__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r7__s49__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r7__s49__random__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r7__s49__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r7__s49__random__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r8_s50": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r8__s50__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r8__s50__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r8__s50__random__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r8__s50__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r8__s50__random__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r9_s51": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r9__s51__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r9__s51__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r9__s51__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r9__s51__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__0.npy__8c3b690b__r9__s51__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r0_s42": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r0__s42__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r0__s42__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r0__s42__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r0__s42__random__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r0__s42__random__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r1_s43": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r1__s43__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r1__s43__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r1__s43__random__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r1__s43__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r1__s43__random__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r2_s44": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r2__s44__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r2__s44__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r2__s44__random__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r2__s44__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r2__s44__random__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r3_s45": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r3__s45__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r3__s45__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r3__s45__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r3__s45__random__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r3__s45__random__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r4_s46": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r4__s46__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r4__s46__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r4__s46__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r4__s46__random__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r4__s46__random__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r5_s47": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r5__s47__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r5__s47__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r5__s47__random__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r5__s47__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r5__s47__random__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r6_s48": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r6__s48__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r6__s48__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r6__s48__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r6__s48__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r6__s48__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r7_s49": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r7__s49__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r7__s49__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r7__s49__random__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r7__s49__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r7__s49__random__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r8_s50": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r8__s50__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r8__s50__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r8__s50__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r8__s50__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r8__s50__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r9_s51": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r9__s51__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r9__s51__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r9__s51__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r9__s51__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__1.npy__7a9bf517__r9__s51__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r0_s42": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r0__s42__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r0__s42__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r0__s42__random__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r0__s42__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r0__s42__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r1_s43": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r1__s43__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r1__s43__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r1__s43__random__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r1__s43__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r1__s43__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r2_s44": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r2__s44__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r2__s44__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r2__s44__random__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r2__s44__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r2__s44__random__pca.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r3_s45": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r3__s45__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r3__s45__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r3__s45__random__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r3__s45__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r3__s45__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r4_s46": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r4__s46__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r4__s46__random__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r4__s46__random__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r4__s46__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r4__s46__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r5_s47": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r5__s47__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r5__s47__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r5__s47__random__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r5__s47__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r5__s47__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r6_s48": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r6__s48__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r6__s48__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r6__s48__random__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r6__s48__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r6__s48__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r7_s49": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r7__s49__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r7__s49__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r7__s49__random__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r7__s49__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r7__s49__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r8_s50": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r8__s50__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r8__s50__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r8__s50__random__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r8__s50__random__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r8__s50__random__pca.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r9_s51": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r9__s51__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r9__s51__random__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r9__s51__random__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r9__s51__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__2.npy__8987d3e9__r9__s51__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r0_s42": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r0__s42__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r0__s42__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r0__s42__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r0__s42__random__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r0__s42__random__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r1_s43": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r1__s43__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r1__s43__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r1__s43__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r1__s43__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r1__s43__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r2_s44": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r2__s44__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r2__s44__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r2__s44__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r2__s44__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r2__s44__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r3_s45": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r3__s45__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r3__s45__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r3__s45__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r3__s45__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r3__s45__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r4_s46": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r4__s46__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r4__s46__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r4__s46__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r4__s46__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r4__s46__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r5_s47": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r5__s47__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r5__s47__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r5__s47__random__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r5__s47__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r5__s47__random__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r6_s48": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r6__s48__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r6__s48__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r6__s48__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r6__s48__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r6__s48__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r7_s49": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r7__s49__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r7__s49__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r7__s49__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r7__s49__random__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r7__s49__random__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r8_s50": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r8__s50__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r8__s50__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r8__s50__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r8__s50__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r8__s50__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r9_s51": [
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r9__s51__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r9__s51__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r9__s51__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r9__s51__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Extractions__NRL4485-s2__5_bins__3.npy__a5b3cc98__r9__s51__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r0_s42": [
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r0__s42__random__parametric_umap.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r0__s42__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r0__s42__random__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r0__s42__random__top3.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r0__s42__random__pca.png",
+      "rank": 5
+    }
+  ],
+  "random__Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r1_s43": [
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r1__s43__random__parametric_umap.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r1__s43__random__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r1__s43__random__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r1__s43__random__top3.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r1__s43__random__pca.png",
+      "rank": 5
+    }
+  ],
+  "random__Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r2_s44": [
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r2__s44__random__parametric_umap.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r2__s44__random__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r2__s44__random__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r2__s44__random__top3.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r2__s44__random__pca.png",
+      "rank": 5
+    }
+  ],
+  "random__Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r3_s45": [
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r3__s45__random__nmf_3d.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r3__s45__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r3__s45__random__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r3__s45__random__top3.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r3__s45__random__pca.png",
+      "rank": 5
+    }
+  ],
+  "random__Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r4_s46": [
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r4__s46__random__nmf_3d.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r4__s46__random__parametric_umap.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r4__s46__random__top3.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r4__s46__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r4__s46__random__parametric_mics_lmc__mics2.png",
+      "rank": 5
+    }
+  ],
+  "random__Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r5_s47": [
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r5__s47__random__parametric_umap.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r5__s47__random__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r5__s47__random__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r5__s47__random__top3.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r5__s47__random__pca.png",
+      "rank": 5
+    }
+  ],
+  "random__Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r6_s48": [
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r6__s48__random__parametric_umap.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r6__s48__random__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r6__s48__random__top3.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r6__s48__random__parametric_mics_lmc__mics2.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r6__s48__random__pca.png",
+      "rank": 5
+    }
+  ],
+  "random__Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r7_s49": [
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r7__s49__random__parametric_umap.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r7__s49__random__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r7__s49__random__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r7__s49__random__top3.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r7__s49__random__pca.png",
+      "rank": 5
+    }
+  ],
+  "random__Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r8_s50": [
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r8__s50__random__parametric_umap.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r8__s50__random__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r8__s50__random__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r8__s50__random__top3.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r8__s50__random__pca.png",
+      "rank": 5
+    }
+  ],
+  "random__Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r9_s51": [
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r9__s51__random__nmf_3d.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r9__s51__random__parametric_umap.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r9__s51__random__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r9__s51__random__top3.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset4_kidney__5bins__0.npy__bfa3ad68__r9__s51__random__pca.png",
+      "rank": 5
+    }
+  ],
+  "random__Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r0_s42": [
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r0__s42__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r0__s42__random__pca.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r0__s42__random__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r0__s42__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r0__s42__random__top3.png",
+      "rank": 5
+    }
+  ],
+  "random__Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r1_s43": [
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r1__s43__random__pca.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r1__s43__random__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r1__s43__random__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r1__s43__random__parametric_mics_lmc__mics2.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r1__s43__random__top3.png",
+      "rank": 5
+    }
+  ],
+  "random__Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r2_s44": [
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r2__s44__random__parametric_umap.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r2__s44__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r2__s44__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r2__s44__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r2__s44__random__top3.png",
+      "rank": 5
+    }
+  ],
+  "random__Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r3_s45": [
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r3__s45__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r3__s45__random__pca.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r3__s45__random__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r3__s45__random__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r3__s45__random__top3.png",
+      "rank": 5
+    }
+  ],
+  "random__Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r4_s46": [
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r4__s46__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r4__s46__random__pca.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r4__s46__random__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r4__s46__random__parametric_umap.png",
+      "rank": 4
+    }
+  ],
+  "random__Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r5_s47": [
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r5__s47__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r5__s47__random__pca.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r5__s47__random__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r5__s47__random__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r5__s47__random__top3.png",
+      "rank": 5
+    }
+  ],
+  "random__Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r6_s48": [
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r6__s48__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r6__s48__random__parametric_umap.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r6__s48__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r6__s48__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r6__s48__random__top3.png",
+      "rank": 5
+    }
+  ],
+  "random__Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r7_s49": [
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r7__s49__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r7__s49__random__pca.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r7__s49__random__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r7__s49__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r7__s49__random__top3.png",
+      "rank": 5
+    }
+  ],
+  "random__Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r8_s50": [
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r8__s50__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r8__s50__random__parametric_umap.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r8__s50__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r8__s50__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r8__s50__random__top3.png",
+      "rank": 5
+    }
+  ],
+  "random__Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r9_s51": [
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r9__s51__random__pca.png",
+      "rank": 1
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r9__s51__random__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r9__s51__random__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r9__s51__random__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "Metaspace_datasets__Dataset5_spinalcord__5bins__0.npy__f6eaa948__r9__s51__random__top3.png",
+      "rank": 5
+    }
+  ],
+  "random__NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r0_s42": [
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r0__s42__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r0__s42__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r0__s42__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r0__s42__random__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r0__s42__random__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "random__NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r1_s43": [
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r1__s43__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r1__s43__random__parametric_umap.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r1__s43__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r1__s43__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r1__s43__random__parametric_mics_lmc__mics2.png",
+      "rank": 5
+    }
+  ],
+  "random__NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r2_s44": [
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r2__s44__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r2__s44__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r2__s44__random__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r2__s44__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r2__s44__random__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "random__NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r3_s45": [
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r3__s45__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r3__s45__random__pca.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r3__s45__random__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r3__s45__random__parametric_mics_lmc__mics2.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r3__s45__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r4_s46": [
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r4__s46__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r4__s46__random__pca.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r4__s46__random__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r4__s46__random__nmf_3d.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r4__s46__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r5_s47": [
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r5__s47__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r5__s47__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r5__s47__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r5__s47__random__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r5__s47__random__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "random__NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r6_s48": [
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r6__s48__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r6__s48__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r6__s48__random__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r6__s48__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r6__s48__random__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "random__NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r7_s49": [
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r7__s49__random__parametric_mics_lmc__mics2.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r7__s49__random__top3.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r7__s49__random__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r7__s49__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r7__s49__random__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "random__NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r8_s50": [
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r8__s50__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r8__s50__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r8__s50__random__parametric_umap.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r8__s50__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r8__s50__random__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "random__NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r9_s51": [
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r9__s51__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r9__s51__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r9__s51__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r9__s51__random__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4506-5um__Intelli-slide__5_bins__0.npy__babf4fd0__r9__s51__random__nmf_3d.png",
+      "rank": 5
+    }
+  ],
+  "random__NRL4558_5um__5bins__2__0.npy__e65e3281__r0_s42": [
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r0__s42__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r0__s42__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r0__s42__random__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r0__s42__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r0__s42__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__NRL4558_5um__5bins__2__0.npy__e65e3281__r1_s43": [
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r1__s43__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r1__s43__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r1__s43__random__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r1__s43__random__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r1__s43__random__pca.png",
+      "rank": 5
+    }
+  ],
+  "random__NRL4558_5um__5bins__2__0.npy__e65e3281__r2_s44": [
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r2__s44__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r2__s44__random__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r2__s44__random__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r2__s44__random__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r2__s44__random__pca.png",
+      "rank": 5
+    }
+  ],
+  "random__NRL4558_5um__5bins__2__0.npy__e65e3281__r3_s45": [
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r3__s45__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r3__s45__random__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r3__s45__random__pca.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r3__s45__random__parametric_mics_lmc__mics2.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r3__s45__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__NRL4558_5um__5bins__2__0.npy__e65e3281__r4_s46": [
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r4__s46__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r4__s46__random__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r4__s46__random__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r4__s46__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r4__s46__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__NRL4558_5um__5bins__2__0.npy__e65e3281__r5_s47": [
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r5__s47__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r5__s47__random__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r5__s47__random__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r5__s47__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r5__s47__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__NRL4558_5um__5bins__2__0.npy__e65e3281__r6_s48": [
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r6__s48__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r6__s48__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r6__s48__random__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r6__s48__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r6__s48__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__NRL4558_5um__5bins__2__0.npy__e65e3281__r7_s49": [
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r7__s49__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r7__s49__random__pca.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r7__s49__random__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r7__s49__random__parametric_umap.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r7__s49__random__parametric_mics_lmc__mics2.png",
+      "rank": 5
+    }
+  ],
+  "random__NRL4558_5um__5bins__2__0.npy__e65e3281__r8_s50": [
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r8__s50__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r8__s50__random__parametric_mics_lmc__mics2.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r8__s50__random__nmf_3d.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r8__s50__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r8__s50__random__parametric_umap.png",
+      "rank": 5
+    }
+  ],
+  "random__NRL4558_5um__5bins__2__0.npy__e65e3281__r9_s51": [
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r9__s51__random__top3.png",
+      "rank": 1
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r9__s51__random__nmf_3d.png",
+      "rank": 2
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r9__s51__random__parametric_mics_lmc__mics2.png",
+      "rank": 3
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r9__s51__random__pca.png",
+      "rank": 4
+    },
+    {
+      "filename": "NRL4558_5um__5bins__2__0.npy__e65e3281__r9__s51__random__parametric_umap.png",
+      "rank": 5
+    }
+  ]
+}
